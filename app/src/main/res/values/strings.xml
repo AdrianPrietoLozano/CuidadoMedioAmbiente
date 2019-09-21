@@ -4,4 +4,11 @@
     <string name="descripcion_eventos_para_ti">Eventos en los que puedes participar según tu actividad y gustos</string>
     <string name="recomendacion_eventos">Recomendaciones para que inicies un evento</string>
     <string name="descripcion_recomendacion_eventos">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
+    <string name="titulo_evento">Título del evento</string>
+    <string name="dia_evento">¿Qué día?</string>
+    <string name="hora_evento">¿A qué hora?</string>
+    <string name="ubicacion_evento">Ubicación</string>
+    <string name="descripcion_evento">Descripción</string>
+    <string name="boton_cancelar">Cancelar</string>
+    <string name="boton_aceptar">Aceptar</string>
 </resources>
