@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Eventos de limpieza</string>
+    <string name="eventos_para_ti">Eventos para ti</string>
+    <string name="descripcion_eventos_para_ti">Eventos en los que puedes participar según tu actividad y gustos</string>
+    <string name="recomendacion_eventos">Recomendaciones para que inicies un evento</string>
+    <string name="descripcion_recomendacion_eventos">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
 </resources>
