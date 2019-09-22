@@ -5,10 +5,13 @@
     <string name="recomendacion_eventos">Recomendaciones para que inicies un evento</string>
     <string name="descripcion_recomendacion_eventos">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
     <string name="titulo_evento">Título del evento</string>
-    <string name="dia_evento">¿Qué día?</string>
+    <string name="dia_evento">¿Qué fecha?</string>
     <string name="hora_evento">¿A qué hora?</string>
     <string name="ubicacion_evento">Ubicación</string>
     <string name="descripcion_evento">Descripción</string>
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
