@@ -3,6 +3,10 @@ package com.example.cuidadodelambiente;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -27,25 +31,31 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
+
     private BottomNavigationView bottomNavigationView;
-    private EventosLimpieza eventosFragment;
-    private RecomendacionEventosFragment eventosRecomendadosFragment;
-    private RecomendacionCrearEventoFragment recomendacionCrearEventoFragment;
-    private CuentaFragment cuentaFragment;
+    private final EventosLimpieza eventosFragment = new EventosLimpieza();;
+    private final RecomendacionEventosFragment eventosRecomendadosFragment = new RecomendacionEventosFragment();;
+    private final RecomendacionCrearEventoFragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();;
+    private final CuentaFragment cuentaFragment = new CuentaFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        eventosFragment = new EventosLimpieza();
-        eventosRecomendadosFragment = new RecomendacionEventosFragment();
-        recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();
-        cuentaFragment = new CuentaFragment();
-
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         bottomNavigationView.setSelectedItemId(R.id.todos_eventos);
+
+        /*
+        BottomNavigationView navView = findViewById(R.id.bottom_navigation);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.navigation_eventos, R.id.navigation_eventos_para_ti,
+                R.id.navigation_reportes, R.id.navigation_cuenta)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+        NavigationUI.setupWithNavController(navView, navController);*/
 
 
 
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private void iniciarFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.contenedor, fragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, fragment).commit();
     }
+
 }

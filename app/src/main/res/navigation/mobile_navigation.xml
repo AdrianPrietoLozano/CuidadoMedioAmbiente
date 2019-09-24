@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mobile_navigation"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/navigation_eventos">
+
+    <fragment
+        android:id="@+id/navigation_eventos"
+        android:name="com.example.cuidadodelambiente.EventosLimpieza"
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_eventos_limpieza" />
+
+    <fragment
+        android:id="@+id/navigation_eventos_para_ti"
+        android:name="com.example.cuidadodelambiente.RecomendacionEventosFragment"
+        android:label="@string/recomendacion_eventos"
+        tools:layout="@layout/fragment_recomendacion_eventos" />
+
+    <fragment
+        android:id="@+id/navigation_reportes"
+        android:name="com.example.cuidadodelambiente.RecomendacionCrearEventoFragment"
+        android:label="@string/recomendacion_crear_eventos"
+        tools:layout="@layout/fragment_recomendacion_crear_evento" />
+
+    <fragment
+        android:id="@+id/navigation_cuenta"
+        android:name="com.example.cuidadodelambiente.CuentaFragment"
+        android:label="@string/tu_cuenta"
+        tools:layout="@layout/fragment_cuenta" />
+
+</navigation>

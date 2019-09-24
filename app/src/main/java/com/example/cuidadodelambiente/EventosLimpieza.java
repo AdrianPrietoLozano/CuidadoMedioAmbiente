@@ -29,6 +29,7 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private final Fragment datosCrearEvento = new CrearEventoFragment();
 
     public EventosLimpieza() {
         // Required empty public constructor
@@ -38,6 +39,7 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_eventos_limpieza, container, false);
+
 
         // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -56,8 +58,10 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         nuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 Intent intent = new Intent(getActivity(), DatosEventoActivity.class);
-                startActivity(intent);
+                startActivity(intent);*/
+                getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, datosCrearEvento).commit();
             }
         });
 

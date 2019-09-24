@@ -3,7 +3,7 @@
     <string name="eventos_para_ti">Eventos para ti</string>
     <string name="descripcion_eventos_para_ti">Eventos en los que puedes participar según tu actividad y gustos</string>
     <string name="recomendacion_eventos">Recomendaciones para que inicies un evento</string>
-    <string name="descripcion_recomendacion_eventos">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
+    <string name="descripcion_recomendacion_crear_evento">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
     <string name="titulo_evento">Título del evento</string>
     <string name="dia_evento">¿Qué fecha?</string>
     <string name="hora_evento">¿A qué hora?</string>
@@ -11,6 +11,8 @@
     <string name="descripcion_evento">Descripción</string>
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
+    <string name="tu_cuenta">Tu cuenta</string>
+    <string name="recomendacion_crear_eventos">Recomendacion crear evento</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
