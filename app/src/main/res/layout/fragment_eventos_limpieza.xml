@@ -6,7 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".EventosLimpieza">
 
+
+
+
     <!-- TODO: Update blank fragment layout -->
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/botonNuevoEvento"
         android:layout_width="wrap_content"
@@ -129,7 +133,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/recomendacion_eventos"
+                        android:text="@string/title_recomendacion_crear_evento"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 

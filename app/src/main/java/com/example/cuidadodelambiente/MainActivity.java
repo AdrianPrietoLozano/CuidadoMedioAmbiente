@@ -33,10 +33,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
 
     private BottomNavigationView bottomNavigationView;
-    private final EventosLimpieza eventosFragment = new EventosLimpieza();;
-    private final RecomendacionEventosFragment eventosRecomendadosFragment = new RecomendacionEventosFragment();;
-    private final RecomendacionCrearEventoFragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();;
-    private final CuentaFragment cuentaFragment = new CuentaFragment();
+    private final Fragment eventosFragment = new BlankFragment();
+    private final Fragment eventosRecomendadosFragment = new RecomendacionEventosFragment();
+    private final Fragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();
+    private final Fragment cuentaFragment = new CuentaFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.todos_eventos);
+        //bottomNavigationView.setSelectedItemId(R.id.todos_eventos);
 
         /*
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);

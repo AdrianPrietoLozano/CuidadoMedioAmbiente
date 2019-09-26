@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mobile_navigation"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/navigation_eventos">
+    app:startDestination="@+id/navigation_prueba">
+
+    <fragment
+        android:id="@+id/navigation_prueba"
+        android:name="com.example.cuidadodelambiente.BlankFragment"
+        android:label="Prueba"
+        tools:layout="@layout/fragment_blank" />
 
     <fragment
         android:id="@+id/navigation_eventos"
@@ -14,19 +20,25 @@
     <fragment
         android:id="@+id/navigation_eventos_para_ti"
         android:name="com.example.cuidadodelambiente.RecomendacionEventosFragment"
-        android:label="@string/recomendacion_eventos"
+        android:label="@string/eventos_para_ti"
         tools:layout="@layout/fragment_recomendacion_eventos" />
 
     <fragment
         android:id="@+id/navigation_reportes"
         android:name="com.example.cuidadodelambiente.RecomendacionCrearEventoFragment"
-        android:label="@string/recomendacion_crear_eventos"
+        android:label="@string/title_recomendacion_crear_evento"
         tools:layout="@layout/fragment_recomendacion_crear_evento" />
 
     <fragment
         android:id="@+id/navigation_cuenta"
         android:name="com.example.cuidadodelambiente.CuentaFragment"
-        android:label="@string/tu_cuenta"
+        android:label="@string/title_tu_cuenta_nav_view"
         tools:layout="@layout/fragment_cuenta" />
+
+    <fragment
+        android:id="@+id/navigation_crear_evento"
+        android:name="com.example.cuidadodelambiente.CrearEventoFragment"
+        android:label="@string/datos_evento"
+        tools:layout="@layout/fragment_crear_evento" />
 
 </navigation>

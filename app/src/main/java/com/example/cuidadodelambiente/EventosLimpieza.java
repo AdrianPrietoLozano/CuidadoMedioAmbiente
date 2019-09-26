@@ -4,8 +4,12 @@ package com.example.cuidadodelambiente;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +24,14 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
+
+
 public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
@@ -41,7 +48,6 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         View v = inflater.inflate(R.layout.fragment_eventos_limpieza, container, false);
 
 
-        // *** IMPORTANT ***
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
         Bundle mapViewBundle = null;
@@ -58,9 +64,6 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         nuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                Intent intent = new Intent(getActivity(), DatosEventoActivity.class);
-                startActivity(intent);*/
                 getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, datosCrearEvento).commit();
             }
         });

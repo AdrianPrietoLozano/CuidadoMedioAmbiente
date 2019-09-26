@@ -86,7 +86,7 @@ public final class TablasBD {
                     "%s INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
                     "%s	INTEGER NOT NULL," +
                     "%s TEXT NOT NULL," +
-                    "%s INTEGER NOT NULL," +
+                    "%s INTEGER NOT NULL UNIQUE," +
                     "%s TEXT NOT NULL," +
                     "%s TEXT," +
                     "FOREIGN KEY(%s) REFERENCES %s(%s));",
