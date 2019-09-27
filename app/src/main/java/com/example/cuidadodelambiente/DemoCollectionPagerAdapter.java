@@ -23,7 +23,7 @@ public class DemoCollectionPagerAdapter extends FragmentPagerAdapter {
                 return new EventosLimpieza();
 
             case 1:
-                return new RecomendacionCrearEventoFragment();
+                return new RecomendacionEventosFragment();
         }
 
         return fragment;
@@ -36,6 +36,19 @@ public class DemoCollectionPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return "OBJECT " + (position + 1);
+        CharSequence title = "";
+
+        switch(position)
+        {
+            case 0:
+                title = "Todos los eventos";
+                break;
+
+            case 1:
+                title = "Eventos para ti";
+                break;
+        }
+
+        return title;
     }
 }

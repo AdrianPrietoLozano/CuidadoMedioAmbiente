@@ -64,7 +64,17 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         nuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, datosCrearEvento).commit();
+                /*
+                try {
+                    getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, datosCrearEvento).commit();
+                }
+                catch(Exception e)
+                {
+                    Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
+                }*/
+
+                Toast.makeText(getContext(), "Mensaje", Toast.LENGTH_LONG).show();
+                getFragmentManager().beginTransaction().replace(getId(), datosCrearEvento).commit();
             }
         });
 
