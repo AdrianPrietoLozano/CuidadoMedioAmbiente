@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".EventosLimpieza">
+    tools:context=".Fragments.EventosLimpieza">
+
 
 
 
@@ -20,9 +21,9 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_add_black_56dp"
-        app:fabSize="normal"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
@@ -31,7 +32,6 @@
         android:id="@+id/mapaEventos"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="200dp"
         android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -40,6 +40,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
+    <!--
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="0dp"
@@ -150,5 +151,6 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

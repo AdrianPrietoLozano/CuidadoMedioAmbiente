@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.Fragments;
 
 
 import android.os.Bundle;
@@ -9,14 +9,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cuidadodelambiente.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecomendacionCrearEventoFragment extends Fragment {
+public class ReportesContaminacionFragment extends Fragment {
 
 
-    public RecomendacionCrearEventoFragment() {
+    public ReportesContaminacionFragment() {
         // Required empty public constructor
     }
 
@@ -25,7 +26,7 @@ public class RecomendacionCrearEventoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recomendacion_crear_evento, container, false);
+        return inflater.inflate(R.layout.fragment_reportes_contaminacion, container, false);
     }
 
 }

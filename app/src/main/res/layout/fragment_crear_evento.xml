@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/verdeFondo"
-    tools:context=".CrearEventoFragment">
+    android:scrollbars="vertical"
+    tools:context=".Fragments.CrearEventoFragment">
 
 
     <ScrollView
@@ -13,10 +14,12 @@
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
@@ -27,176 +30,470 @@
                 android:id="@+id/textViewTituloEvento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginStart="15dp"
                 android:text="@string/titulo_evento"
                 android:textColor="@color/grisNegro"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textStyle="bold"/>
+
+            <EditText
+                android:id="@+id/editTextTitulo"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/colorGrisBlanco"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp" />
 
             <TextView
                 android:id="@+id/labelFecha"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/fecha_evento"
                 android:textColor="@color/grisNegro"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/editTextTitulo"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextTitulo"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTitulo" />
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/textViewFecha"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/colorGrisBlanco"
+                android:ems="10"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:paddingTop="4dp"
+                android:textSize="18sp" />
+
 
             <TextView
                 android:id="@+id/labelHora"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/hora_evento"
                 android:textColor="@color/grisNegro"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/textViewFecha"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewFecha"
-                app:layout_constraintTop_toBottomOf="@+id/textViewFecha" />
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewHora"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/colorGrisBlanco"
+                android:ems="10"
+                android:paddingTop="4dp"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textViewUbicacion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/ubicacion_evento"
                 android:textColor="@color/grisNegro"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/textViewHora"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewHora"
-                app:layout_constraintTop_toBottomOf="@+id/textViewHora" />
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editTextUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/colorGrisBlanco"
+                android:ems="10"
+                android:inputType="textPostalAddress"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp" />
 
             <TextView
                 android:id="@+id/textViewDescripcion"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:layout_marginStart="20dp"
                 android:text="@string/descripcion_evento"
                 android:textColor="@color/grisNegro"
                 android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/editTextUbicacion"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/editTextUbicacion"
-                app:layout_constraintTop_toBottomOf="@+id/editTextUbicacion" />
+                android:textStyle="bold" />
 
-            <EditText
-                android:id="@+id/editTextTitulo"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@color/colorGrisBlanco"
-                android:ems="10"
-                android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewTituloEvento"
-                app:layout_constraintTop_toBottomOf="@+id/textViewTituloEvento" />
-
-            <TextView
-                android:id="@+id/textViewFecha"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorGrisBlanco"
-                android:ems="10"
-                app:layout_constraintEnd_toEndOf="@+id/editTextTitulo"
-                app:layout_constraintStart_toStartOf="@+id/labelFecha"
-                app:layout_constraintTop_toBottomOf="@+id/labelFecha" />
-
-            <TextView
-                android:id="@+id/textViewHora"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorGrisBlanco"
-                android:ems="10"
-                app:layout_constraintEnd_toEndOf="@+id/textViewFecha"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/labelHora"
-                app:layout_constraintTop_toBottomOf="@+id/labelHora" />
-
-            <EditText
-                android:id="@+id/editTextUbicacion"
-                android:layout_width="0dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/colorGrisBlanco"
-                android:ems="10"
-                android:inputType="textPostalAddress"
-                app:layout_constraintEnd_toEndOf="@+id/textViewHora"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewUbicacion"
-                app:layout_constraintTop_toBottomOf="@+id/textViewUbicacion" />
 
             <EditText
                 android:id="@+id/editTextDescripcion"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="15dp"
                 android:layout_marginBottom="16dp"
-                android:background="@color/colorGrisBlanco"
-                android:ems="10"
+                android:background="@drawable/redondeado_gris"
                 android:inputType="textPersonName"
-                app:layout_constraintBottom_toTopOf="@+id/guideline"
-                app:layout_constraintEnd_toEndOf="@+id/editTextUbicacion"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/textViewDescripcion"
-                app:layout_constraintTop_toBottomOf="@+id/textViewDescripcion" />
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp" />
 
-            <Button
-                android:id="@+id/buttonCancelar"
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/buttonCancelar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/redondeado_rojo"
+                    android:text="@string/boton_cancelar"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/buttonAceptar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/redondeado_verde"
+                    android:text="@string/boton_aceptar"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!-- este textview es solo para dejar un margen debajo de los botones -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+            <!--
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginBottom="24dp"
-                android:background="@color/rojoNaranja"
-                android:text="@string/boton_cancelar"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.50121653" />-->
 
-            <Button
-                android:id="@+id/buttonAceptar"
+            <!--
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="24dp"
-                android:background="@color/colorPrimary"
-                android:text="@string/boton_aceptar"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline" />
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.90" />
+                app:layout_constraintGuide_begin="638dp" />-->
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
 
     </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/verdeFondo"
+    android:scrollbars="vertical"
+    tools:context=".CrearEventoFragment">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/redondeado"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+<TextView
+android:id="@+id/textViewTituloEvento"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginStart="16dp"
+android:layout_marginTop="16dp"
+android:text="@string/titulo_evento"
+android:textColor="@color/grisNegro"
+android:textSize="24sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+android:id="@+id/labelFecha"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginTop="16dp"
+android:text="@string/fecha_evento"
+android:textColor="@color/grisNegro"
+android:textSize="24sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="@+id/editTextTitulo"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/editTextTitulo"
+app:layout_constraintTop_toBottomOf="@+id/editTextTitulo" />
+
+<TextView
+android:id="@+id/labelHora"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginTop="16dp"
+android:text="@string/hora_evento"
+android:textColor="@color/grisNegro"
+android:textSize="24sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="@+id/textViewFecha"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/textViewFecha"
+app:layout_constraintTop_toBottomOf="@+id/textViewFecha" />
+
+<TextView
+android:id="@+id/textViewUbicacion"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginTop="16dp"
+android:text="@string/ubicacion_evento"
+android:textColor="@color/grisNegro"
+android:textSize="24sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="@+id/textViewHora"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/textViewHora"
+app:layout_constraintTop_toBottomOf="@+id/textViewHora" />
+
+<TextView
+android:id="@+id/textViewDescripcion"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginTop="16dp"
+android:text="@string/descripcion_evento"
+android:textColor="@color/grisNegro"
+android:textSize="24sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="@+id/editTextUbicacion"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/editTextUbicacion"
+app:layout_constraintTop_toBottomOf="@+id/editTextUbicacion" />
+
+<EditText
+android:id="@+id/editTextTitulo"
+android:layout_width="0dp"
+android:layout_height="35dp"
+android:layout_marginTop="8dp"
+android:layout_marginEnd="16dp"
+android:background="@color/colorGrisBlanco"
+android:ems="10"
+android:inputType="textPersonName"
+android:paddingLeft="7dp"
+android:paddingRight="7dp"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/textViewTituloEvento"
+app:layout_constraintTop_toBottomOf="@+id/textViewTituloEvento" />
+
+<TextView
+android:id="@+id/textViewFecha"
+android:layout_width="0dp"
+android:layout_height="35dp"
+android:layout_marginTop="8dp"
+android:background="@color/colorGrisBlanco"
+android:ems="10"
+android:paddingLeft="7dp"
+android:paddingRight="7dp"
+android:textSize="18sp"
+app:layout_constraintEnd_toEndOf="@+id/editTextTitulo"
+app:layout_constraintStart_toStartOf="@+id/labelFecha"
+app:layout_constraintTop_toBottomOf="@+id/labelFecha" />
+
+<TextView
+android:id="@+id/textViewHora"
+android:layout_width="0dp"
+android:layout_height="35dp"
+android:layout_marginTop="8dp"
+android:background="@color/colorGrisBlanco"
+android:ems="10"
+android:paddingLeft="7dp"
+android:textSize="18sp"
+app:layout_constraintEnd_toEndOf="@+id/textViewFecha"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/labelHora"
+app:layout_constraintTop_toBottomOf="@+id/labelHora" />
+
+<EditText
+android:id="@+id/editTextUbicacion"
+android:layout_width="0dp"
+android:layout_height="35dp"
+android:layout_marginTop="8dp"
+android:background="@color/colorGrisBlanco"
+android:ems="10"
+android:inputType="textPostalAddress"
+android:paddingLeft="7dp"
+android:paddingRight="7dp"
+app:layout_constraintEnd_toEndOf="@+id/textViewHora"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/textViewUbicacion"
+app:layout_constraintTop_toBottomOf="@+id/textViewUbicacion" />
+
+<EditText
+android:id="@+id/editTextDescripcion"
+android:layout_width="0dp"
+android:layout_height="0dp"
+
+android:layout_marginTop="8dp"
+android:layout_marginBottom="32dp"
+android:background="@drawable/redondeado_gris"
+android:inputType="textPersonName"
+android:paddingLeft="7dp"
+android:paddingRight="7dp"
+app:layout_constraintBottom_toTopOf="@+id/barrier"
+app:layout_constraintEnd_toEndOf="@+id/editTextUbicacion"
+app:layout_constraintHorizontal_bias="0.0"
+app:layout_constraintStart_toStartOf="@+id/textViewDescripcion"
+app:layout_constraintTop_toBottomOf="@+id/textViewDescripcion" />
+
+<Button
+android:id="@+id/buttonCancelar"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+
+android:layout_marginStart="16dp"
+android:layout_marginTop="16dp"
+android:layout_marginEnd="8dp"
+android:layout_marginBottom="16dp"
+android:background="@color/rojoNaranja"
+android:text="@string/boton_cancelar"
+android:textColor="@android:color/white"
+android:textStyle="bold"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toStartOf="@+id/guideline"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="@+id/barrier" />
+
+<Button
+android:id="@+id/buttonAceptar"
+android:layout_width="0dp"
+android:layout_height="wrap_content"
+android:layout_marginStart="8dp"
+android:layout_marginTop="16dp"
+android:layout_marginEnd="16dp"
+android:layout_marginBottom="16dp"
+android:background="@color/colorPrimary"
+android:text="@string/boton_aceptar"
+android:textColor="@android:color/white"
+android:textStyle="bold"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="@+id/guideline"
+app:layout_constraintTop_toTopOf="@+id/barrier" />
+
+<androidx.constraintlayout.widget.Guideline
+android:id="@+id/guideline"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:orientation="vertical"
+app:layout_constraintGuide_percent="0.50121653" />
+
+<androidx.constraintlayout.widget.Barrier
+android:id="@+id/barrier"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_marginBottom="64dp"
+app:barrierDirection="top"
+app:layout_constraintHeight_percent="0.9"
+app:constraint_referenced_ids="buttonCancelar,buttonAceptar"
+app:layout_constraintBottom_toBottomOf="parent"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="638dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+-->

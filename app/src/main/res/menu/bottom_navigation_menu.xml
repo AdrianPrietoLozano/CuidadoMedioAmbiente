@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/todos_eventos"
+    <item android:id="@+id/eventos"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_eventos_nav_view" />
 
-    <item android:id="@+id/recomendacion_eventos"
-        android:icon="@drawable/ic_eventos_para_ti_black_24dp"
-        android:title="@string/title_eventos_para_ti_nav_view" />
-
-    <item android:id="@+id/recomendacion_crea_evento"
+    <item android:id="@+id/reportes"
         android:icon="@drawable/ic_trash_black_24dp"
+        android:title="@string/title_mis_eventos_nav_view" />
+
+    <item android:id="@+id/mis_eventos"
+        android:icon="@drawable/ic_eventos_para_ti_black_24dp"
         android:title="@string/title_recomendacion_crear_evento_nav_view" />
 
     <item android:id="@+id/cuenta"

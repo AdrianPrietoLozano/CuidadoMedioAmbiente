@@ -1,30 +1,24 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.Fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
+import com.example.cuidadodelambiente.R;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
 
 
 /**
@@ -36,7 +30,7 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
 
     private MapView mMapView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    private final Fragment datosCrearEvento = new CrearEventoFragment();
+    private final Fragment crearEventoFragment = new CrearEventoFragment();
 
     public EventosLimpieza() {
         // Required empty public constructor
@@ -46,7 +40,6 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_eventos_limpieza, container, false);
-
 
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
@@ -60,21 +53,12 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
 
+        // evento clic para el boton flotante que permite crear un nuevo evento
         FloatingActionButton nuevoEvento = v.findViewById(R.id.botonNuevoEvento);
         nuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                try {
-                    getFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, datosCrearEvento).commit();
-                }
-                catch(Exception e)
-                {
-                    Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
-                }*/
-
-                Toast.makeText(getContext(), "Mensaje", Toast.LENGTH_LONG).show();
-                getFragmentManager().beginTransaction().replace(getId(), datosCrearEvento).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, crearEventoFragment).commit();
             }
         });
 
@@ -85,9 +69,12 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap map) {
         try {
             UiSettings uiSettings = map.getUiSettings();
-            uiSettings.setZoomControlsEnabled(true);
             uiSettings.setAllGesturesEnabled(true);
             uiSettings.setScrollGesturesEnabled(true);
+            uiSettings.setMapToolbarEnabled(true);
+            uiSettings.setCompassEnabled(true);
+            uiSettings.setMyLocationButtonEnabled(true);
+            uiSettings.setTiltGesturesEnabled(true);
 
             map.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         }catch(Exception e)

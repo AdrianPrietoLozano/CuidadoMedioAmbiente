@@ -7,37 +7,37 @@
 
     <fragment
         android:id="@+id/navigation_prueba"
-        android:name="com.example.cuidadodelambiente.BlankFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.BlankFragment"
         android:label="Prueba"
         tools:layout="@layout/fragment_blank" />
 
     <fragment
         android:id="@+id/navigation_eventos"
-        android:name="com.example.cuidadodelambiente.EventosLimpieza"
+        android:name="com.example.cuidadodelambiente.Fragments.EventosLimpieza"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_eventos_limpieza" />
 
     <fragment
         android:id="@+id/navigation_eventos_para_ti"
-        android:name="com.example.cuidadodelambiente.RecomendacionEventosFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment"
         android:label="@string/eventos_para_ti"
         tools:layout="@layout/fragment_recomendacion_eventos" />
 
     <fragment
         android:id="@+id/navigation_reportes"
-        android:name="com.example.cuidadodelambiente.RecomendacionCrearEventoFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.RecomendacionCrearEventoFragment"
         android:label="@string/title_recomendacion_crear_evento"
         tools:layout="@layout/fragment_recomendacion_crear_evento" />
 
     <fragment
         android:id="@+id/navigation_cuenta"
-        android:name="com.example.cuidadodelambiente.CuentaFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.CuentaFragment"
         android:label="@string/title_tu_cuenta_nav_view"
         tools:layout="@layout/fragment_cuenta" />
 
     <fragment
         android:id="@+id/navigation_crear_evento"
-        android:name="com.example.cuidadodelambiente.CrearEventoFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.CrearEventoFragment"
         android:label="@string/datos_evento"
         tools:layout="@layout/fragment_crear_evento" />
 

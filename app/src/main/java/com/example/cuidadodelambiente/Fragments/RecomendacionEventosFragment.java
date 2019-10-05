@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.Fragments;
 
 
 import android.content.Context;
@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.cuidadodelambiente.R;
 
 
 /**
@@ -43,7 +45,6 @@ public class RecomendacionEventosFragment extends Fragment {
     public RecomendacionEventosFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

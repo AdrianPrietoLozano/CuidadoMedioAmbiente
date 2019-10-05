@@ -15,7 +15,7 @@
     <string name="boton_aceptar">Aceptar</string>
 
     <string name="title_eventos_nav_view">Eventos</string>
-    <string name="title_eventos_para_ti_nav_view">Eventos para ti</string>
+    <string name="title_mis_eventos_nav_view">Mis eventos</string>
     <string name="title_recomendacion_crear_evento_nav_view">Reportes</string>
     <string name="title_tu_cuenta_nav_view">Tu cuenta</string>
 

@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.DatePickerDialog;
@@ -14,6 +14,8 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.example.cuidadodelambiente.R;
 
 import java.util.Calendar;
 
