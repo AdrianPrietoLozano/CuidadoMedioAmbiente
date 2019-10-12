@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        bottomNavigationView.setSelectedItemId(R.id.eventos);
+        //bottomNavigationView.setSelectedItemId(R.id.eventos);
 
         /*
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch(menuItem.getItemId()) {
             case R.id.eventos:
-                Toast.makeText(getApplicationContext(), "entro", Toast.LENGTH_SHORT).show();
                 Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
                         DeclaracionFragments.eventosLimpiezaFragement);
                 return true;
