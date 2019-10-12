@@ -50,8 +50,6 @@ public class CrearEventoFragment extends Fragment {
         fechaView.setOnClickListener(listenerFecha);
         horaView.setOnClickListener(listenerHora);
 
-        Toast.makeText(getContext(), "Entro", Toast.LENGTH_LONG).show();
-
         return v;
     }
 

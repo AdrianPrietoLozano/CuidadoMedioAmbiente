@@ -11,8 +11,12 @@
     <string name="hora_evento">¿A qué hora?</string>
     <string name="ubicacion_evento">Ubicación</string>
     <string name="descripcion_evento">Descripción</string>
+    <string name="escribeDescripcion">Escribe una descripción</string>
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
+
+    <string name="titulo_eventos_recomendados">Nuestra recomendación de eventos para ti según tu actividad</string>
+
 
     <string name="title_eventos_nav_view">Eventos</string>
     <string name="title_mis_eventos_nav_view">Mis eventos</string>

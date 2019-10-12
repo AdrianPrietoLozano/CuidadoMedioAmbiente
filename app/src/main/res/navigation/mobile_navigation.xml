@@ -2,37 +2,31 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/mobile_navigation"
-    xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/navigation_prueba">
-
-    <fragment
-        android:id="@+id/navigation_prueba"
-        android:name="com.example.cuidadodelambiente.Fragments.BlankFragment"
-        android:label="Prueba"
-        tools:layout="@layout/fragment_blank" />
+    xmlns:tools="http://schemas.android.com/tools">
+    <!--app:startDestination="@+id/navigation_prueba"-->
 
     <fragment
         android:id="@+id/navigation_eventos"
         android:name="com.example.cuidadodelambiente.Fragments.EventosLimpieza"
-        android:label="@string/app_name"
+        android:label="Prueba"
         tools:layout="@layout/fragment_eventos_limpieza" />
 
     <fragment
-        android:id="@+id/navigation_eventos_para_ti"
+        android:id="@+id/navigation_eventos_recomendados"
         android:name="com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment"
-        android:label="@string/eventos_para_ti"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_recomendacion_eventos" />
 
     <fragment
         android:id="@+id/navigation_reportes"
         android:name="com.example.cuidadodelambiente.Fragments.RecomendacionCrearEventoFragment"
-        android:label="@string/title_recomendacion_crear_evento"
+        android:label="@string/eventos_para_ti"
         tools:layout="@layout/fragment_recomendacion_crear_evento" />
 
     <fragment
         android:id="@+id/navigation_cuenta"
         android:name="com.example.cuidadodelambiente.Fragments.CuentaFragment"
-        android:label="@string/title_tu_cuenta_nav_view"
+        android:label="@string/title_recomendacion_crear_evento"
         tools:layout="@layout/fragment_cuenta" />
 
     <fragment

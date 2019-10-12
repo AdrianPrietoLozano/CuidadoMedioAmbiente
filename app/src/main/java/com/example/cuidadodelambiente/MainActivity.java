@@ -3,35 +3,26 @@ package com.example.cuidadodelambiente;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.example.cuidadodelambiente.Fragments.BlankFragment;
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.Fragments.CuentaFragment;
-import com.example.cuidadodelambiente.Fragments.FragmentsReportes;
-import com.example.cuidadodelambiente.Fragments.MisEventosFragment;
-import com.example.cuidadodelambiente.Fragments.RecomendacionCrearEventoFragment;
-import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
-
-    private BottomNavigationView bottomNavigationView;
-    private final Fragment eventosFragment = new BlankFragment();
-    private final Fragment reportesFragment = new FragmentsReportes();
-    private final Fragment misEventosFragment = new MisEventosFragment();
-    private final Fragment cuentaFragment = new CuentaFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        //bottomNavigationView.setSelectedItemId(R.id.todos_eventos);
+        bottomNavigationView.setSelectedItemId(R.id.eventos);
 
         /*
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
@@ -58,33 +49,59 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     }
 
 
+    // pasar contexto a Calligraphy
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
+    }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch(menuItem.getItemId()) {
             case R.id.eventos:
-                iniciarFragment(eventosFragment);
+                Toast.makeText(getApplicationContext(), "entro", Toast.LENGTH_SHORT).show();
+                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                        DeclaracionFragments.eventosLimpiezaFragement);
+                return true;
+
+            case R.id.eventosRecomendados:
+                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                        DeclaracionFragments.recomendacionEventosFragment);
                 return true;
 
             case R.id.reportes:
-                iniciarFragment(reportesFragment);
-                return true;
-
-            case R.id.mis_eventos:
-                iniciarFragment(misEventosFragment);
+                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                        DeclaracionFragments.recomendacionCrearEventoFragment);
                 return true;
 
             case R.id.cuenta:
-                iniciarFragment(cuentaFragment);
+                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                        DeclaracionFragments.cuentaFragment);
                 return true;
-
         }
 
         return false;
     }
 
-    private void iniciarFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, fragment).commit();
-    }
+    @Override
+    public void onBackPressed() {
 
+        /*
+        if(FragmentSingleton.getOldFragment() != null)
+        {
+            if(FragmentSingleton.getCurrentFragment().isVisible() &&
+                FragmentSingleton.getOldFragment().isHidden())
+            {
+                getSupportFragmentManager().beginTransaction()
+                        .hide(FragmentSingleton.getCurrentFragment())
+                        .show(FragmentSingleton.getOldFragment())
+                        .commit();
+            }
+        }*/
+        //else
+        //{
+            super.onBackPressed();
+        //}
+    }
 }
