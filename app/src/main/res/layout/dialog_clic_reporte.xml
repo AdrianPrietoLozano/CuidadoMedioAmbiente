@@ -1,19 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/verdeFondo"
-        android:text="Datos reporte"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:textSize="25sp"
-        android:padding="10dp"
-        android:textColor="@android:color/white"/>
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fondo_gradient_verde"
+            android:padding="10dp"
+            android:text="Datos reporte"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
 
 
-</LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/basura1"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp"
+            android:scaleType="fitXY"/>
+
+        <View style="@style/divider" />
+
+        <TextView
+            style="@style/tituloEtiqueta"
+            android:text="Fecha y hora" />
+
+        <TextView
+            android:id="@+id/fecha_hora_reporte"
+            style="@style/datosEtiqueta"
+            android:text="19/11/2019, 13:00" />
+
+        <View style="@style/divider"/>
+
+        <TextView
+            style="@style/tituloEtiqueta"
+            android:text="Tipo de residuo" />
+
+        <TextView
+            android:id="@+id/tipo_residuo"
+            style="@style/datosEtiqueta"
+            android:text="Escombros"/>
+
+        <View style="@style/divider"/>
+
+        <TextView
+            style="@style/tituloEtiqueta"
+            android:text="Volumen del residuo"/>
+
+        <TextView
+            android:id="@+id/volumen_residuo"
+            style="@style/datosEtiqueta"
+            android:text="Cabe en un contenedor" />
+
+        <View style="@style/divider"/>
+
+        <TextView
+            style="@style/tituloEtiqueta"
+            android:text="Denunciante" />
+
+        <TextView
+            android:id="@+id/ambientalista_denunciante"
+            style="@style/datosEtiqueta"
+            android:text="Anónima"/>
+
+        <View style="@style/divider"
+            android:layout_marginBottom="30dp"/>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,10 +2,15 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -33,13 +38,13 @@ public class RecomendacionEventosFragment extends Fragment {
     String[] fechasHoras = {"26 de septiembre de 2019, 13:00", "Fecha y hora", "Fecha y hora",
             "Fecha y hora", "Fecha y hora", "Fecha y hora", "Fecha y hora"};
 
-    int[] idImagenes = {R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18,
-            R.drawable.googleg_standard_color_18};
+    int[] idImagenes = {R.drawable.basura1,
+            R.drawable.basura2,
+            R.drawable.basura1,
+            R.drawable.basura2,
+            R.drawable.basura1,
+            R.drawable.basura2,
+            R.drawable.basura1,};
 
 
     public RecomendacionEventosFragment() {
@@ -102,7 +107,15 @@ class MyAdapter extends ArrayAdapter<String>
             TextView titulo = rowEvento.findViewById(R.id.tituloEvento);
             TextView fechaHora = rowEvento.findViewById(R.id.fechaHoraEvento);
 
-            imagen.setImageResource(idImagenes[position]);
+            Drawable originalDrawable = rowEvento.getResources().getDrawable(idImagenes[position]);
+            Bitmap originalBitmal = ((BitmapDrawable) originalDrawable).getBitmap();
+
+            RoundedBitmapDrawable roundedDrawable =
+                    RoundedBitmapDrawableFactory.create(rowEvento.getResources(), originalBitmal);
+
+            roundedDrawable.setCornerRadius(originalBitmal.getHeight());
+
+            imagen.setImageDrawable(roundedDrawable);
             titulo.setText(titulos[position]);
             fechaHora.setText(fechasHoras[position]);
             return rowEvento;

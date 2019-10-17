@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.Fragments;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;

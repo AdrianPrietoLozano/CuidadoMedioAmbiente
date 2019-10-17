@@ -15,12 +15,14 @@
         android:id="@+id/imagenEvento"
         android:layout_width="65dp"
         android:layout_height="65dp"
-        android:background="@drawable/borde_imagen"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_normal" />
+        android:src="@drawable/basura1"
+        android:scaleType="fitXY"
+        android:background="@drawable/imagen_redondeada_borde"
+        />
 
     <TextView
         android:id="@+id/tituloEvento"

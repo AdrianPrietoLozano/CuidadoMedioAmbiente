@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context=".DatosEventoFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/fondo_gradient_verde"
+                android:padding="15dp"
+                android:text="@string/datos_evento"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="75px"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/nombreEvento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:text="Limpieza Río Santiago"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="60px"
+                android:textStyle="bold" />
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_marginBottom="25dp"
+                android:adjustViewBounds="false"
+                android:cropToPadding="false"
+                android:src="@drawable/basura2"
+                android:textAlignment="center"
+                android:scaleType="fitXY"/>
+            <!--
+            <view style="@style/divider"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/datos_evento"
+                android:layout_marginStart="10dp"
+                android:textSize="50px"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+
+            <view style="@style/divider"/>
+            -->
+
+            <View style="@style/divider" />
+
+            <TextView
+                style="@style/tituloEtiqueta"
+                android:text="Fecha y hora" />
+
+            <TextView
+                android:id="@+id/fecha_hora_evento"
+                style="@style/datosEtiqueta"
+                android:text="24/11/2019, 16:00" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                style="@style/tituloEtiqueta"
+                android:text="Creador" />
+
+            <TextView
+                android:id="@+id/creador_evento"
+                style="@style/datosEtiqueta"
+                android:text="Adrián Prieto" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                style="@style/tituloEtiqueta"
+                android:text="Descripción" />
+
+            <TextView
+                android:id="@+id/descripcion_evento"
+                style="@style/datosEtiqueta"
+                android:text="Aquí va una descripción del evento" />
+
+            <View style="@style/divider" />
+
+            <TextView
+                android:id="@+id/num_personas_unidas"
+                style="@style/datosEtiqueta"
+                android:layout_marginBottom="20dp"
+                android:text="15 personas se han unido" />
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fondo_gradient"
+        android:padding="10dp"
+        android:text="@string/quiero_participar"
+        android:textColor="@android:color/white"
+        android:textSize="50px"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

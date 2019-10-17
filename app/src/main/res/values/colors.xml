@@ -3,8 +3,19 @@
     <color name="colorPrimary">#00a65d</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorGrisBlanco">#DFDFDF</color>
+    <color name="colorGrisBlanco">#E7E7E7</color>
     <color name="grisNegro">#6C6C6C</color>
     <color name="rojoNaranja">#FF3600</color>
     <color name="verdeFondo">#52D47A</color>
+    <color name="amarillo">#ECEC0D</color>
+
+    <color name="colorGradientStart">#D9FF43</color>
+    <color name="colorGradientCenter">#F67831</color>
+    <color name="colorGradientEnd">#FF1493</color>
+
+    <color name="amarillo1">#FFDD00</color>
+    <color name="amarillo2">#FBB034</color>
+
+    <color name="verde1">#2CD581</color>
+    <color name="verde2">#63EB93</color>
 </resources>

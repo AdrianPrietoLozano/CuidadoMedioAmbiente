@@ -23,6 +23,8 @@
     <string name="title_recomendacion_crear_evento_nav_view">Reportes</string>
     <string name="title_tu_cuenta_nav_view">Tu cuenta</string>
 
+    <string name="quiero_participar">Quiero participar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

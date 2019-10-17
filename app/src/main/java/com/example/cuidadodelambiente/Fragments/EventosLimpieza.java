@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.DatosEventoFragment;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.R;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -32,7 +34,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  */
 
 
-public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
+public class EventosLimpieza extends Fragment
+        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private MapView mMapView;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -63,7 +66,7 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
         nuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilidades.iniciarFragment(getActivity().getSupportFragmentManager().beginTransaction(),
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
                         DeclaracionFragments.crearEventoFragment);
             }
         });
@@ -113,6 +116,7 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
             Utilidades.agregarMarcadorMapa(map, new LatLng(20.675978, -103.354478), "Evento",
                     BitmapDescriptorFactory.HUE_CYAN);
 
+            map.setOnMarkerClickListener(this);
 
         }catch(Exception e)
         {
@@ -171,5 +175,12 @@ public class EventosLimpieza extends Fragment implements OnMapReadyCallback {
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), new DatosEventoFragment());
+
+        return true;
     }
 }
