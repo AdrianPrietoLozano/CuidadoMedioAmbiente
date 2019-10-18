@@ -5,11 +5,11 @@
         android:title="@string/title_eventos_nav_view" />
 
     <item android:id="@+id/eventosRecomendados"
-        android:icon="@drawable/ic_trash_black_24dp"
+        android:icon="@drawable/ic_eventos_para_ti_black_24dp"
         android:title="@string/eventos_para_ti" />
 
     <item android:id="@+id/reportes"
-        android:icon="@drawable/ic_eventos_para_ti_black_24dp"
+        android:icon="@drawable/ic_trash_black_24dp"
         android:title="@string/title_recomendacion_crear_evento_nav_view" />
 
     <item android:id="@+id/cuenta"

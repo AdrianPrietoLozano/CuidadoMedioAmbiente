@@ -54,16 +54,8 @@
 
                 <EditText
                     android:id="@+id/editTextTitulo"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorGrisBlanco"
-                    android:ems="10"
-                    android:inputType="text"
-                    android:paddingLeft="7dp"
-                    android:paddingRight="7dp" />
+                    style="@style/inputCrearEvento"
+                    android:inputType="text"/>
 
                 <TextView
                     android:id="@+id/labelFecha"
@@ -79,18 +71,8 @@
 
                 <TextView
                     android:id="@+id/textViewFecha"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorGrisBlanco"
-                    android:ems="10"
-                    android:inputType="date|time"
-                    android:paddingStart="7dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="7dp"
-                    android:textSize="18sp" />
+                    style="@style/inputCrearEvento"
+                    android:inputType="date|time" />
 
 
                 <TextView
@@ -106,18 +88,8 @@
 
                 <TextView
                     android:id="@+id/textViewHora"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorGrisBlanco"
-                    android:ems="10"
-                    android:inputType="time"
-                    android:paddingStart="7dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="7dp"
-                    android:textSize="18sp" />
+                    style="@style/inputCrearEvento"
+                    android:inputType="time"/>
 
                 <TextView
                     android:id="@+id/textViewUbicacion"
@@ -132,16 +104,8 @@
 
                 <EditText
                     android:id="@+id/editTextUbicacion"
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@color/colorGrisBlanco"
-                    android:ems="10"
-                    android:inputType="textPostalAddress"
-                    android:paddingLeft="7dp"
-                    android:paddingRight="7dp" />
+                    style="@style/inputCrearEvento"
+                    android:inputType="textPostalAddress"/>
 
                 <TextView
                     android:id="@+id/textViewDescripcion"
@@ -184,7 +148,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/redondeado_rojo"
+                        android:background="@drawable/fondo_gradient_rojo_redondeado"
                         android:text="@string/boton_cancelar"
                         android:textColor="@android:color/white"
                         android:textStyle="bold" />
@@ -197,7 +161,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginTop="16dp"
-                        android:background="@drawable/fondo_gradient_verde"
+                        android:background="@drawable/fondo_gradient_verde_redondeado"
                         android:text="@string/boton_aceptar"
                         android:textColor="@android:color/white"
                         android:textStyle="bold"/>
