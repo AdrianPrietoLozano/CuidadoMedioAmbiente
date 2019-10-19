@@ -37,19 +37,21 @@
                     android:text="Datos del evento"
                     android:textAlignment="center"
                     android:textStyle="bold"
-                    android:textSize="78px"
+                    android:textSize="26.5sp"
                     android:textColor="@android:color/black"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="15dp"/>
+
+                <View style="@style/divider"/>
 
                 <TextView
                     android:id="@+id/textViewTituloEvento"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginStart="15dp"
                     android:text="@string/titulo_evento"
                     android:textColor="@color/grisNegro"
-                    android:textSize="48px"
+                    android:textSize="16.85sp"
                     android:textStyle="bold"/>
 
                 <EditText
@@ -65,14 +67,16 @@
                     android:layout_marginStart="20dp"
                     android:text="@string/fecha_evento"
                     android:textColor="@color/grisNegro"
-                    android:textSize="48px"
+                    android:textSize="16.85sp"
                     android:textStyle="bold" />
 
 
                 <TextView
                     android:id="@+id/textViewFecha"
                     style="@style/inputCrearEvento"
-                    android:inputType="date|time" />
+                    android:textSize="17sp"
+                    android:gravity="center_vertical"
+                    android:textColor="@android:color/black"/>
 
 
                 <TextView
@@ -83,13 +87,15 @@
                     android:layout_marginStart="20dp"
                     android:text="@string/hora_evento"
                     android:textColor="@color/grisNegro"
-                    android:textSize="48px"
+                    android:textSize="16.85sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textViewHora"
                     style="@style/inputCrearEvento"
-                    android:inputType="time"/>
+                    android:textSize="18sp"
+                    android:gravity="center_vertical"
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/textViewUbicacion"
@@ -99,7 +105,7 @@
                     android:layout_marginStart="20dp"
                     android:text="@string/ubicacion_evento"
                     android:textColor="@color/grisNegro"
-                    android:textSize="48px"
+                    android:textSize="16.85sp"
                     android:textStyle="bold" />
 
                 <EditText
@@ -115,7 +121,7 @@
                     android:layout_marginStart="20dp"
                     android:text="@string/descripcion_evento"
                     android:textColor="@color/grisNegro"
-                    android:textSize="48px"
+                    android:textSize="16.85sp"
                     android:textStyle="bold" />
 
 
@@ -152,7 +158,7 @@
                         android:background="@drawable/fondo_gradient_rojo_redondeado"
                         android:text="@string/boton_cancelar"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold" />
+                        android:textStyle="normal" />
 
                     <Button
                         android:id="@+id/buttonAceptar"
@@ -165,7 +171,7 @@
                         android:background="@drawable/fondo_gradient_verde_redondeado"
                         android:text="@string/boton_aceptar"
                         android:textColor="@android:color/white"
-                        android:textStyle="bold"/>
+                        android:textStyle="normal"/>
 
                 </LinearLayout>
 

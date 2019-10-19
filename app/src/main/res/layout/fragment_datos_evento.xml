@@ -29,7 +29,7 @@
                 android:text="@string/datos_evento"
                 android:textAlignment="center"
                 android:textColor="@android:color/white"
-                android:textSize="75px"
+                android:textSize="26sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -40,7 +40,7 @@
                 android:text="Limpieza Río Santiago"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/black"
-                android:textSize="60px"
+                android:textSize="21sp"
                 android:textStyle="bold" />
 
 
@@ -138,7 +138,7 @@
             android:text="@string/quiero_participar"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="50px"
+            android:textSize="17.1sp"
             android:layout_margin="15dp"
             android:textStyle="bold"/>
 

@@ -128,7 +128,7 @@
             android:background="@drawable/fondo_gradient_rojo_redondeado"
             android:text="@string/boton_cancelar"
             android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            />
 
         <Button
             android:id="@+id/botonCrearEvento"
@@ -141,7 +141,7 @@
             android:background="@drawable/fondo_gradient_verde_redondeado"
             android:text="Crear evento"
             android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            />
 
     </LinearLayout>
 
