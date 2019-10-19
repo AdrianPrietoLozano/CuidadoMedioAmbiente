@@ -2,94 +2,148 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <ScrollView
+            android:id="@+id/scrollView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/fondo_gradient_verde"
-            android:padding="10dp"
-            android:text="Datos reporte"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="25sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/fondo_gradient_verde"
+                    android:padding="10dp"
+                    android:text="Datos del reporte de contaminación"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
 
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginBottom="10dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/basura1"
+                    android:textAlignment="center" />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:src="@drawable/basura1"
-            android:textAlignment="center"
-            android:layout_marginBottom="10dp"
-            android:scaleType="fitXY"/>
+                <View style="@style/divider" />
 
-        <View style="@style/divider" />
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Fecha y hora" />
 
-        <TextView
-            style="@style/tituloEtiqueta"
-            android:text="Fecha y hora" />
+                <TextView
+                    android:id="@+id/fecha_hora_reporte"
+                    style="@style/datosEtiqueta"
+                    android:text="19/11/2019, 13:00" />
 
-        <TextView
-            android:id="@+id/fecha_hora_reporte"
-            style="@style/datosEtiqueta"
-            android:text="19/11/2019, 13:00" />
+                <View style="@style/divider" />
 
-        <View style="@style/divider"/>
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Tipo de residuo" />
 
-        <TextView
-            style="@style/tituloEtiqueta"
-            android:text="Tipo de residuo" />
+                <TextView
+                    android:id="@+id/tipo_residuo"
+                    style="@style/datosEtiqueta"
+                    android:text="Escombros" />
 
-        <TextView
-            android:id="@+id/tipo_residuo"
-            style="@style/datosEtiqueta"
-            android:text="Escombros"/>
+                <View style="@style/divider" />
 
-        <View style="@style/divider"/>
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Volumen del residuo" />
 
-        <TextView
-            style="@style/tituloEtiqueta"
-            android:text="Volumen del residuo"/>
+                <TextView
+                    android:id="@+id/volumen_residuo"
+                    style="@style/datosEtiqueta"
+                    android:text="Cabe en un contenedor" />
 
-        <TextView
-            android:id="@+id/volumen_residuo"
-            style="@style/datosEtiqueta"
-            android:text="Cabe en un contenedor" />
+                <View style="@style/divider" />
 
-        <View style="@style/divider"/>
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Denunciante" />
 
-        <TextView
-            style="@style/tituloEtiqueta"
-            android:text="Denunciante" />
+                <TextView
+                    android:id="@+id/ambientalista_denunciante"
+                    style="@style/datosEtiqueta"
+                    android:text="Anónima" />
 
-        <TextView
-            android:id="@+id/ambientalista_denunciante"
-            style="@style/datosEtiqueta"
-            android:text="Anónima"/>
+                <View
+                    style="@style/divider"/>
 
-        <View style="@style/divider"
-            android:layout_marginBottom="30dp"/>
 
+            </LinearLayout>
+
+        </ScrollView>
     </LinearLayout>
 
-    </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/linearLayoutBotones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline2">
+
+        <Button
+            android:id="@+id/botonCancelar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/fondo_gradient_rojo_redondeado"
+            android:text="@string/boton_cancelar"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/botonCrearEvento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:background="@drawable/fondo_gradient_verde_redondeado"
+            android:text="Crear evento"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

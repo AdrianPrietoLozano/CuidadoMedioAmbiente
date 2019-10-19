@@ -55,38 +55,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.85" />
+            app:layout_constraintGuide_percent="0.90" />
 
 
         <TextView
             android:id="@+id/totalReportes"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
-            android:text="30 reportes en total"
+            android:layout_marginTop="5dp"
+            android:text="30 reportes en total,"
             android:textColor="@color/grisNegro"
             android:textSize="37px"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/guideline2" />
 
         <TextView
             android:id="@+id/cercaDeti"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="16dp"
             android:text="5 cerca de ti"
             android:textColor="@color/grisNegro"
             android:textSize="37px"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/totalReportes" />
+            app:layout_constraintHorizontal_bias="0.04"
+            app:layout_constraintStart_toEndOf="@+id/totalReportes"
+            app:layout_constraintTop_toTopOf="@+id/guideline2" />
 
         <TextView
             android:id="@+id/clicCrearEvento"

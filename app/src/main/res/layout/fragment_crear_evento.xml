@@ -39,7 +39,7 @@
                     android:textStyle="bold"
                     android:textSize="78px"
                     android:textColor="@android:color/black"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="10dp"/>
 
                 <TextView
                     android:id="@+id/textViewTituloEvento"
@@ -138,7 +138,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp">
 
                     <Button
                         android:id="@+id/buttonCancelar"
@@ -167,11 +168,6 @@
                         android:textStyle="bold"/>
 
                 </LinearLayout>
-
-                <!-- este textview es solo para dejar un margen debajo de los botones -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

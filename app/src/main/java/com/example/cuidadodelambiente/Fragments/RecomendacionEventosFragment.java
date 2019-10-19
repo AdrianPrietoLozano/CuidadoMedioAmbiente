@@ -23,7 +23,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.DatosEventoFragment;
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 
 
 /**
@@ -66,11 +69,14 @@ public class RecomendacionEventosFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
+                        new DatosEventoFragment());
+                /*
                 switch (position) {
                     default:
                         Toast.makeText(getContext(), "Agregar evento clic", Toast.LENGTH_SHORT).show();
                         break;
-                }
+                }*/
             }
         });
 

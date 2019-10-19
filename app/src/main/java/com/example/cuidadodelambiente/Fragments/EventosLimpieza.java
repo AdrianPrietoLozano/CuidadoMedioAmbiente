@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.cuidadodelambiente.DatosEventoFragment;
@@ -60,6 +61,24 @@ public class EventosLimpieza extends Fragment
         mMapView = v.findViewById(R.id.mapaEventos);
         mMapView.onCreate(mapViewBundle);
         mMapView.getMapAsync(this);
+
+        // evento clic de las recomendaciones para participar en eventos
+        v.findViewById(R.id.layoutEventoParati).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
+                        DeclaracionFragments.recomendacionEventosFragment);
+            }
+        });
+
+        // evento clic de las recomendaciones para crear un evento
+        v.findViewById(R.id.layoutCrearEvento).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
+                        DeclaracionFragments.recomendacionCrearEventoFragment);
+            }
+        });
 
         // evento clic para el boton flotante que permite crear un nuevo evento
         FloatingActionButton nuevoEvento = v.findViewById(R.id.botonNuevoEvento);

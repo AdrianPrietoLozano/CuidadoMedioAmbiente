@@ -11,7 +11,7 @@
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -114,20 +114,35 @@
 
     </ScrollView>
 
-    <Button
-        android:id="@+id/button"
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/fondo_gradient"
-        android:padding="10dp"
-        android:text="@string/quiero_participar"
-        android:textColor="@android:color/white"
-        android:textSize="50px"
-        android:textStyle="bold"
+        android:orientation="vertical"
+        android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAllCaps="false"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/fondo_gradient_verde_redondeado"
+            android:padding="10dp"
+            android:text="@string/quiero_participar"
+            android:textAllCaps="false"
+            android:textColor="@android:color/white"
+            android:textSize="50px"
+            android:layout_margin="15dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
