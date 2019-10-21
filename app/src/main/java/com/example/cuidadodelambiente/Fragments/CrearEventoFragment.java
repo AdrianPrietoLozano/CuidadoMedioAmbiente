@@ -113,7 +113,7 @@ public class CrearEventoFragment extends Fragment {
                 {
                     horaView.setText(hourOfDay + ":" + minute);
                 }
-            }, hora, minutos, false);
+            }, hora, minutos, true);
 
             timePickerDialog.show();
 
