@@ -148,7 +148,7 @@
                     android:layout_marginBottom="15dp">
 
                     <Button
-                        android:id="@+id/buttonCancelar"
+                        android:id="@+id/botonCancelar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -161,7 +161,7 @@
                         android:textStyle="normal" />
 
                     <Button
-                        android:id="@+id/buttonAceptar"
+                        android:id="@+id/botonAceptar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

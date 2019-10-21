@@ -10,12 +10,15 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 
 import java.util.Calendar;
 
@@ -31,6 +34,8 @@ public class CrearEventoFragment extends Fragment {
     private Calendar calendario;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
+    private Button botonCancelar;
+    private Button botonAceptar;
 
 
     public CrearEventoFragment() {
@@ -49,6 +54,23 @@ public class CrearEventoFragment extends Fragment {
 
         fechaView.setOnClickListener(listenerFecha);
         horaView.setOnClickListener(listenerHora);
+
+        botonAceptar = v.findViewById(R.id.botonAceptar);
+        botonAceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        botonCancelar = v.findViewById(R.id.botonCancelar);
+        botonCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
+                        DeclaracionFragments.eventosLimpiezaFragement);
+            }
+        });
 
         return v;
     }
