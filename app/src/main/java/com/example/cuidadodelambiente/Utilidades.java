@@ -24,18 +24,17 @@ public class Utilidades {
 
 
     // agrega un marcador al mapa, se le puede indicar el color del marcador
-    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, String titulo, float color)
+    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, int tag, float color)
     {
         map.addMarker(new MarkerOptions()
                 .position(posicion)
-                .icon(BitmapDescriptorFactory.defaultMarker(color))
-                .title(titulo));
+                .icon(BitmapDescriptorFactory.defaultMarker(color))).setTag(tag);
     }
 
     // agrega un marcador al mapa, el color del marcador es el por defecto
-    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, String titulo)
+    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, int tag)
     {
-        map.addMarker(new MarkerOptions().position(posicion).title(titulo));
+        map.addMarker(new MarkerOptions().position(posicion)).setTag(tag);
     }
 
 

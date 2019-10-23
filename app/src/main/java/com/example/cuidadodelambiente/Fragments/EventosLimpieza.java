@@ -4,6 +4,7 @@ package com.example.cuidadodelambiente.Fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DatosEventoFragment;
 import com.example.cuidadodelambiente.DeclaracionFragments;
+import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
@@ -116,7 +118,7 @@ public class EventosLimpieza extends Fragment
 
     private void iniciarPeticionBD()
     {
-        String url = "http://10.0.0.8/pruebaBDremota/ubicaciones_eventos.php";
+        String url = "http://192.168.1.68/EventosLimpieza/ubicaciones_eventos.php";
 
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
@@ -238,7 +240,8 @@ public class EventosLimpieza extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), new DatosEventoFragment());
+        Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)marker.getTag());
+        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
 
         return true;
     }
@@ -261,21 +264,22 @@ public class EventosLimpieza extends Fragment
 
         JSONObject jsonObject;
         LatLng ubicacion;
-        for(int i = 0; i < json.length(); i++)
+
+        try
         {
-            try {
+            for(int i = 0; i < json.length(); i++)
+            {
                 jsonObject = json.getJSONObject(i);
 
                 double lat = jsonObject.optDouble("latitud");
                 double lng = jsonObject.optDouble("longitud");
+                int id_evento = jsonObject.optInt("id_evento");
                 ubicacion = new LatLng(lat, lng);
 
-                Utilidades.agregarMarcadorMapa(mMap, ubicacion, "Evento");
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+                Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_evento);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
     }
 }

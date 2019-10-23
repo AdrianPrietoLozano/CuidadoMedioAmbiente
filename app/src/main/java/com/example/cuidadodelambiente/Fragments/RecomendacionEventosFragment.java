@@ -69,14 +69,18 @@ public class RecomendacionEventosFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                /*
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
                         new DatosEventoFragment());
+                 */
                 /*
                 switch (position) {
                     default:
                         Toast.makeText(getContext(), "Agregar evento clic", Toast.LENGTH_SHORT).show();
                         break;
                 }*/
+
+                Toast.makeText(getContext(), "falta poner id a cada fila", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -37,7 +37,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="15dp"
-                android:text="Limpieza Río Santiago"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/black"
                 android:textSize="21sp"
@@ -77,7 +76,7 @@
             <TextView
                 android:id="@+id/fecha_hora_evento"
                 style="@style/datosEtiqueta"
-                android:text="24/11/2019, 16:00" />
+                 />
 
             <View style="@style/divider" />
 
@@ -88,7 +87,7 @@
             <TextView
                 android:id="@+id/creador_evento"
                 style="@style/datosEtiqueta"
-                android:text="Adrián Prieto" />
+                 />
 
             <View style="@style/divider" />
 
@@ -99,7 +98,7 @@
             <TextView
                 android:id="@+id/descripcion_evento"
                 style="@style/datosEtiqueta"
-                android:text="Aquí va una descripción del evento" />
+                 />
 
             <View style="@style/divider" />
 

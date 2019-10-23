@@ -60,7 +60,7 @@
                 <TextView
                     android:id="@+id/fecha_hora_reporte"
                     style="@style/datosEtiqueta"
-                    android:text="19/11/2019, 13:00" />
+                    />
 
                 <View style="@style/divider" />
 
@@ -71,7 +71,7 @@
                 <TextView
                     android:id="@+id/tipo_residuo"
                     style="@style/datosEtiqueta"
-                    android:text="Escombros" />
+                    />
 
                 <View style="@style/divider" />
 
@@ -82,7 +82,7 @@
                 <TextView
                     android:id="@+id/volumen_residuo"
                     style="@style/datosEtiqueta"
-                    android:text="Cabe en un contenedor" />
+                    />
 
                 <View style="@style/divider" />
 
@@ -93,7 +93,7 @@
                 <TextView
                     android:id="@+id/ambientalista_denunciante"
                     style="@style/datosEtiqueta"
-                    android:text="Anónima" />
+                    />
 
                 <View
                     style="@style/divider"/>
