@@ -98,6 +98,18 @@
                 <View
                     style="@style/divider"/>
 
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Descripción" />
+
+                <TextView
+                    android:id="@+id/descripcion_reporte"
+                    style="@style/datosEtiqueta"
+                    />
+
+                <View
+                    style="@style/divider"/>
+
 
             </LinearLayout>
 

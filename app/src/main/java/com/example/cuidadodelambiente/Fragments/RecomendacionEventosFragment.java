@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.Fragments;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,20 +19,41 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecomendacionEventosFragment extends Fragment {
+public class RecomendacionEventosFragment extends Fragment
+        implements Response.ErrorListener, Response.Listener<JSONObject> {
 
-    ListView listView;
+    private ListView listView;
+    private ArrayList<EventoLimpieza> eventos;
+    private ProgressDialog progreso;
+    private JsonObjectRequest jsonObjectRequest;
+    /*
     String[] titulos = {"Saneamiento del Río Santiago...", "Título del evento", "Título del evento",
             "Título del evento", "Título del evento", "Título del evento", "Título del evento"};
 
@@ -45,7 +67,7 @@ public class RecomendacionEventosFragment extends Fragment {
             R.drawable.basura1,
             R.drawable.basura2,
             R.drawable.basura1};
-
+    */
 
     public RecomendacionEventosFragment() {
         // Required empty public constructor
@@ -59,9 +81,10 @@ public class RecomendacionEventosFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
 
         listView = v.findViewById(R.id.listViewEventos);
+        eventos = new ArrayList<>();
 
-        MyAdapter adapter = new MyAdapter(getContext(), titulos, fechasHoras, idImagenes);
-        listView.setAdapter(adapter);
+        iniciarPeticionBD();
+        //---------------
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,24 +107,76 @@ public class RecomendacionEventosFragment extends Fragment {
 
         return v;
     }
+
+    private void iniciarPeticionBD() {
+        String url = getString(R.string.ip) + "EventosLimpieza/eventos_recomendados.php?usuario_id=1";
+
+        progreso = new ProgressDialog(getContext());
+        progreso.setMessage("Cargando...");
+        progreso.show();
+
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        progreso.hide();
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onResponse(JSONObject response) {
+        JSONArray json = response.optJSONArray("ubicacion");
+
+        JSONObject jsonObject;
+        LatLng ubicacion;
+        EventoLimpieza eventoLimpieza = new EventoLimpieza();
+
+        try
+        {
+            for(int i = 0; i < json.length(); i++)
+            {
+                jsonObject = json.getJSONObject(i);
+
+                eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
+                eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
+                eventoLimpieza.setFecha(jsonObject.optString("fecha"));
+                eventoLimpieza.setHora(jsonObject.optString("hora"));
+                eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
+
+                eventos.add(eventoLimpieza);
+
+            }
+
+            progreso.hide();
+            MyAdapter adapter = new MyAdapter(getContext(), eventos);
+            listView.setAdapter(adapter);
+
+        } catch (JSONException e) {
+            progreso.hide();
+            e.printStackTrace();
+        }
+    }
 }
 
-class MyAdapter extends ArrayAdapter<String>
+
+
+
+
+
+class MyAdapter extends BaseAdapter
 {
 
         Context context;
-        String[] titulos;
-        String[] fechasHoras;
-        int[] idImagenes;
+        ArrayList<EventoLimpieza> listaEventos;
 
-        MyAdapter(Context c, String[] titulos, String[] fechasHoras, int[] idImagenes)
+        MyAdapter(Context c, ArrayList<EventoLimpieza> listaEventosventos)
         {
             super(c, R.layout.row_evento, R.id.tituloEvento, titulos);
 
             this.context = c;
-            this.titulos = titulos;
-            this.fechasHoras = fechasHoras;
-            this.idImagenes = idImagenes;
+            this.listaEventos = listaEventos;
         }
 
         @NonNull
@@ -115,7 +190,7 @@ class MyAdapter extends ArrayAdapter<String>
             TextView titulo = rowEvento.findViewById(R.id.tituloEvento);
             TextView fechaHora = rowEvento.findViewById(R.id.fechaHoraEvento);
 
-            Drawable originalDrawable = rowEvento.getResources().getDrawable(idImagenes[position]);
+            Drawable originalDrawable = rowEvento.getResources().getDrawable(R.drawable.basura1);
             Bitmap originalBitmal = ((BitmapDrawable) originalDrawable).getBitmap();
 
             RoundedBitmapDrawable roundedDrawable =
@@ -123,10 +198,11 @@ class MyAdapter extends ArrayAdapter<String>
 
             roundedDrawable.setCornerRadius(originalBitmal.getHeight());
 
+            EventoLimpieza evento = listaEventos.get(position);
             imagen.setImageDrawable(roundedDrawable);
-            titulo.setText(titulos[position]);
-            fechaHora.setText(fechasHoras[position]);
-            rowEvento.setTag(3);
+            titulo.setText(evento.getTitulo());
+            fechaHora.setText(String.format("%s, %s", evento.getFecha(), evento.getHora()));
+            rowEvento.setTag(evento.getIdEvento());
             return rowEvento;
         }
 }

@@ -10,6 +10,15 @@ public class EventoLimpieza {
     private String fecha;
     private String hora;
     private String descripcion;
+    private String rutaFotografia;
+
+    public String getRutaFotografia() {
+        return rutaFotografia;
+    }
+
+    public void setRutaFotografia(String rutaFotografia) {
+        this.rutaFotografia = rutaFotografia;
+    }
 
     public int getIdEvento() {
         return idEvento;

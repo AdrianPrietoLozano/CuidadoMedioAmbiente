@@ -47,7 +47,7 @@ import java.sql.Time;
 public class DialogClicReporte extends DialogFragment
     implements Response.Listener<JSONObject>, Response.ErrorListener{
 
-    private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante;
+    private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte;
     private ImageView imagenReporte;
     private int reporteId;
     private Button botonCrearEvento;
@@ -91,6 +91,7 @@ public class DialogClicReporte extends DialogFragment
         tipoResiduo = v.findViewById(R.id.tipo_residuo);
         volumenResiduo = v.findViewById(R.id.volumen_residuo);
         denunciante = v.findViewById(R.id.ambientalista_denunciante);
+        descripcionReporte = v.findViewById(R.id.descripcion_reporte);
         imagenReporte = v.findViewById(R.id.imagenReporte);
 
         botonCrearEvento = v.findViewById(R.id.botonCrearEvento);
@@ -164,7 +165,7 @@ public class DialogClicReporte extends DialogFragment
 
             reporteContaminacion.setFecha(jsonObject.optString("fecha"));
             reporteContaminacion.setHora(jsonObject.optString("hora"));
-
+            reporteContaminacion.setDescripcion(jsonObject.optString("descripcion"));
             reporteContaminacion.setTipoResiduo(jsonObject.optString("tipo"));
             reporteContaminacion.setVolumenResiduo(jsonObject.optString("volumen"));
             reporteContaminacion.setAmbientalista(jsonObject.optString("nombre_usuario"));
@@ -179,6 +180,7 @@ public class DialogClicReporte extends DialogFragment
         tipoResiduo.setText(reporteContaminacion.getTipoResiduo());
         volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
         denunciante.setText(reporteContaminacion.getAmbientalista());
+        descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
         String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + reporteContaminacion.getRutaFotografia();
         Toast.makeText(getContext(), urlImagen, Toast.LENGTH_SHORT).show();

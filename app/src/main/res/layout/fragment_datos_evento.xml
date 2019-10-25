@@ -44,12 +44,12 @@
 
 
             <ImageView
+                android:id="@+id/imagenEvento"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
                 android:layout_marginBottom="25dp"
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
-                android:src="@drawable/basura2"
                 android:textAlignment="center"
                 android:scaleType="fitXY"/>
             <!--
