@@ -5,11 +5,13 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,9 +24,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DeclaracionFragments;
+import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
@@ -34,18 +39,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Date;
+import java.sql.Time;
+
 
 /* Diálogo que se muestra al hacer clic en un reporte de contaminación */
 public class DialogClicReporte extends DialogFragment
     implements Response.Listener<JSONObject>, Response.ErrorListener{
 
     private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante;
+    private ImageView imagenReporte;
     private int reporteId;
     private Button botonCrearEvento;
     private Button botonCancelar;
-    ProgressDialog progreso;
-    RequestQueue request;
-    JsonObjectRequest jsonObjectRequest;
+    private ProgressDialog progreso;
+    private JsonObjectRequest jsonObjectRequest;
 
 
     public static DialogClicReporte newInstance(int num) {
@@ -64,12 +72,10 @@ public class DialogClicReporte extends DialogFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        request = Volley.newRequestQueue(getContext());
-
         super.onCreate(savedInstanceState);
         reporteId = getArguments().getInt("reporte_id");
 
-
+        iniciarPeticionBD();
     }
 
     @NonNull
@@ -85,6 +91,7 @@ public class DialogClicReporte extends DialogFragment
         tipoResiduo = v.findViewById(R.id.tipo_residuo);
         volumenResiduo = v.findViewById(R.id.volumen_residuo);
         denunciante = v.findViewById(R.id.ambientalista_denunciante);
+        imagenReporte = v.findViewById(R.id.imagenReporte);
 
         botonCrearEvento = v.findViewById(R.id.botonCrearEvento);
         botonCrearEvento.setOnClickListener(new View.OnClickListener() {
@@ -122,21 +129,19 @@ public class DialogClicReporte extends DialogFragment
             });
             */
 
-        iniciarPeticionBD();
-
         return builder.create();
     }
 
     private void iniciarPeticionBD()
     {
-        String url = "http://192.168.1.68/EventosLimpieza/datos_reporte.php?reporte_id="+reporteId;
+        String url = getString(R.string.ip) + "EventosLimpieza/datos_reporte.php?reporte_id="+reporteId;
 
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
         progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        request.add(jsonObjectRequest);
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
 
@@ -153,15 +158,49 @@ public class DialogClicReporte extends DialogFragment
         JSONArray json = response.optJSONArray("datos_reporte");
         JSONObject jsonObject = null;
 
+        ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
         try {
             jsonObject = json.getJSONObject(0);
-            fechaHora.setText(jsonObject.optString("fecha") + ", " + jsonObject.optString("hora"));
-            tipoResiduo.setText(jsonObject.optString("tipo"));
-            volumenResiduo.setText(jsonObject.optString("volumen"));
-            denunciante.setText(jsonObject.optString("nombre_usuario"));
+
+            reporteContaminacion.setFecha(jsonObject.optString("fecha"));
+            reporteContaminacion.setHora(jsonObject.optString("hora"));
+
+            reporteContaminacion.setTipoResiduo(jsonObject.optString("tipo"));
+            reporteContaminacion.setVolumenResiduo(jsonObject.optString("volumen"));
+            reporteContaminacion.setAmbientalista(jsonObject.optString("nombre_usuario"));
+            reporteContaminacion.setRutaFotografia(jsonObject.optString("foto"));
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        fechaHora.setText(reporteContaminacion.getFecha() + ", " +
+                reporteContaminacion.getHora());
+        tipoResiduo.setText(reporteContaminacion.getTipoResiduo());
+        volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
+        denunciante.setText(reporteContaminacion.getAmbientalista());
+
+        String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + reporteContaminacion.getRutaFotografia();
+        Toast.makeText(getContext(), urlImagen, Toast.LENGTH_SHORT).show();
+        iniciarCargaImagen(urlImagen);
+    }
+
+    private void iniciarCargaImagen(String urlImagen)
+    {
+        urlImagen.replace(" ", "%20"); // evitar errores con los espacios
+
+        ImageRequest imageRequest = new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+                imagenReporte.setImageBitmap(response);
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(imageRequest);
     }
 }

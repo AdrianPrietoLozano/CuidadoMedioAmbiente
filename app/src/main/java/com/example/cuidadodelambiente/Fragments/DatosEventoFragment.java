@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.ProgressDialog;
@@ -19,7 +19,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,7 +36,6 @@ public class DatosEventoFragment extends Fragment
     private int eventoId; // id del evento en la base de datos
     private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas;
     ProgressDialog progreso;
-    RequestQueue request;
     JsonObjectRequest jsonObjectRequest;
 
     public DatosEventoFragment() {
@@ -44,14 +44,14 @@ public class DatosEventoFragment extends Fragment
 
     private void iniciarPeticionBD()
     {
-        String url = "http://192.168.1.68/EventosLimpieza/datos_evento.php?evento_id="+eventoId;
+        String url = getString(R.string.ip) + "EventosLimpieza/datos_evento.php?evento_id="+eventoId;
 
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
         progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        request.add(jsonObjectRequest);
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     public static DatosEventoFragment newInstance(int eventoId) {
@@ -82,8 +82,6 @@ public class DatosEventoFragment extends Fragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        request = Volley.newRequestQueue(getContext());
 
         super.onCreate(savedInstanceState);
         eventoId = getArguments().getInt("evento_id");

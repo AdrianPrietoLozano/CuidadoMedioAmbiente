@@ -4,14 +4,12 @@ package com.example.cuidadodelambiente.Fragments;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,10 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.cuidadodelambiente.DatosEventoFragment;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -31,12 +27,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -57,7 +50,6 @@ public class EventosLimpieza extends Fragment
     private GoogleMap mMap;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     ProgressDialog progreso;
-    RequestQueue request;
     JsonObjectRequest jsonObjectRequest;
 
     public EventosLimpieza() {
@@ -68,8 +60,6 @@ public class EventosLimpieza extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_eventos_limpieza, container, false);
-
-        request = Volley.newRequestQueue(getContext());
 
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
@@ -118,19 +108,14 @@ public class EventosLimpieza extends Fragment
 
     private void iniciarPeticionBD()
     {
-        String url = "http://192.168.1.68/EventosLimpieza/ubicaciones_eventos.php";
+        String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_eventos.php";
 
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
         progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        request.add(jsonObjectRequest);
-    }
-
-    private void agregarMarcadores()
-    {
-
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     @Override
@@ -271,12 +256,19 @@ public class EventosLimpieza extends Fragment
             {
                 jsonObject = json.getJSONObject(i);
 
+                int id_evento = jsonObject.optInt("id_evento");
+                int eventoRecomendado = jsonObject.optInt("recomendado");
+
                 double lat = jsonObject.optDouble("latitud");
                 double lng = jsonObject.optDouble("longitud");
-                int id_evento = jsonObject.optInt("id_evento");
                 ubicacion = new LatLng(lat, lng);
 
-                Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_evento);
+                if(eventoRecomendado == 1) {
+                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_evento, BitmapDescriptorFactory.HUE_CYAN);
+                }
+                else{
+                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_evento);
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();

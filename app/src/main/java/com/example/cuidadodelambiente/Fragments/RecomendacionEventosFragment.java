@@ -21,10 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.cuidadodelambiente.DatosEventoFragment;
-import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 
@@ -35,7 +32,7 @@ import com.example.cuidadodelambiente.Utilidades;
 public class RecomendacionEventosFragment extends Fragment {
 
     ListView listView;
-    String[] titulos = {"Saneamiento del Río Santiago ...", "Título del evento", "Título del evento",
+    String[] titulos = {"Saneamiento del Río Santiago...", "Título del evento", "Título del evento",
             "Título del evento", "Título del evento", "Título del evento", "Título del evento"};
 
     String[] fechasHoras = {"26 de septiembre de 2019, 13:00", "Fecha y hora", "Fecha y hora",
@@ -47,7 +44,7 @@ public class RecomendacionEventosFragment extends Fragment {
             R.drawable.basura2,
             R.drawable.basura1,
             R.drawable.basura2,
-            R.drawable.basura1,};
+            R.drawable.basura1};
 
 
     public RecomendacionEventosFragment() {
@@ -80,7 +77,8 @@ public class RecomendacionEventosFragment extends Fragment {
                         break;
                 }*/
 
-                Toast.makeText(getContext(), "falta poner id a cada fila", Toast.LENGTH_SHORT).show();
+                Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)view.getTag());
+                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
             }
         });
 
@@ -128,6 +126,7 @@ class MyAdapter extends ArrayAdapter<String>
             imagen.setImageDrawable(roundedDrawable);
             titulo.setText(titulos[position]);
             fechaHora.setText(fechasHoras[position]);
+            rowEvento.setTag(3);
             return rowEvento;
         }
 }

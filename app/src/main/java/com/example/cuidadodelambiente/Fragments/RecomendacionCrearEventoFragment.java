@@ -22,6 +22,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
+import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -52,7 +54,6 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private GoogleMap mMap;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     ProgressDialog progreso;
-    RequestQueue request;
     JsonObjectRequest jsonObjectRequest;
 
 
@@ -66,8 +67,6 @@ public class RecomendacionCrearEventoFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_crear_evento, container, false);
-
-        request = Volley.newRequestQueue(getContext());
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {
@@ -107,14 +106,14 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     private void iniciarPeticionBD()
     {
-        String url = "http://192.168.1.68/EventosLimpieza/ubicaciones_reportes.php";
+        String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_reportes.php";
 
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
         progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        request.add(jsonObjectRequest);
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     @Override
@@ -192,17 +191,25 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
         JSONObject jsonObject;
         LatLng ubicacion;
+        ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
         for(int i = 0; i < json.length(); i++)
         {
             try {
                 jsonObject = json.getJSONObject(i);
 
+                int idReporte = jsonObject.optInt("id_reporte");
+                int reporteRecomendado = jsonObject.optInt("recomendado");
+
                 double lat = jsonObject.optDouble("latitud");
                 double lng = jsonObject.optDouble("longitud");
-                int id_reporte = jsonObject.optInt("id_reporte");
                 ubicacion = new LatLng(lat, lng);
 
-                Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_reporte);
+                if(reporteRecomendado == 1) {
+                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, idReporte, BitmapDescriptorFactory.HUE_CYAN);
+                }
+                else{
+                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, idReporte);
+                }
 
             } catch (JSONException e) {
                 e.printStackTrace();

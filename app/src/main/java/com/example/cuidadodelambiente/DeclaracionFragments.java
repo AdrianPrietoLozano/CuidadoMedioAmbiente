@@ -15,7 +15,6 @@ import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 public final class DeclaracionFragments {
     public static final Fragment eventosLimpiezaFragement = new EventosLimpieza();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
-    public static final Fragment misEventosFragment = new MisEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();
     public static final Fragment cuentaFragment = new CuentaFragment();
     public static final Fragment crearEventoFragment = new CrearEventoFragment();

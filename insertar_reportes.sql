@@ -172,12 +172,10 @@ SELECT evento_limpieza._id, latitud, longitud,
 
 
 
-SELECT E._id, R.latitud, R.longitud, RE.ambientalista_id
+
 FROM evento_limpieza AS E
 JOIN reporte_contaminacion AS R
 ON R._id = E.reporte_id
-JOIN recomendacion_evento AS RE
-ON E._id = RE.evento_id
 
 
 SELECT E._id as id_reporte, E.reporte_id, RE.ambientalista_id
@@ -192,7 +190,18 @@ JOIN
 
 
 
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+SELECT E._id, R.latitud, R.longitud,
+	CASE WHEN E._id IN (SELECT evento_id FROM recomendacion_evento WHERE ambientalista_id=1) THEN 1
+		ELSE 0
+	END AS recomendado
+FROM evento_limpieza AS E JOIN reporte_contaminacion AS R ON E.reporte_id = R._id
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
+SELECT titulo, nombre_usuario AS creador, descripcion, (SELECT COUNT(*) FROM participa_evento WHERE evento_id = 1 )
+FROM (evento_limpieza JOIN ambientalista ON ambientalista_id = ambientalista._id)
+WHERE evento_limpieza._id=1
+-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------
 
-
-
-SELECT E._id, E.reporte_id, RE.ambientalista_id
