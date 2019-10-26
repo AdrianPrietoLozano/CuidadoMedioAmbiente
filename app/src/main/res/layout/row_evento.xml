@@ -8,6 +8,7 @@
     android:orientation="horizontal"
     android:elevation="5dp"
     android:padding="8dp"
+    android:layout_marginBottom="15dp"
     android:background="@drawable/redondeado_gris">
 
 
@@ -19,7 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        android:src="@drawable/basura1"
         android:scaleType="fitXY"
         />
 

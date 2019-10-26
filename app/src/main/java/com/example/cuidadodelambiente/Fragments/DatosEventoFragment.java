@@ -103,7 +103,6 @@ public class DatosEventoFragment extends Fragment
 
     @Override
     public void onResponse(JSONObject response) {
-        progreso.hide();
 
         JSONArray json = response.optJSONArray("datos_evento");
         JSONObject jsonObject = null;
@@ -124,6 +123,7 @@ public class DatosEventoFragment extends Fragment
             e.printStackTrace();
         }
 
+        progreso.hide();
         nombreEvento.setText(eventoLimpieza.getTitulo());
         fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
                 eventoLimpieza.getHora()));
