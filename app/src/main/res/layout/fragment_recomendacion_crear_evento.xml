@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
+<!--
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +10,6 @@
     android:background="@drawable/fondo_gradient_verde"
     android:orientation="vertical"
     tools:context=".Fragments.RecomendacionCrearEventoFragment">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -103,71 +105,179 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cercaDeti" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!--
+
+</LinearLayout>
+
+-->
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/fondo_gradient_verde"
+    tools:context=".Fragments.RecomendacionCrearEventoFragment">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/redondeado">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:padding="20dp"
+            android:text="Estos reportes necesitan de tu ayuda"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="26sp"
+            android:textStyle="bold"/>
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapaRecomendacionEventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView"
+            android:layout_above="@id/linearLayoutText"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8" />
+
+        <!-- Se muestra solo cuando no hay conexion -->
+        <LinearLayout
+            android:id="@+id/layoutSinConexion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textView"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignBottom="@id/mapaRecomendacionEventos"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:gravity="center"
+            android:background="#aa000000 ">
+
             <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
+                android:id="@+id/mensajeProblema"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:text="Estos reportes necesitan de tu ayuda"
+                android:text="@string/sin_internet"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
                 android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="75px"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/mapaRecomendacionEventos"
-                app:layout_constraintStart_toEndOf="@+id/mapaRecomendacionEventos"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginBottom="10dp" />
 
-            <com.google.android.gms.maps.MapView
-                android:id="@+id/mapaRecomendacionEventos"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+            <Button
+                android:id="@+id/volverAIntentarlo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Volver a intentarlo"
+                android:textColor="@android:color/white"
+                android:textAllCaps="false"
+                android:padding="15dp"
+                android:background="@drawable/boton_transparente"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayoutText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="0dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView5"
-                android:layout_width="match_parent"
+                android:id="@+id/totalReportes"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="30 reportes en total"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="5dp"
                 android:textColor="@color/grisNegro"
-                android:textSize="37px"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="5 cerca de ti"
-                android:textColor="@color/grisNegro"
-                android:textSize="37px"
+                android:textSize="13.813sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/clicCrearEvento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:text="Haz clic sobre un punto para crear el evento"
                 android:textColor="@color/grisNegro"
-                android:textSize="42px"
-                android:textStyle="bold"/>
+                android:textSize="15.68sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" />
-            -->
+    </RelativeLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</LinearLayout>
+    <!--
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapaRecomendacionEventos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/cercaDeti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="16dp"
+            android:text="5 cerca de ti"
+            android:textColor="@color/grisNegro"
+            android:textSize="13.813sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.04"
+            app:layout_constraintStart_toEndOf="@+id/totalReportes"
+            app:layout_constraintTop_toTopOf="@+id/guideline2" />
+
+        <TextView
+            android:id="@+id/clicCrearEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Haz clic sobre un punto para crear el evento"
+            android:textColor="@color/grisNegro"
+            android:textSize="15.68sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cercaDeti" />
+
+-->

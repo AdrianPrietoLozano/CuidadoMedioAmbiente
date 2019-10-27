@@ -183,7 +183,6 @@ public class DialogClicReporte extends DialogFragment
         descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
         String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + reporteContaminacion.getRutaFotografia();
-        Toast.makeText(getContext(), urlImagen, Toast.LENGTH_SHORT).show();
         iniciarCargaImagen(urlImagen);
     }
 

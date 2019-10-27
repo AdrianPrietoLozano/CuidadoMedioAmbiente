@@ -2,6 +2,9 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +13,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -49,8 +55,12 @@ public class EventosLimpieza extends Fragment
     private MapView mMapView;
     private GoogleMap mMap;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    ProgressDialog progreso;
-    JsonObjectRequest jsonObjectRequest;
+    private ProgressDialog progreso;
+    private JsonObjectRequest jsonObjectRequest;
+    private LinearLayout layoutSinConexion;
+    private FloatingActionButton botonNuevoEvento;
+    private Button botonVolverIntentar;
+    private TextView mensajeProblema;
 
     public EventosLimpieza() {
         // Required empty public constructor
@@ -68,10 +78,15 @@ public class EventosLimpieza extends Fragment
             mMapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
+        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        layoutSinConexion.setVisibility(View.INVISIBLE);
 
         mMapView = v.findViewById(R.id.mapaEventos);
         mMapView.onCreate(mMapViewBundle);
         mMapView.getMapAsync(this);
+
+        // mensaje de error que se muestra cuando ocurre algun error
+        mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         // evento clic de las recomendaciones para participar en eventos
         v.findViewById(R.id.layoutEventoParati).setOnClickListener(new View.OnClickListener() {
@@ -91,9 +106,18 @@ public class EventosLimpieza extends Fragment
             }
         });
 
+        // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
+        botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
         // evento clic para el boton flotante que permite crear un nuevo evento
-        FloatingActionButton nuevoEvento = v.findViewById(R.id.botonNuevoEvento);
-        nuevoEvento.setOnClickListener(new View.OnClickListener() {
+        botonNuevoEvento = v.findViewById(R.id.botonNuevoEvento);
+        botonNuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
@@ -102,8 +126,25 @@ public class EventosLimpieza extends Fragment
         });
 
 
-        iniciarPeticionBD();
+        intentarPeticionBD();
         return v;
+    }
+
+    private void intentarPeticionBD()
+    {
+        ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+
+        if(networkInfo != null && networkInfo.isConnected()) {
+            layoutSinConexion.setVisibility(View.INVISIBLE);
+            botonNuevoEvento.show();
+            iniciarPeticionBD();
+        }
+        else {
+            botonNuevoEvento.hide();
+            Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
+            layoutSinConexion.setVisibility(View.VISIBLE);
+        }
     }
 
     private void iniciarPeticionBD()
@@ -236,8 +277,10 @@ public class EventosLimpieza extends Fragment
     public void onErrorResponse(VolleyError error) {
         progreso.hide();
         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-        System.out.println();
-        Log.i("Error: ", error.toString());
+
+        botonNuevoEvento.hide();
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        layoutSinConexion.setVisibility(View.VISIBLE);
     }
 
     // se llama cuando se logra conectar

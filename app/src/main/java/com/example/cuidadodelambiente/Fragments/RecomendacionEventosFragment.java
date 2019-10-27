@@ -6,6 +6,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,7 +24,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +62,9 @@ public class RecomendacionEventosFragment extends Fragment
 
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
+    private LinearLayout layoutSinConexion;
+    private Button botonVolverIntentar;
+    private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
 
@@ -75,13 +82,29 @@ public class RecomendacionEventosFragment extends Fragment
         recyclerEventos = v.findViewById(R.id.recyclerEventos);
         recyclerEventos.setHasFixedSize(true);
 
-        // Usar un administrador para LinearLayout
+        // layout sin conexion
+        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        layoutSinConexion.setVisibility(View.INVISIBLE);
+
+        // mensaje de error que se muestra cuando ocurre algun error
+        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+
+        // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
+        botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
+        // Usar un administrador para Recycler
         lManager = new LinearLayoutManager(getContext());
         recyclerEventos.setLayoutManager(lManager);
 
         listaEventos = new ArrayList<>();
 
-        iniciarPeticionBD();
+        intentarPeticionBD();
 
         /*
         recyclerEventos.setOnClickListener(new AdapterView.OnClickListener() {
@@ -108,6 +131,21 @@ public class RecomendacionEventosFragment extends Fragment
         return v;
     }
 
+    private void intentarPeticionBD()
+    {
+        ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+
+        if(networkInfo != null && networkInfo.isConnected()) {
+            layoutSinConexion.setVisibility(View.INVISIBLE);
+            iniciarPeticionBD();
+        }
+        else {
+            Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
+            layoutSinConexion.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void iniciarPeticionBD() {
         String url = getString(R.string.ip) + "EventosLimpieza/eventos_recomendados.php?usuario_id=1";
 
@@ -123,6 +161,9 @@ public class RecomendacionEventosFragment extends Fragment
     public void onErrorResponse(VolleyError error) {
         progreso.hide();
         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        layoutSinConexion.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -253,32 +294,4 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
 
         VolleySingleton.getinstance(context).addToRequestQueue(imageRequest);
     }
-
-    /*
-    @NonNull
-        @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-            View rowEvento = layoutInflater.inflate(R.layout.row_evento, parent, false);
-            ImageView imagen = rowEvento.findViewById(R.id.imagenEvento);
-            TextView titulo = rowEvento.findViewById(R.id.tituloEvento);
-            TextView fechaHora = rowEvento.findViewById(R.id.fechaHoraEvento);
-
-            Drawable originalDrawable = rowEvento.getResources().getDrawable(R.drawable.basura1);
-            Bitmap originalBitmal = ((BitmapDrawable) originalDrawable).getBitmap();
-
-            RoundedBitmapDrawable roundedDrawable =
-                    RoundedBitmapDrawableFactory.create(rowEvento.getResources(), originalBitmal);
-
-            roundedDrawable.setCornerRadius(originalBitmal.getHeight());
-
-            EventoLimpieza evento = listaEventos.get(position);
-            imagen.setImageDrawable(roundedDrawable);
-            titulo.setText(evento.getTitulo());
-            fechaHora.setText(String.format("%s, %s", evento.getFecha(), evento.getHora()));
-            rowEvento.setTag(evento.getIdEvento());
-            return rowEvento;
-        }*/
 }

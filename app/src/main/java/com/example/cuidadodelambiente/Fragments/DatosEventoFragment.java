@@ -131,7 +131,6 @@ public class DatosEventoFragment extends Fragment
         descripcion.setText(eventoLimpieza.getDescripcion());
 
         String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + eventoLimpieza.getRutaFotografia();
-        Toast.makeText(getContext(), urlImagen, Toast.LENGTH_SHORT).show();
         iniciarCargaImagen(urlImagen);
     }
 

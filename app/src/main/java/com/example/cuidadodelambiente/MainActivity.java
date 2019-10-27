@@ -13,10 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    private boolean primeraVezIniciarApp = true; // para saber si es la primera vez que inicia la app
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        //bottomNavigationView.setSelectedItemId(R.id.eventos);
+
+        Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                DeclaracionFragments.eventosLimpiezaFragement);
+        bottomNavigationView.setSelectedItemId(R.id.eventosLimpieza);
+
+
+
 
         /*
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
@@ -69,9 +78,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch(menuItem.getItemId()) {
-            case R.id.eventos:
+            case R.id.eventosLimpieza:
+                // si es la primera vez que inicia la app se inicializa
+                // el fragment principal
+                if(primeraVezIniciarApp)
+                {
+                    DeclaracionFragments.eventosLimpiezaFragement = new EventosLimpieza();
+                    primeraVezIniciarApp = false;
+                }
+
                 Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
                         DeclaracionFragments.eventosLimpiezaFragement);
+
                 return true;
 
             case R.id.eventosRecomendados:
