@@ -199,6 +199,7 @@ public class DialogClicReporte extends DialogFragment
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                imagenReporte.setImageResource(R.drawable.imagen_no_disponible);
             }
         });
 

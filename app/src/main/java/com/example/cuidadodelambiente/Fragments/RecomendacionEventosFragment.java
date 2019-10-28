@@ -136,7 +136,6 @@ public class RecomendacionEventosFragment extends Fragment
 
     private void intentarPeticionBD()
     {
-        Toast.makeText(getContext(), "boton", Toast.LENGTH_SHORT).show();
         ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = con.getActiveNetworkInfo();
 
@@ -200,6 +199,8 @@ public class RecomendacionEventosFragment extends Fragment
             recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
                 @Override
                 public void onClick(View v, int position) {
+
+                    Toast.makeText(getContext(), "ID: " + listaEventos.get(position).getIdEvento(), Toast.LENGTH_SHORT).show();
 
                     Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
                             listaEventos.get(position).getIdEvento());
@@ -294,6 +295,7 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                holder.imagenEvento.setImageResource(R.drawable.imagen_no_disponible);
             }
         });
 
