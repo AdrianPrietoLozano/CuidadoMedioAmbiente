@@ -54,6 +54,7 @@ public class DialogClicReporte extends DialogFragment
     private Button botonCancelar;
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
+    private ReporteContaminacion reporteContaminacion;
 
 
     public static DialogClicReporte newInstance(int num) {
@@ -74,6 +75,9 @@ public class DialogClicReporte extends DialogFragment
 
         super.onCreate(savedInstanceState);
         reporteId = getArguments().getInt("reporte_id");
+
+        // representa al reporte que se esta mostrando en el dialog
+        reporteContaminacion = new ReporteContaminacion();
 
         iniciarPeticionBD();
     }
@@ -98,8 +102,12 @@ public class DialogClicReporte extends DialogFragment
         botonCrearEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CrearEventoFragment crearEventoFragment = CrearEventoFragment.newInstance(
+                        reporteContaminacion.getId(), reporteContaminacion.getUbicacion().latitude,
+                        reporteContaminacion.getUbicacion().longitude);
+
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        new CrearEventoFragment());
+                        crearEventoFragment);
                 dismiss();
             }
         });
@@ -159,10 +167,10 @@ public class DialogClicReporte extends DialogFragment
         JSONArray json = response.optJSONArray("datos_reporte");
         JSONObject jsonObject = null;
 
-        ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
         try {
             jsonObject = json.getJSONObject(0);
 
+            reporteContaminacion.setId(jsonObject.optInt("id"));
             reporteContaminacion.setFecha(jsonObject.optString("fecha"));
             reporteContaminacion.setHora(jsonObject.optString("hora"));
             reporteContaminacion.setDescripcion(jsonObject.optString("descripcion"));
@@ -170,6 +178,8 @@ public class DialogClicReporte extends DialogFragment
             reporteContaminacion.setVolumenResiduo(jsonObject.optString("volumen"));
             reporteContaminacion.setAmbientalista(jsonObject.optString("nombre_usuario"));
             reporteContaminacion.setRutaFotografia(jsonObject.optString("foto"));
+            reporteContaminacion.setUbicacion( new LatLng(jsonObject.optDouble("latitud"),
+                                                        jsonObject.optDouble("longitud")));
 
         } catch (JSONException e) {
             e.printStackTrace();

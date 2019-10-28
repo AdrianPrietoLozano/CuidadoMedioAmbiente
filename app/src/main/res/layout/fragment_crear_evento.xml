@@ -111,7 +111,7 @@
                 <EditText
                     android:id="@+id/editTextUbicacion"
                     style="@style/inputCrearEvento"
-                    android:inputType="textPostalAddress"/>
+                    android:inputType="text|numberDecimal"/>
 
                 <TextView
                     android:id="@+id/textViewDescripcion"

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -12,13 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.cuidadodelambiente.DeclaracionFragments;
+import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
 
@@ -30,12 +34,34 @@ public class CrearEventoFragment extends Fragment {
 
     private TextView fechaView;
     private TextView horaView;
+    private EditText ubicacionEvento;
+    private EditText tituloEvento;
+    private EditText descripcionEvento;
+    private Button botonCancelar;
+    private Button botonAceptar;
     private int dia, mes, anio, hora, minutos;
     private Calendar calendario;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
-    private Button botonCancelar;
-    private Button botonAceptar;
+    private boolean banderaLlenarUbicacion = false; // para saber si se creará un evento desde la pantalla de reportes
+    private int idReporte;
+    // este atributo se necesitan solo cuando se crea un evento desde un DialogClicReporte
+    private LatLng ubicacionReporte;
+
+
+    public static CrearEventoFragment newInstance(int idReporte, double latitud, double longitud)
+    {
+        CrearEventoFragment f = new CrearEventoFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putDouble("latitud", latitud);
+        args.putDouble("longitud", longitud);
+        args.putInt("idReporte", idReporte);
+        f.setArguments(args);
+
+        return f;
+    }
 
 
     public CrearEventoFragment() {
@@ -44,10 +70,32 @@ public class CrearEventoFragment extends Fragment {
 
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        Bundle arguments = getArguments();
+
+        // si se pasaron parametros a la vista
+        if(arguments != null)
+        {
+            idReporte = arguments.getInt("idReporte");
+            ubicacionReporte = new LatLng(arguments.getDouble("latitud"),
+                    arguments.getDouble("longitud"));
+
+            // indica que al crear la vista se debe llenar el campo de ubicación con los datos de ubicacionReporte
+            banderaLlenarUbicacion = true;
+        }
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_crear_evento, container, false);
+
+        tituloEvento = v.findViewById(R.id.editTextTitulo);
+        ubicacionEvento = v.findViewById(R.id.editTextUbicacion);
+        descripcionEvento = v.findViewById(R.id.editTextDescripcion);
 
         fechaView = v.findViewById(R.id.textViewFecha);
         horaView = v.findViewById(R.id.textViewHora);
@@ -59,7 +107,7 @@ public class CrearEventoFragment extends Fragment {
         botonAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                // DEBE VERIFICAR QUE TODOS LOS CAMPOS ESTEN LLENOS Y QUE EXISTE EL idReporte
             }
         });
 
@@ -71,6 +119,13 @@ public class CrearEventoFragment extends Fragment {
                         DeclaracionFragments.eventosLimpiezaFragement);
             }
         });
+
+
+        if(banderaLlenarUbicacion == true) // si se debe llenar el campo de ubicación
+        {
+            ubicacionEvento.setText(String.format("%s, %s", ubicacionReporte.latitude,
+                    ubicacionReporte.longitude));
+        }
 
         return v;
     }
