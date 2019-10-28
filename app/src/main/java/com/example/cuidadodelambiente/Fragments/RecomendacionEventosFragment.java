@@ -38,6 +38,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -49,6 +50,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
 
 
 /**
@@ -133,6 +136,7 @@ public class RecomendacionEventosFragment extends Fragment
 
     private void intentarPeticionBD()
     {
+        Toast.makeText(getContext(), "boton", Toast.LENGTH_SHORT).show();
         ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = con.getActiveNetworkInfo();
 
@@ -192,8 +196,17 @@ public class RecomendacionEventosFragment extends Fragment
             }
 
             progreso.hide();
-            adapter = new EventoAdapter(getContext(), listaEventos);
-            recyclerEventos.setAdapter(adapter);
+
+            recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
+                @Override
+                public void onClick(View v, int position) {
+
+                    Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
+                            listaEventos.get(position).getIdEvento());
+                    Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
+
+                }
+            }));
 
         } catch (JSONException e) {
             progreso.hide();
@@ -209,38 +222,22 @@ public class RecomendacionEventosFragment extends Fragment
 
 class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
 {
+
+
     private List<EventoLimpieza> listaEventos;
     private JsonObjectRequest jsonObjectRequest;
-    Context context;
+    private Context context;
+    private RecyclerViewOnItemClickListener recyclerViewOnItemClickListener;
 
 
-    public static class EventoViewHolder extends RecyclerView.ViewHolder
-        implements View.OnClickListener {
-        // campos de un elemento de la lista
-        public ImageView imagenEvento;
-        public ImageView imagenUbicacion;
-        public TextView tituloEvento;
-        public TextView fechaHoraEvento;
 
-        public EventoViewHolder(View v)
-        {
-            super(v);
-            imagenEvento = v.findViewById(R.id.imagenEvento);
-            tituloEvento = v.findViewById(R.id.tituloEvento);
-            fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
-        }
 
-        @Override
-        public void onClick(View view) {
-            Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)view.getTag());
-
-        }
-    }
-
-    EventoAdapter(Context context, List<EventoLimpieza> listaEventos)
+    EventoAdapter(Context context, List<EventoLimpieza> listaEventos, @NonNull RecyclerViewOnItemClickListener
+                  recyclerViewOnItemClickListener)
     {
         this.context = context;
         this.listaEventos = listaEventos;
+        this.recyclerViewOnItemClickListener = recyclerViewOnItemClickListener;
     }
 
     @Override
@@ -252,8 +249,16 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
     @Override
     public EventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_evento, parent, false);
+        final EventoViewHolder eventoViewHolder = new EventoViewHolder(v);
 
-        return new EventoViewHolder(v);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerViewOnItemClickListener.onClick(v, eventoViewHolder.getPosition());
+            }
+        });
+
+        return eventoViewHolder;
     }
 
     @Override
@@ -293,5 +298,24 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
         });
 
         VolleySingleton.getinstance(context).addToRequestQueue(imageRequest);
+    }
+
+
+    public static class EventoViewHolder extends RecyclerView.ViewHolder {
+        // campos de un elemento de la lista
+        public ImageView imagenEvento;
+        public ImageView imagenUbicacion;
+        public TextView tituloEvento;
+        public TextView fechaHoraEvento;
+
+        public EventoViewHolder(View v)
+        {
+            super(v);
+            imagenEvento = v.findViewById(R.id.imagenEvento);
+            tituloEvento = v.findViewById(R.id.tituloEvento);
+            fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
+
+
+        }
     }
 }
