@@ -13,6 +13,8 @@ import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 /* inicializa los fragments principales que se usan en la aplicacion para solo
 * crearlos una vez */
 public class DeclaracionFragments {
+    public static final int actualAmbientalista = 1;
+
     public static Fragment eventosLimpiezaFragement = new EventosLimpieza();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();

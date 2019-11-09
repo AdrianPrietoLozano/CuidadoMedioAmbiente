@@ -129,7 +129,7 @@
             android:background="?android:attr/listDivider"/>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/botonQuieroParticipar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/fondo_gradient_verde_redondeado"

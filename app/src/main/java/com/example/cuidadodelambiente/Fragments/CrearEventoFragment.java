@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 
@@ -18,11 +19,21 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Calendar;
 
@@ -43,6 +54,8 @@ public class CrearEventoFragment extends Fragment {
     private Calendar calendario;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
+    private ProgressDialog progreso;
+    private StringRequest stringRequest;
     private boolean banderaLlenarUbicacion = false; // para saber si se creará un evento desde la pantalla de reportes
     private int idReporte;
     // este atributo se necesitan solo cuando se crea un evento desde un DialogClicReporte
@@ -108,6 +121,8 @@ public class CrearEventoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // DEBE VERIFICAR QUE TODOS LOS CAMPOS ESTEN LLENOS Y QUE EXISTE EL idReporte
+                // Debe verificar que el titulo del evento no este repetido
+                clicBotonCrearEvento();
             }
         });
 
@@ -174,5 +189,57 @@ public class CrearEventoFragment extends Fragment {
 
         }
     };
+
+
+    private void clicBotonCrearEvento()
+    {
+        if(tituloEvento.getText().toString().equals("") || fechaView.getText().equals("") ||
+            horaView.getText().equals("") || ubicacionEvento.getText().toString().equals("") ||
+                descripcionEvento.getText().toString().equals(""))
+        {
+            Toast.makeText(getContext(), "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            String url = getResources().getString(R.string.ip) + "EventosLimpieza/insertar_evento.php?" +
+                    "ambientalista_id=" + DeclaracionFragments.actualAmbientalista +
+                    "&reporte_id=" + idReporte +
+                    "&titulo=" + tituloEvento.getText() +
+                    "&fecha=" + fechaView.getText() +
+                    "&hora=" + horaView.getText() +
+                    "&descripcion=" + descripcionEvento.getText();
+
+            progreso = new ProgressDialog(getContext());
+            progreso.setMessage("Cargando...");
+            progreso.show();
+
+            stringRequest = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            if(response.equals("1"))
+                            {
+                                Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                            }
+
+                            progreso.hide();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            progreso.hide();
+                            Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            VolleySingleton.getinstance(getContext()).addToRequestQueue(stringRequest);
+        }
+    }
 
 }

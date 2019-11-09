@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
@@ -39,9 +41,11 @@ public class DatosEventoFragment extends Fragment
 
     private int eventoId; // id del evento en la base de datos
     private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas;
+    private Button botonQuieroParticipar;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
+    private EventoLimpieza eventoLimpieza; // evento mostrado actualmente
 
     public DatosEventoFragment() {
         // Required empty public constructor
@@ -81,8 +85,67 @@ public class DatosEventoFragment extends Fragment
         descripcion = v.findViewById(R.id.descripcion_evento);
         numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
         imagenEvento = v.findViewById(R.id.imagenEvento);
+        botonQuieroParticipar = v.findViewById(R.id.botonQuieroParticipar);
+
+        // evento clic boton "Quiero Participar"
+        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clicBotonQuieroParticipar();
+            }
+        });
 
         return v;
+    }
+
+    private void clicBotonQuieroParticipar()
+    {
+        String url = getString(R.string.ip) + "EventosLimpieza/insertar_unirse_evento.php?" +
+                "id_ambientalista=" + DeclaracionFragments.actualAmbientalista +
+                "&id_evento=" + eventoId +
+                "&fecha_inicio=" + eventoLimpieza.getFecha() +
+                "&hora_inicio=" + eventoLimpieza.getHora() +
+                "&fecha_fin=" + eventoLimpieza.getFecha() +
+                "&hora_fin=" + eventoLimpieza.getHora();
+
+        progreso = new ProgressDialog(getContext());
+        progreso.setMessage("Cargando...");
+        progreso.show();
+
+        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONArray json = null;
+                        String resultado;
+                        try {
+                            json = response.getJSONArray("resultado");
+                            resultado = json.getString(0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            resultado = "0";
+                        }
+
+                        if(resultado.equals("1"))
+                        {
+                            Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                        }
+
+                        progreso.hide();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progreso.hide();
+                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     @Override
@@ -106,7 +169,10 @@ public class DatosEventoFragment extends Fragment
 
         JSONArray json = response.optJSONArray("datos_evento");
         JSONObject jsonObject = null;
-        EventoLimpieza eventoLimpieza = new EventoLimpieza();
+
+        // limpia e inicializa un evento
+        eventoLimpieza = null;
+        eventoLimpieza = new EventoLimpieza();
 
         try {
             jsonObject = json.getJSONObject(0);

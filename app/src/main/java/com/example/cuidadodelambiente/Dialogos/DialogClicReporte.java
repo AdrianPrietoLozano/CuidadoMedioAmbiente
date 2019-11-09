@@ -181,6 +181,7 @@ public class DialogClicReporte extends DialogFragment
             reporteContaminacion.setUbicacion( new LatLng(jsonObject.optDouble("latitud"),
                                                         jsonObject.optDouble("longitud")));
 
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -85,8 +85,6 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
         // esta cadena debe cambiarse con datos de la BD
         totalReportes = v.findViewById(R.id.totalReportes);
-        totalReportes.setText("30 reportes en total, 5 cerca de ti");
-
 
         // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
         botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
@@ -260,6 +258,9 @@ public class RecomendacionCrearEventoFragment extends Fragment
                 e.printStackTrace();
             }
         }
+
+        // etiqueta de total de reportes
+        totalReportes.setText(response.optString("num_reportes") + " reportes en total");
 
     }
 }
