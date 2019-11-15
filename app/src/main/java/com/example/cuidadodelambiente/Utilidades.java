@@ -54,7 +54,7 @@ public class Utilidades {
                     .add(R.id.nav_host_fragment, fragment, "currentFragment");
         }
 
-        //transaction.addToBackStack(null);
+        transaction.addToBackStack(null);
         FragmentSingleton.setOldFragment(FragmentSingleton.getCurrentFragment());
         FragmentSingleton.setCurrentFragment(fragment);
         transaction.commit();

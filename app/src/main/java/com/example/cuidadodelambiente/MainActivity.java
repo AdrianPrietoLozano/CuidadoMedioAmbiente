@@ -19,8 +19,6 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private boolean primeraVezIniciarApp = true; // para saber si es la primera vez que inicia la app
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,12 +31,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         w.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.verde3));
         //-------------------------------------------
 
+        // iniciando el fragment principal
+        loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-        Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                DeclaracionFragments.eventosLimpiezaFragement);
-        bottomNavigationView.setSelectedItemId(R.id.eventosLimpieza);
 
 
 
@@ -79,17 +77,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch(menuItem.getItemId()) {
             case R.id.eventosLimpieza:
-                // si es la primera vez que inicia la app se inicializa
-                // el fragment principal
-                if(primeraVezIniciarApp)
-                {
-                    DeclaracionFragments.eventosLimpiezaFragement = new EventosLimpieza();
-                    primeraVezIniciarApp = false;
-                }
-
                 Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
                         DeclaracionFragments.eventosLimpiezaFragement);
-
                 return true;
 
             case R.id.eventosRecomendados:
@@ -108,6 +97,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return true;
         }
 
+        return false;
+    }
+
+    private boolean loadFragment(Fragment fragment) {
+        //switching fragment
+        if (fragment != null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment, fragment)
+                    .commit();
+            return true;
+        }
         return false;
     }
 
