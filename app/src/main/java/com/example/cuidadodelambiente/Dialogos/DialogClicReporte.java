@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
@@ -47,14 +49,17 @@ import java.sql.Time;
 public class DialogClicReporte extends DialogFragment
     implements Response.Listener<JSONObject>, Response.ErrorListener{
 
-    private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte;
+    private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte, mensajeProblema;
     private ImageView imagenReporte;
     private int reporteId;
     private Button botonCrearEvento;
     private Button botonCancelar;
+    private Button botonVolverIntentar;
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
     private ReporteContaminacion reporteContaminacion;
+    private CargandoCircular cargandoCircular;
+    private LinearLayout layoutSinConexion;
 
 
     public static DialogClicReporte newInstance(int num) {
@@ -70,6 +75,13 @@ public class DialogClicReporte extends DialogFragment
 
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+        VolleySingleton.getinstance(getContext()).getRequestQueue().cancelAll(this);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -78,8 +90,6 @@ public class DialogClicReporte extends DialogFragment
 
         // representa al reporte que se esta mostrando en el dialog
         reporteContaminacion = new ReporteContaminacion();
-
-        iniciarPeticionBD();
     }
 
     @NonNull
@@ -90,6 +100,17 @@ public class DialogClicReporte extends DialogFragment
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View v = inflater.inflate(R.layout.dialog_clic_reporte, null);
         builder.setView(v);
+
+        // para la carga circular
+        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga));
+        cargandoCircular.ocultarContenidoMostrarCarga();
+
+        // layout que se muestra cuando no hay conexion a internet
+        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        layoutSinConexion.setVisibility(View.INVISIBLE);
+
+        mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         fechaHora = v.findViewById(R.id.fecha_hora_reporte);
         tipoResiduo = v.findViewById(R.id.tipo_residuo);
@@ -120,6 +141,15 @@ public class DialogClicReporte extends DialogFragment
             }
         });
 
+        // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
+        botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
 
             /*
             // evento clic del botón aceptar
@@ -138,32 +168,50 @@ public class DialogClicReporte extends DialogFragment
             });
             */
 
+        intentarPeticionBD();
+
         return builder.create();
+    }
+
+    private void intentarPeticionBD()
+    {
+        cargandoCircular.ocultarContenidoMostrarCarga();
+
+        // si hay conexión a internet
+        if(Utilidades.hayConexionInternet(getContext())) {
+            layoutSinConexion.setVisibility(View.INVISIBLE);
+            iniciarPeticionBD();
+        }
+        else { // no hay conexión a internet
+            cargandoCircular.ocultarPantallaCarga();
+            cargandoCircular.ocultarContenidoPrincipal();
+            Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
+            layoutSinConexion.setVisibility(View.VISIBLE);
+        }
     }
 
     private void iniciarPeticionBD()
     {
         String url = getString(R.string.ip) + "EventosLimpieza/datos_reporte.php?reporte_id="+reporteId;
 
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
-        progreso.show();
-
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
+        jsonObjectRequest.setTag(this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        progreso.hide();
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        cargandoCircular.ocultarContenidoPrincipal();
+        cargandoCircular.ocultarPantallaCarga();
+        layoutSinConexion.setVisibility(View.VISIBLE);
+
         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onResponse(JSONObject response) {
-        progreso.hide();
-
         JSONArray json = response.optJSONArray("datos_reporte");
         JSONObject jsonObject = null;
 
@@ -193,6 +241,8 @@ public class DialogClicReporte extends DialogFragment
         denunciante.setText(reporteContaminacion.getAmbientalista());
         descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
+        cargandoCircular.ocultarCargaMostrarContenido();
+
         String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + reporteContaminacion.getRutaFotografia();
         iniciarCargaImagen(urlImagen);
     }
@@ -209,10 +259,11 @@ public class DialogClicReporte extends DialogFragment
         }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
                 imagenReporte.setImageResource(R.drawable.imagen_no_disponible);
             }
         });
+
+        imageRequest.setTag(this);
 
         VolleySingleton.getinstance(getContext()).addToRequestQueue(imageRequest);
     }

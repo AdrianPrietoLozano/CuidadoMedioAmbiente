@@ -7,141 +7,211 @@
     android:background="@android:color/white"
     tools:context=".Fragments.DatosEventoFragment">
 
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        android:layout_height="wrap_content"
+        android:background="@drawable/fondo_gradient_verde"
+        android:padding="15dp"
+        android:text="@string/datos_evento"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="26sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Se muestra solo cuando no hay conexion -->
+    <LinearLayout
+        android:id="@+id/layoutSinConexion"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView2"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:gravity="center"
+        android:background="#aa000000 ">
+
+        <TextView
+            android:id="@+id/mensajeProblema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sin_internet"
+            android:textColor="@android:color/white"
+            android:textSize="25sp"
+            android:textAlignment="center"
+            android:layout_marginBottom="10dp" />
+
+        <Button
+            android:id="@+id/volverAIntentarlo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Volver a intentarlo"
+            android:textColor="@android:color/white"
+            android:textAllCaps="false"
+            android:padding="15dp"
+            android:background="@drawable/boton_transparente"/>
+
+    </LinearLayout>
+
+    <!-- pantalla de carga -->
+    <RelativeLayout
+        android:id="@+id/pantallaCarga"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+
+    </RelativeLayout>
+
+    <!-- contenido principal -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/contenidoPrincipal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/nombreEvento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="15dp"
+                    android:textAlignment="textStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+
+                <ImageView
+                    android:id="@+id/imagenEvento"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginBottom="25dp"
+                    android:adjustViewBounds="false"
+                    android:cropToPadding="false"
+                    android:scaleType="fitXY"
+                    android:textAlignment="center" />
+                <!--
+                <view style="@style/divider"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/datos_evento"
+                    android:layout_marginStart="10dp"
+                    android:textSize="50px"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/black"/>
+
+                <view style="@style/divider"/>
+                -->
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Fecha y hora" />
+
+                <TextView
+                    android:id="@+id/fecha_hora_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Creador" />
+
+                <TextView
+                    android:id="@+id/creador_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Descripción" />
+
+                <TextView
+                    android:id="@+id/descripcion_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    android:id="@+id/num_personas_unidas"
+                    style="@style/datosEtiqueta"
+                    android:layout_marginBottom="20dp"
+                    android:text="15 personas se han unido" />
+
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <LinearLayout
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@android:color/white"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
+
+            <Button
+                android:id="@+id/botonQuieroParticipar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/fondo_gradient_verde"
-                android:padding="15dp"
-                android:text="@string/datos_evento"
-                android:textAlignment="center"
+                android:layout_margin="15dp"
+                android:background="@drawable/fondo_gradient_verde_redondeado"
+                android:padding="10dp"
+                android:text="@string/quiero_participar"
+                android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="26sp"
+                android:textSize="17.1sp"
                 android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/nombreEvento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="15dp"
-                android:textAlignment="textStart"
-                android:textColor="@android:color/black"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-
-            <ImageView
-                android:id="@+id/imagenEvento"
-                android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginBottom="25dp"
-                android:adjustViewBounds="false"
-                android:cropToPadding="false"
-                android:textAlignment="center"
-                android:scaleType="fitXY"/>
-            <!--
-            <view style="@style/divider"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/datos_evento"
-                android:layout_marginStart="10dp"
-                android:textSize="50px"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"/>
-
-            <view style="@style/divider"/>
-            -->
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Fecha y hora" />
-
-            <TextView
-                android:id="@+id/fecha_hora_evento"
-                style="@style/datosEtiqueta"
-                 />
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Creador" />
-
-            <TextView
-                android:id="@+id/creador_evento"
-                style="@style/datosEtiqueta"
-                 />
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Descripción" />
-
-            <TextView
-                android:id="@+id/descripcion_evento"
-                style="@style/datosEtiqueta"
-                 />
-
-            <View style="@style/divider" />
-
-            <TextView
-                android:id="@+id/num_personas_unidas"
-                style="@style/datosEtiqueta"
-                android:layout_marginBottom="20dp"
-                android:text="15 personas se han unido" />
-
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
-
-        <Button
-            android:id="@+id/botonQuieroParticipar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/fondo_gradient_verde_redondeado"
-            android:padding="10dp"
-            android:text="@string/quiero_participar"
-            android:textAllCaps="false"
-            android:textColor="@android:color/white"
-            android:textSize="17.1sp"
-            android:layout_margin="15dp"
-            android:textStyle="bold"/>
-
-    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

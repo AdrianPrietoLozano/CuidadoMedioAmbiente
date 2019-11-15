@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +63,7 @@ public class EventosLimpieza extends Fragment
     private FloatingActionButton botonNuevoEvento;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
+    private CargandoCircular cargandoCircular;
 
     public EventosLimpieza() {
         // Required empty public constructor
@@ -77,6 +80,12 @@ public class EventosLimpieza extends Fragment
         if (savedInstanceState != null) {
             mMapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
+
+
+        // para la carga circular
+        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenido),
+                v.findViewById(R.id.pantallaCarga));
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
         layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
         layoutSinConexion.setVisibility(View.INVISIBLE);
@@ -132,15 +141,16 @@ public class EventosLimpieza extends Fragment
 
     private void intentarPeticionBD()
     {
-        ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
-        if(networkInfo != null && networkInfo.isConnected()) {
+        // si hay conexión a internet
+        if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             botonNuevoEvento.show();
             iniciarPeticionBD();
         }
-        else {
+        else { // no hay conexión a internet
+            cargandoCircular.ocultarCargaMostrarContenido();
             botonNuevoEvento.hide();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
@@ -150,10 +160,6 @@ public class EventosLimpieza extends Fragment
     private void iniciarPeticionBD()
     {
         String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_eventos.php";
-
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
-        progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -173,36 +179,6 @@ public class EventosLimpieza extends Fragment
             uiSettings.setTiltGesturesEnabled(true);
 
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-
-            /*
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.671434, -103.350885), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.671273, -103.357194), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.668814, -103.357280), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.666184, -103.356518), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.667991, -103.349909), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.679506, -103.351679), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.672961, -103.346057), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.672720, -103.350509), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.675771, -103.351614), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.670909, -103.353663), "Evento");
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.681975, -103.350638), "Evento");
-
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.6734317,-103.3620755), "Guadalajara",
-                    BitmapDescriptorFactory.HUE_CYAN);
-
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.675771, -103.351614), "Evento",
-                    BitmapDescriptorFactory.HUE_CYAN);
-
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.680369, -103.348063),"Evento",
-                    BitmapDescriptorFactory.HUE_CYAN);
-
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.672887, -103.353631), "Evento",
-                    BitmapDescriptorFactory.HUE_CYAN);
-
-
-            Utilidades.agregarMarcadorMapa(mMap, new LatLng(20.675978, -103.354478), "Evento",
-                    BitmapDescriptorFactory.HUE_CYAN);*/
-
             mMap.setOnMarkerClickListener(this);
 
         }catch(Exception e)
@@ -210,7 +186,6 @@ public class EventosLimpieza extends Fragment
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
     }
-
 
 
     @Override
@@ -275,9 +250,7 @@ public class EventosLimpieza extends Fragment
     // se llama cuando no se logra conectar
     @Override
     public void onErrorResponse(VolleyError error) {
-        progreso.hide();
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-
+        cargandoCircular.ocultarCargaMostrarContenido();
         botonNuevoEvento.hide();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
@@ -286,8 +259,6 @@ public class EventosLimpieza extends Fragment
     // se llama cuando se logra conectar
     @Override
     public void onResponse(JSONObject response) {
-        progreso.hide();
-
         JSONArray json = response.optJSONArray("ubicacion");
 
         JSONObject jsonObject;
@@ -313,6 +284,8 @@ public class EventosLimpieza extends Fragment
                     Utilidades.agregarMarcadorMapa(mMap, ubicacion, id_evento);
                 }
             }
+
+            cargandoCircular.ocultarCargaMostrarContenido();
         } catch (JSONException e) {
             e.printStackTrace();
         }

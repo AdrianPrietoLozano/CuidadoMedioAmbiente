@@ -1,117 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<!--
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/fondo_gradient_verde"
-    android:orientation="vertical"
-    tools:context=".Fragments.RecomendacionCrearEventoFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/redondeado"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:text="Estos reportes necesitan de tu ayuda"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@+id/guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
-
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapaRecomendacionEventos"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.90" />
-
-
-        <TextView
-            android:id="@+id/totalReportes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="5dp"
-            android:text="30 reportes en total,"
-            android:textColor="@color/grisNegro"
-            android:textSize="13.813sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/guideline2" />
-
-        <TextView
-            android:id="@+id/cercaDeti"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="16dp"
-            android:text="5 cerca de ti"
-            android:textColor="@color/grisNegro"
-            android:textSize="13.813sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.04"
-            app:layout_constraintStart_toEndOf="@+id/totalReportes"
-            app:layout_constraintTop_toTopOf="@+id/guideline2" />
-
-        <TextView
-            android:id="@+id/clicCrearEvento"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:text="Haz clic sobre un punto para crear el evento"
-            android:textColor="@color/grisNegro"
-            android:textSize="15.68sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cercaDeti" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-</LinearLayout>
-
--->
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -146,17 +33,79 @@
             android:textSize="26sp"
             android:textStyle="bold"/>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/mapaRecomendacionEventos"
+        <!-- pantalla de carga -->
+        <RelativeLayout
+            android:id="@+id/pantallaCarga"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/contenidoPrincipal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_below="@id/textView"
-            android:layout_above="@id/linearLayoutText"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8" />
+            >
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/mapaRecomendacionEventos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
+                android:layout_above="@id/linearLayoutText"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8" />
+
+            <LinearLayout
+                android:id="@+id/linearLayoutText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginEnd="0dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/totalReportes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/grisNegro"
+                    android:textSize="13.813sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/clicCrearEvento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Haz clic sobre un punto para crear el evento"
+                    android:textColor="@color/grisNegro"
+                    android:textSize="15.68sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <!-- Se muestra solo cuando no hay conexion -->
         <LinearLayout
@@ -167,7 +116,6 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignBottom="@id/mapaRecomendacionEventos"
             android:orientation="vertical"
             android:padding="20dp"
             android:gravity="center"
@@ -194,44 +142,6 @@
                 android:background="@drawable/boton_transparente"/>
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/linearLayoutText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginEnd="0dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/totalReportes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="5dp"
-                android:textColor="@color/grisNegro"
-                android:textSize="13.813sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/clicCrearEvento"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:text="Haz clic sobre un punto para crear el evento"
-                android:textColor="@color/grisNegro"
-                android:textSize="15.68sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
-
 
     </RelativeLayout>
 

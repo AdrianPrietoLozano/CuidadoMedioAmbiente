@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,24 +42,96 @@ public class DatosEventoFragment extends Fragment
         implements Response.Listener<JSONObject>, Response.ErrorListener{
 
     private int eventoId; // id del evento en la base de datos
-    private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas;
+    private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas, mensajeProblema;
     private Button botonQuieroParticipar;
+    private Button botonVolverIntentar;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
     private EventoLimpieza eventoLimpieza; // evento mostrado actualmente
+    private CargandoCircular cargandoCircular;
+    private LinearLayout layoutSinConexion;
 
     public DatosEventoFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_datos_evento, container, false);
+
+        // para la carga circular
+        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga));
+        cargandoCircular.ocultarContenidoMostrarCarga();
+
+        // se muestra cuando no hay conexion
+        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        layoutSinConexion.setVisibility(View.INVISIBLE);
+
+        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+
+        nombreEvento = v.findViewById(R.id.nombreEvento);
+        fechaHora = v.findViewById(R.id.fecha_hora_evento);
+        creador = v.findViewById(R.id.creador_evento);
+        descripcion = v.findViewById(R.id.descripcion_evento);
+        numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
+        imagenEvento = v.findViewById(R.id.imagenEvento);
+        botonQuieroParticipar = v.findViewById(R.id.botonQuieroParticipar);
+
+        // evento clic boton "Quiero Participar"
+        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clicBotonQuieroParticipar();
+            }
+        });
+
+        // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
+        botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
+        intentarPeticionBD();
+        return v;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        super.onCreate(savedInstanceState);
+        eventoId = getArguments().getInt("evento_id");
+    }
+
+
+    private void intentarPeticionBD()
+    {
+        cargandoCircular.ocultarContenidoMostrarCarga();
+
+        // si hay conexión a internet
+        if(Utilidades.hayConexionInternet(getContext())) {
+            layoutSinConexion.setVisibility(View.INVISIBLE);
+            iniciarPeticionBD();
+        }
+        else { // no hay conexión a internet
+            cargandoCircular.ocultarPantallaCarga();
+            cargandoCircular.ocultarContenidoPrincipal();
+            Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
+            layoutSinConexion.setVisibility(View.VISIBLE);
+        }
+    }
+
+
     private void iniciarPeticionBD()
     {
         String url = getString(R.string.ip) + "EventosLimpieza/datos_evento.php?evento_id="+eventoId;
-
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
-        progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -75,28 +149,7 @@ public class DatosEventoFragment extends Fragment
     }
 
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_datos_evento, container, false);
-        nombreEvento = v.findViewById(R.id.nombreEvento);
-        fechaHora = v.findViewById(R.id.fecha_hora_evento);
-        creador = v.findViewById(R.id.creador_evento);
-        descripcion = v.findViewById(R.id.descripcion_evento);
-        numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
-        imagenEvento = v.findViewById(R.id.imagenEvento);
-        botonQuieroParticipar = v.findViewById(R.id.botonQuieroParticipar);
 
-        // evento clic boton "Quiero Participar"
-        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clicBotonQuieroParticipar();
-            }
-        });
-
-        return v;
-    }
 
     private void clicBotonQuieroParticipar()
     {
@@ -148,20 +201,14 @@ public class DatosEventoFragment extends Fragment
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        super.onCreate(savedInstanceState);
-        eventoId = getArguments().getInt("evento_id");
-
-        iniciarPeticionBD();
-    }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        progreso.hide();
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        cargandoCircular.ocultarContenidoPrincipal();
+        cargandoCircular.ocultarPantallaCarga();
+        layoutSinConexion.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -189,12 +236,13 @@ public class DatosEventoFragment extends Fragment
             e.printStackTrace();
         }
 
-        progreso.hide();
         nombreEvento.setText(eventoLimpieza.getTitulo());
         fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
                 eventoLimpieza.getHora()));
         creador.setText(eventoLimpieza.getAmbientalista());
         descripcion.setText(eventoLimpieza.getDescripcion());
+
+        cargandoCircular.ocultarCargaMostrarContenido();
 
         String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + eventoLimpieza.getRutaFotografia();
         iniciarCargaImagen(urlImagen);
@@ -212,7 +260,7 @@ public class DatosEventoFragment extends Fragment
         }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                imagenEvento.setImageResource(R.drawable.imagen_no_disponible);
             }
         });
 

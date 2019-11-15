@@ -61,8 +61,8 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private TextView mensajeProblema, totalReportes;
     private Button botonVolverIntentar;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    ProgressDialog progreso;
     JsonObjectRequest jsonObjectRequest;
+    CargandoCircular cargandoCircular;
 
 
     public RecomendacionCrearEventoFragment() {
@@ -75,6 +75,11 @@ public class RecomendacionCrearEventoFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_crear_evento, container, false);
+
+        // para la carga circular
+        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga));
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
         // layout sin conexion
         layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
@@ -133,14 +138,14 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     private void intentarPeticionBD()
     {
-        ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
-        if(networkInfo != null && networkInfo.isConnected()) {
+        if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             iniciarPeticionBD();
         }
         else {
+            cargandoCircular.ocultarCargaMostrarContenido();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
         }
@@ -149,10 +154,6 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private void iniciarPeticionBD()
     {
         String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_reportes.php";
-
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
-        progreso.show();
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -218,8 +219,7 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        progreso.hide();
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+        cargandoCircular.ocultarCargaMostrarContenido();
 
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
@@ -227,14 +227,10 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     @Override
     public void onResponse(JSONObject response) {
-
-        progreso.hide();
-
         JSONArray json = response.optJSONArray("reportes");
 
         JSONObject jsonObject;
         LatLng ubicacion;
-        ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
         for(int i = 0; i < json.length(); i++)
         {
             try {
@@ -261,6 +257,8 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
         // etiqueta de total de reportes
         totalReportes.setText(response.optString("num_reportes") + " reportes en total");
+
+        cargandoCircular.ocultarCargaMostrarContenido();
 
     }
 }

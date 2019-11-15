@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,9 +61,7 @@ import java.util.List;
 public class RecomendacionEventosFragment extends Fragment
         implements Response.ErrorListener, Response.Listener<JSONObject> {
 
-    private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
-
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
     private LinearLayout layoutSinConexion;
@@ -70,6 +69,7 @@ public class RecomendacionEventosFragment extends Fragment
     private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
+    private CargandoCircular cargandoCircular;
 
     public RecomendacionEventosFragment() {
         // Required empty public constructor
@@ -81,6 +81,10 @@ public class RecomendacionEventosFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
+
+        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga));
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
         recyclerEventos = v.findViewById(R.id.recyclerEventos);
         recyclerEventos.setHasFixedSize(true);
@@ -109,41 +113,20 @@ public class RecomendacionEventosFragment extends Fragment
 
         intentarPeticionBD();
 
-        /*
-        recyclerEventos.setOnClickListener(new AdapterView.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)v.getTag());
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
-            }
-        });*/
-
-        /*
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-
-                Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)view.getTag());
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
-            }
-        });
-        */
-
         return v;
     }
 
     private void intentarPeticionBD()
     {
-        ConnectivityManager con = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+        cargandoCircular.ocultarContenidoMostrarCarga();
 
-        if(networkInfo != null && networkInfo.isConnected()) {
+        // si hay internet
+        if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             iniciarPeticionBD();
         }
-        else {
+        else { // no hay internet
+            cargandoCircular.ocultarCargaMostrarContenido();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
         }
@@ -152,21 +135,16 @@ public class RecomendacionEventosFragment extends Fragment
     private void iniciarPeticionBD() {
         String url = getString(R.string.ip) + "EventosLimpieza/eventos_recomendados.php?usuario_id=1";
 
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
-        progreso.show();
-
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        progreso.hide();
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
+
+        cargandoCircular.ocultarCargaMostrarContenido();
     }
 
     @Override
@@ -194,13 +172,9 @@ public class RecomendacionEventosFragment extends Fragment
 
             }
 
-            progreso.hide();
-
             recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
                 @Override
                 public void onClick(View v, int position) {
-
-                    Toast.makeText(getContext(), "ID: " + listaEventos.get(position).getIdEvento(), Toast.LENGTH_SHORT).show();
 
                     Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
                             listaEventos.get(position).getIdEvento());
@@ -209,8 +183,9 @@ public class RecomendacionEventosFragment extends Fragment
                 }
             }));
 
+            cargandoCircular.ocultarCargaMostrarContenido();
+
         } catch (JSONException e) {
-            progreso.hide();
             e.printStackTrace();
         }
     }
@@ -294,7 +269,6 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
         }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
                 holder.imagenEvento.setImageResource(R.drawable.imagen_no_disponible);
             }
         });

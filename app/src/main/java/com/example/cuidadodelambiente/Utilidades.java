@@ -1,5 +1,9 @@
 package com.example.cuidadodelambiente;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -54,5 +58,13 @@ public class Utilidades {
         FragmentSingleton.setOldFragment(FragmentSingleton.getCurrentFragment());
         FragmentSingleton.setCurrentFragment(fragment);
         transaction.commit();
+    }
+
+    public static boolean hayConexionInternet(Context context)
+    {
+        ConnectivityManager con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+
+        return (networkInfo != null && networkInfo.isConnected());
     }
 }
