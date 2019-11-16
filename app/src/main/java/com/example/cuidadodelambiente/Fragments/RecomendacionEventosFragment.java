@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,7 @@ public class RecomendacionEventosFragment extends Fragment
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
     private CargandoCircular cargandoCircular;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public RecomendacionEventosFragment() {
         // Required empty public constructor
@@ -82,7 +84,18 @@ public class RecomendacionEventosFragment extends Fragment
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
 
-        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
+        swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
+        swipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        listaEventos.clear();
+                        intentarPeticionBD();
+                    }
+                }
+        );
+
+        cargandoCircular = new CargandoCircular(swipeRefreshLayout,
                 v.findViewById(R.id.pantallaCarga));
         cargandoCircular.ocultarContenidoMostrarCarga();
 
@@ -141,6 +154,7 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
 
@@ -169,7 +183,6 @@ public class RecomendacionEventosFragment extends Fragment
                 eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
 
                 listaEventos.add(eventoLimpieza);
-
             }
 
             recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
@@ -184,6 +197,7 @@ public class RecomendacionEventosFragment extends Fragment
             }));
 
             cargandoCircular.ocultarCargaMostrarContenido();
+            swipeRefreshLayout.setRefreshing(false);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -244,11 +258,16 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
 
-        String urlImagen = holder.itemView.getResources().getString(R.string.ip) +
-                "EventosLimpieza/imagenes/" +
-                listaEventos.get(position).getRutaFotografia();
+        if(holder.imagenEvento.getTag().toString() == "NO")
+        {
+            String urlImagen = holder.itemView.getResources().getString(R.string.ip) +
+                    "EventosLimpieza/imagenes/" +
+                    listaEventos.get(position).getRutaFotografia();
 
-        iniciarCargaImagen(urlImagen, holder);
+            System.out.println(urlImagen);
+
+            iniciarCargaImagen(urlImagen, holder);
+        }
     }
 
 
@@ -261,10 +280,11 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
             public void onResponse(Bitmap response) {
                 // hacer la imagen redonda
                 RoundedBitmapDrawable roundedDrawable =
-                        RoundedBitmapDrawableFactory.create(holder.itemView.getResources(), response);
+                        RoundedBitmapDrawableFactory.create(holder.imagenEvento.getResources(), response);
                 roundedDrawable.setCornerRadius(response.getHeight());
 
                 holder.imagenEvento.setImageDrawable(roundedDrawable);
+                holder.imagenEvento.setTag("SI"); // la imagen no se recargará
             }
         }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
             @Override
@@ -288,6 +308,7 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
         {
             super(v);
             imagenEvento = v.findViewById(R.id.imagenEvento);
+            imagenEvento.setTag("NO");
             tituloEvento = v.findViewById(R.id.tituloEvento);
             fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
 
