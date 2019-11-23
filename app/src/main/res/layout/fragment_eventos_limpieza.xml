@@ -107,12 +107,25 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/cardView1"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
             android:clickable="true"
             android:focusable="true"
             android:src="@drawable/ic_add_black_56dp"
+            app:backgroundTint="@color/colorPrimary"
+            app:fabSize="normal" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/botonFlotanteRecargar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/botonNuevoEvento"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_autorenew_black_24dp"
             app:backgroundTint="@color/colorPrimary"
             app:fabSize="normal" />
 

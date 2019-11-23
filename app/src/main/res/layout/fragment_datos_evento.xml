@@ -172,7 +172,7 @@
                     android:id="@+id/num_personas_unidas"
                     style="@style/datosEtiqueta"
                     android:layout_marginBottom="20dp"
-                    android:text="15 personas se han unido" />
+                     />
 
 
             </LinearLayout>

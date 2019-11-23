@@ -62,6 +62,7 @@ public class EventosLimpieza extends Fragment
     private JsonObjectRequest jsonObjectRequest;
     private LinearLayout layoutSinConexion;
     private FloatingActionButton botonNuevoEvento;
+    private FloatingActionButton botonRecargar;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
     private CargandoCircular cargandoCircular;
@@ -135,6 +136,16 @@ public class EventosLimpieza extends Fragment
             }
         });
 
+        // evento clic para el boton flotante que recarga los marcadores del mapa
+        botonRecargar = v.findViewById(R.id.botonFlotanteRecargar);
+        botonRecargar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
 
         intentarPeticionBD();
         return v;
@@ -150,11 +161,13 @@ public class EventosLimpieza extends Fragment
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             botonNuevoEvento.show();
+            botonRecargar.show();
             iniciarPeticionBD();
         }
         else { // no hay conexión a internet
             cargandoCircular.ocultarCargaMostrarContenido();
             botonNuevoEvento.hide();
+            botonRecargar.hide();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
         }
@@ -255,6 +268,7 @@ public class EventosLimpieza extends Fragment
     public void onErrorResponse(VolleyError error) {
         cargandoCircular.ocultarCargaMostrarContenido();
         botonNuevoEvento.hide();
+        botonRecargar.hide();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
     }

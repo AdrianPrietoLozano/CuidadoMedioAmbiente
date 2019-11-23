@@ -230,6 +230,7 @@ public class DatosEventoFragment extends Fragment
             eventoLimpieza.setHora(jsonObject.optString("hora"));
             eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
             eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
+            eventoLimpieza.setNumPersonasUnidas(response.optInt("personas_unidas"));
 
 
         } catch (JSONException e) {
@@ -241,6 +242,8 @@ public class DatosEventoFragment extends Fragment
                 eventoLimpieza.getHora()));
         creador.setText(eventoLimpieza.getAmbientalista());
         descripcion.setText(eventoLimpieza.getDescripcion());
+        numPersonasUnidas.setText(String.format("%s %s",
+                eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
         cargandoCircular.ocultarCargaMostrarContenido();
 

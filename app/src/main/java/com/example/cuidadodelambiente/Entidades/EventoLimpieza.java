@@ -11,6 +11,15 @@ public class EventoLimpieza {
     private String hora;
     private String descripcion;
     private String rutaFotografia;
+    private int numPersonasUnidas;
+
+    public int getNumPersonasUnidas() {
+        return numPersonasUnidas;
+    }
+
+    public void setNumPersonasUnidas(int numPersonasUnidas) {
+        this.numPersonasUnidas = numPersonasUnidas;
+    }
 
     public String getRutaFotografia() {
         return rutaFotografia;

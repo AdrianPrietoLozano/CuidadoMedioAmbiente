@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,9 +61,10 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private LinearLayout layoutSinConexion;
     private TextView mensajeProblema, totalReportes;
     private Button botonVolverIntentar;
+    private FloatingActionButton botonRecargar;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
-    JsonObjectRequest jsonObjectRequest;
-    CargandoCircular cargandoCircular;
+    private JsonObjectRequest jsonObjectRequest;
+    private CargandoCircular cargandoCircular;
 
 
     public RecomendacionCrearEventoFragment() {
@@ -94,6 +96,16 @@ public class RecomendacionCrearEventoFragment extends Fragment
         // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
         botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
         botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
+
+        // evento clic para el boton flotante que recarga los marcadores del mapa
+        botonRecargar = v.findViewById(R.id.botonFlotanteRecargar);
+        botonRecargar.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 intentarPeticionBD();
