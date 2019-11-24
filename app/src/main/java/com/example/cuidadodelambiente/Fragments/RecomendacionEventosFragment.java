@@ -38,7 +38,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
+import com.example.cuidadodelambiente.Entidades.KNN;
+import com.example.cuidadodelambiente.Entidades.RegistroKNN;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
@@ -52,7 +55,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 
 
@@ -73,6 +75,11 @@ public class RecomendacionEventosFragment extends Fragment
     private CargandoCircular cargandoCircular;
     private SwipeRefreshLayout swipeRefreshLayout;
 
+
+    //KNN
+    private ArrayList<RegistroKNN> data; // todos los datos menos el del usuario actual
+    private RegistroKNN datosKNNUsuarioActual; // datos KNN del usuario actual
+
     public RecomendacionEventosFragment() {
         // Required empty public constructor
     }
@@ -83,6 +90,10 @@ public class RecomendacionEventosFragment extends Fragment
     {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
+
+        // KNN
+        data = new ArrayList<>();
+        datosKNNUsuarioActual = new RegistroKNN();
 
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(
@@ -146,7 +157,7 @@ public class RecomendacionEventosFragment extends Fragment
     }
 
     private void iniciarPeticionBD() {
-        String url = getString(R.string.ip) + "EventosLimpieza/eventos_recomendados.php?usuario_id=1";
+        String url = getString(R.string.ip) + "EventosLimpieza/datos_participa_evento.php";
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -154,6 +165,7 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
         swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
@@ -163,19 +175,37 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("eventos");
+        JSONArray json = response.optJSONArray("datos");
 
         JSONObject jsonObject;
-        LatLng ubicacion;
-        EventoLimpieza eventoLimpieza = null;
+        RegistroKNN registro = null;
 
         try
         {
             for(int i = 0; i < json.length(); i++)
             {
                 jsonObject = json.getJSONObject(i);
-                eventoLimpieza = new EventoLimpieza();
+                registro = new RegistroKNN();
 
+                registro.setUsuario_id(jsonObject.optInt("usuario_id"));
+                registro.setEscombro(jsonObject.optInt("escombro"));
+                registro.setEnvases(jsonObject.optInt("envases"));
+                registro.setCarton(jsonObject.optInt("carton"));
+                registro.setBolsas(jsonObject.optInt("bolsas"));
+                registro.setElectricos(jsonObject.optInt("electricos"));
+                registro.setPilas(jsonObject.optInt("pilas"));
+                registro.setNeumaticos(jsonObject.optInt("neumaticos"));
+                registro.setMedicamentos(jsonObject.optInt("medicamentos"));
+                registro.setVarios(jsonObject.optInt("varios"));
+
+                // si es la informacion del usuario actual
+                if(registro.getUsuario_id() == DeclaracionFragments.actualAmbientalista) {
+                    datosKNNUsuarioActual = registro;
+                } else {
+                    data.add(registro);
+                }
+
+                /*
                 eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
                 eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
                 eventoLimpieza.setFecha(jsonObject.optString("fecha"));
@@ -183,8 +213,13 @@ public class RecomendacionEventosFragment extends Fragment
                 eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
 
                 listaEventos.add(eventoLimpieza);
+                */
             }
 
+            KNN knn = new KNN(data, datosKNNUsuarioActual);
+            knn.imprimirDistancias();
+
+            /*
             recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
                 @Override
                 public void onClick(View v, int position) {
@@ -195,9 +230,10 @@ public class RecomendacionEventosFragment extends Fragment
 
                 }
             }));
+            */
 
-            cargandoCircular.ocultarCargaMostrarContenido();
-            swipeRefreshLayout.setRefreshing(false);
+            //cargandoCircular.ocultarCargaMostrarContenido();
+            //swipeRefreshLayout.setRefreshing(false);
 
         } catch (JSONException e) {
             e.printStackTrace();
