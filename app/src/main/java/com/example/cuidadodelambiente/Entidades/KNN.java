@@ -1,10 +1,13 @@
 package com.example.cuidadodelambiente.Entidades;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 public class KNN {
     private ArrayList<RegistroKNN> data;
-    private ArrayList<Double> distancias;
+    private ArrayList<ElementoOrdenar> distancias;
     private RegistroKNN datosUsuarioActual;
 
     public KNN(ArrayList<RegistroKNN> data, RegistroKNN registro)
@@ -14,6 +17,12 @@ public class KNN {
         distancias = new ArrayList<>();
 
         iniciar();
+    }
+
+
+    public void iniciar()
+    {
+        getRecomendaciones();
     }
 
     private double getDistanciaEntre(RegistroKNN r1, RegistroKNN r2)
@@ -71,24 +80,56 @@ public class KNN {
     }
 
 
-    private void iniciar()
+    private List<ElementoOrdenar> getRecomendaciones()
     {
         for(RegistroKNN registro : data)
         {
             double distancia = getDistanciaEntre(datosUsuarioActual, registro);
-            distancias.add(distancia);
+            distancias.add(new ElementoOrdenar(distancia, registro.getUsuario_id()));
         }
 
-        // falta ordenar distancias
+        // ordenar de menor a mayor distancia
+        Collections.sort(distancias, new Comparator<ElementoOrdenar>() {
+            @Override
+            public int compare(ElementoOrdenar o1, ElementoOrdenar o2) {
+                return o1.distancia.compareTo(o2.distancia);
+            }
+        });
+
+        int k = determinarK();
+
+        return distancias.subList(0, k); // usuarios a recomendar
     }
 
     public void imprimirDistancias()
     {
-        for(Double distancia : distancias)
+        for(ElementoOrdenar ordenado : distancias)
         {
-            System.out.println(distancia);
+            System.out.println(ordenado.distancia);
+            System.out.printf("id: %d,  distancia: %f%n", ordenado.idUsuario, ordenado.distancia);
         }
 
         System.out.printf("K = %d%n", determinarK());
+    }
+
+
+    private class ElementoOrdenar
+    {
+        private Double distancia;
+        private int idUsuario;
+
+        private ElementoOrdenar(Double distancia, int idUsuario)
+        {
+            this.distancia = distancia;
+            this.idUsuario = idUsuario;
+        }
+
+        public Double getDistancia() {
+            return distancia;
+        }
+
+        public int getIdUsuario() {
+            return idUsuario;
+        }
     }
 }
