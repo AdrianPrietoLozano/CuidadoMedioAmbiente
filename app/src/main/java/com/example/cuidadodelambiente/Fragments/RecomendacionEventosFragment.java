@@ -157,7 +157,8 @@ public class RecomendacionEventosFragment extends Fragment
     }
 
     private void iniciarPeticionBD() {
-        String url = getString(R.string.ip) + "EventosLimpieza/datos_participa_evento.php";
+        String url = getString(R.string.ip) + "EventosLimpieza/recomendaciones_eventos.php?id_ambientalista="+
+                DeclaracionFragments.actualAmbientalista;
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -175,37 +176,18 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("datos");
+        JSONArray json = response.optJSONArray("eventos");
 
         JSONObject jsonObject;
-        RegistroKNN registro = null;
+        EventoLimpieza eventoLimpieza = null;
 
         try
         {
             for(int i = 0; i < json.length(); i++)
             {
                 jsonObject = json.getJSONObject(i);
-                registro = new RegistroKNN();
+                eventoLimpieza = new EventoLimpieza();
 
-                registro.setUsuario_id(jsonObject.optInt("usuario_id"));
-                registro.setEscombro(jsonObject.optInt("escombro"));
-                registro.setEnvases(jsonObject.optInt("envases"));
-                registro.setCarton(jsonObject.optInt("carton"));
-                registro.setBolsas(jsonObject.optInt("bolsas"));
-                registro.setElectricos(jsonObject.optInt("electricos"));
-                registro.setPilas(jsonObject.optInt("pilas"));
-                registro.setNeumaticos(jsonObject.optInt("neumaticos"));
-                registro.setMedicamentos(jsonObject.optInt("medicamentos"));
-                registro.setVarios(jsonObject.optInt("varios"));
-
-                // si es la informacion del usuario actual
-                if(registro.getUsuario_id() == DeclaracionFragments.actualAmbientalista) {
-                    datosKNNUsuarioActual = registro;
-                } else {
-                    data.add(registro);
-                }
-
-                /*
                 eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
                 eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
                 eventoLimpieza.setFecha(jsonObject.optString("fecha"));
@@ -213,13 +195,9 @@ public class RecomendacionEventosFragment extends Fragment
                 eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
 
                 listaEventos.add(eventoLimpieza);
-                */
+
             }
 
-            KNN knn = new KNN(data, datosKNNUsuarioActual);
-            knn.imprimirDistancias();
-
-            /*
             recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
                 @Override
                 public void onClick(View v, int position) {
@@ -230,10 +208,9 @@ public class RecomendacionEventosFragment extends Fragment
 
                 }
             }));
-            */
 
-            //cargandoCircular.ocultarCargaMostrarContenido();
-            //swipeRefreshLayout.setRefreshing(false);
+            cargandoCircular.ocultarCargaMostrarContenido();
+            swipeRefreshLayout.setRefreshing(false);
 
         } catch (JSONException e) {
             e.printStackTrace();

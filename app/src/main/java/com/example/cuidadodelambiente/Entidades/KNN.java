@@ -59,8 +59,9 @@ public class KNN {
 
         double sumCuadrados = cuadrado1 + cuadrado2 + cuadrado3 + cuadrado4 + cuadrado5 +
                 cuadrado6 + cuadrado7 + cuadrado8 + cuadrado9;
-
-        return Math.sqrt(sumCuadrados);
+        System.out.printf("[%d, %d, %d, %d, %d, %d, %d, %d, %d], [%d, %d, %d, %d, %d, %d, %d, %d, %d] = %f%n%n",
+                a1, b1, c1, d1, e1, f1, g1, h1, i1, a2, b2, c2, d2, e2, f2, g2, h2, i2, Math.abs(Math.sqrt(sumCuadrados)));
+        return Math.abs(Math.sqrt(sumCuadrados));
 
     }
 
