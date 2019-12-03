@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="500dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="10dp">
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="500dp">
+
+        <ImageView
+            android:id="@+id/imagenEvento"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_width="match_parent"
+            android:scaleType="fitXY"
+            android:layout_height="300dp"/>
+
+        <TextView
+            android:id="@+id/tituloEvento"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/imagenEvento"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/tituloEtiqueta"
+            android:text="Títlo del evento"/>
+
+        <TextView
+            android:id="@+id/creador"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/tituloEvento"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Adrian Prieto Lozano"
+            style="@style/datosEtiqueta"
+            />
+
+        <TextView
+            android:id="@+id/fecha_hora"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/creador"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/datosEtiqueta"
+            android:text="12/12/2019, 23:43"/>
+
+        <TextView
+            android:id="@+id/descripcion"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/fecha_hora"
+            android:layout_above="@id/tipo_residuo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/datosEtiqueta"
+            />
+
+        <TextView
+            android:id="@+id/tipo_residuo"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            style="@style/datosEtiqueta"
+            />
+
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

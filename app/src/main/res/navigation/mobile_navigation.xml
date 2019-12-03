@@ -25,9 +25,9 @@
 
     <fragment
         android:id="@+id/navigation_cuenta"
-        android:name="com.example.cuidadodelambiente.Fragments.CuentaFragment"
+        android:name="com.example.cuidadodelambiente.Fragments.ParticipaEventos"
         android:label="Tu cuenta"
-        tools:layout="@layout/fragment_cuenta" />
+        tools:layout="@layout/fragment_participa_eventos" />
 
     <fragment
         android:id="@+id/navigation_crear_evento"

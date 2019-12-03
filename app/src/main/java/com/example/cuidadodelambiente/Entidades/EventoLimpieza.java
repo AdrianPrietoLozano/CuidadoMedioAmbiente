@@ -12,6 +12,15 @@ public class EventoLimpieza {
     private String descripcion;
     private String rutaFotografia;
     private int numPersonasUnidas;
+    private String tipoResiduo;
+
+    public String getTipoResiduo() {
+        return tipoResiduo;
+    }
+
+    public void setTipoResiduo(String tipoResiduo) {
+        this.tipoResiduo = tipoResiduo;
+    }
 
     public int getNumPersonasUnidas() {
         return numPersonasUnidas;

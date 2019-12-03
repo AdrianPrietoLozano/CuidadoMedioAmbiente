@@ -1,17 +1,11 @@
 package com.example.cuidadodelambiente.Fragments;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
@@ -22,14 +16,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,14 +29,9 @@ import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
-import com.example.cuidadodelambiente.Entidades.KNN;
-import com.example.cuidadodelambiente.Entidades.RegistroKNN;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,11 +41,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecomendacionEventosFragment extends Fragment
+public class ParticipaEventos extends Fragment
         implements Response.ErrorListener, Response.Listener<JSONObject> {
 
     private JsonObjectRequest jsonObjectRequest;
@@ -76,16 +59,17 @@ public class RecomendacionEventosFragment extends Fragment
     private SwipeRefreshLayout swipeRefreshLayout;
 
 
-    public RecomendacionEventosFragment() {
+    public ParticipaEventos() {
         // Required empty public constructor
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
+        View v = inflater.inflate(R.layout.fragment_participa_eventos, container, false);
+        // Inflate the layout for this fragment
 
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(
@@ -102,7 +86,8 @@ public class RecomendacionEventosFragment extends Fragment
                 v.findViewById(R.id.pantallaCarga));
         cargandoCircular.ocultarContenidoMostrarCarga();
 
-        recyclerEventos = v.findViewById(R.id.recyclerEventos);
+
+        recyclerEventos = v.findViewById(R.id.recyclerParticipaEventos);
         recyclerEventos.setHasFixedSize(true);
 
         // layout sin conexion
@@ -132,8 +117,7 @@ public class RecomendacionEventosFragment extends Fragment
         return v;
     }
 
-    private void intentarPeticionBD()
-    {
+    private void intentarPeticionBD() {
         cargandoCircular.ocultarContenidoMostrarCarga();
 
         // si hay internet
@@ -145,11 +129,12 @@ public class RecomendacionEventosFragment extends Fragment
             cargandoCircular.ocultarCargaMostrarContenido();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setRefreshing(false);
         }
     }
 
     private void iniciarPeticionBD() {
-        String url = getString(R.string.ip) + "EventosLimpieza/recomendaciones_eventos.php?id_ambientalista="+
+        String url = getString(R.string.ip) + "EventosLimpieza/datos_participacion_evento.php?id_ambientalista="+
                 DeclaracionFragments.actualAmbientalista;
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
@@ -159,16 +144,18 @@ public class RecomendacionEventosFragment extends Fragment
     @Override
     public void onErrorResponse(VolleyError error) {
         Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+        /*
         swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
 
         cargandoCircular.ocultarCargaMostrarContenido();
+        */
     }
 
     @Override
     public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("eventos");
+        JSONArray json = response.optJSONArray("datos");
 
         JSONObject jsonObject;
         EventoLimpieza eventoLimpieza = null;
@@ -180,26 +167,21 @@ public class RecomendacionEventosFragment extends Fragment
                 jsonObject = json.getJSONObject(i);
                 eventoLimpieza = new EventoLimpieza();
 
-                eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
+                //eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
                 eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
                 eventoLimpieza.setFecha(jsonObject.optString("fecha"));
                 eventoLimpieza.setHora(jsonObject.optString("hora"));
                 eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
+                eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
+                eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
+                eventoLimpieza.setTipoResiduo(jsonObject.optString("tipo"));
 
                 listaEventos.add(eventoLimpieza);
 
             }
 
-            recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
-                @Override
-                public void onClick(View v, int position) {
+            recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), listaEventos));
 
-                    Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
-                            listaEventos.get(position).getIdEvento());
-                    Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
-
-                }
-            }));
 
             cargandoCircular.ocultarCargaMostrarContenido();
             swipeRefreshLayout.setRefreshing(false);
@@ -215,22 +197,26 @@ public class RecomendacionEventosFragment extends Fragment
 
 
 
-class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
+
+
+
+
+
+
+
+
+
+
+class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter.ParticipaEventoViewHolder>
 {
     private List<EventoLimpieza> listaEventos;
     private JsonObjectRequest jsonObjectRequest;
     private Context context;
-    private RecyclerViewOnItemClickListener recyclerViewOnItemClickListener;
 
-
-
-
-    EventoAdapter(Context context, List<EventoLimpieza> listaEventos, @NonNull RecyclerViewOnItemClickListener
-                  recyclerViewOnItemClickListener)
+    ParticipaEventoAdapter(Context context, List<EventoLimpieza> listaEventos)
     {
         this.context = context;
         this.listaEventos = listaEventos;
-        this.recyclerViewOnItemClickListener = recyclerViewOnItemClickListener;
     }
 
     @Override
@@ -240,26 +226,23 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
 
     @NonNull
     @Override
-    public EventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_evento, parent, false);
-        final EventoViewHolder eventoViewHolder = new EventoViewHolder(v);
+    public ParticipaEventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_participa_evento, parent, false);
+        final ParticipaEventoViewHolder participaEventoViewHolder = new ParticipaEventoViewHolder(v);
 
-        v.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerViewOnItemClickListener.onClick(v, eventoViewHolder.getPosition());
-            }
-        });
-
-        return eventoViewHolder;
+        return participaEventoViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull EventoViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ParticipaEventoViewHolder holder, int position) {
         holder.tituloEvento.setText(listaEventos.get(position).getTitulo());
         holder.fechaHoraEvento.setText(String.format("%s, %s",
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
+        holder.creador.setText(listaEventos.get(position).getAmbientalista());
+        holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
+        holder.descripcion.setText(listaEventos.get(position).getDescripcion());
+
 
         if(holder.imagenEvento.getTag().toString() == "NO")
         {
@@ -274,19 +257,14 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
     }
 
 
-    private void iniciarCargaImagen(String urlImagen, final EventoViewHolder holder)
+    private void iniciarCargaImagen(String urlImagen, final ParticipaEventoViewHolder holder)
     {
         urlImagen.replace(" ", "%20"); // evitar errores con los espacios
 
         ImageRequest imageRequest = new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                // hacer la imagen redonda
-                RoundedBitmapDrawable roundedDrawable =
-                        RoundedBitmapDrawableFactory.create(holder.imagenEvento.getResources(), response);
-                roundedDrawable.setCornerRadius(response.getHeight());
-
-                holder.imagenEvento.setImageDrawable(roundedDrawable);
+                holder.imagenEvento.setImageBitmap(response);
                 holder.imagenEvento.setTag("SI"); // la imagen no se recargará
             }
         }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
@@ -300,21 +278,25 @@ class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder>
     }
 
 
-    public static class EventoViewHolder extends RecyclerView.ViewHolder {
+    public static class ParticipaEventoViewHolder extends RecyclerView.ViewHolder {
         // campos de un elemento de la lista
         public ImageView imagenEvento;
-        public ImageView imagenUbicacion;
         public TextView tituloEvento;
         public TextView fechaHoraEvento;
+        public TextView creador;
+        public TextView descripcion;
+        public TextView tipoResiduo;
 
-        public EventoViewHolder(View v)
+        public ParticipaEventoViewHolder(View v)
         {
             super(v);
             imagenEvento = v.findViewById(R.id.imagenEvento);
             imagenEvento.setTag("NO");
             tituloEvento = v.findViewById(R.id.tituloEvento);
-            fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
-
+            creador = v.findViewById(R.id.creador);
+            fechaHoraEvento = v.findViewById(R.id.fecha_hora);
+            descripcion = v.findViewById(R.id.descripcion);
+            tipoResiduo = v.findViewById(R.id.tipo_residuo);
 
         }
     }
