@@ -104,7 +104,7 @@ public class EventosLimpieza extends Fragment
             @Override
             public void onClick(View v) {
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionEventosFragment);
+                        DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
             }
         });
 
@@ -113,7 +113,7 @@ public class EventosLimpieza extends Fragment
             @Override
             public void onClick(View v) {
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionCrearEventoFragment);
+                        DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
             }
         });
 
@@ -132,7 +132,7 @@ public class EventosLimpieza extends Fragment
             @Override
             public void onClick(View v) {
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.crearEventoFragment);
+                        DeclaracionFragments.crearEventoFragment, "CREAR");
             }
         });
 
@@ -258,7 +258,7 @@ public class EventosLimpieza extends Fragment
     @Override
     public boolean onMarkerClick(Marker marker) {
         Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)marker.getTag());
-        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento);
+        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento, "DATOS");
 
         return true;
     }

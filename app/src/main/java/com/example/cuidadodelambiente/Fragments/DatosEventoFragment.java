@@ -2,11 +2,13 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,7 @@ import org.json.JSONObject;
 public class DatosEventoFragment extends Fragment
         implements Response.Listener<JSONObject>, Response.ErrorListener{
 
+    OnBotonParticiparClic onBotonParticiparClic;
     private int eventoId; // id del evento en la base de datos
     private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas, mensajeProblema;
     private Button botonQuieroParticipar;
@@ -101,6 +104,14 @@ public class DatosEventoFragment extends Fragment
         return v;
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        onBotonParticiparClic = (OnBotonParticiparClic) getActivity();
+
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,6 +193,12 @@ public class DatosEventoFragment extends Fragment
                         if(resultado.equals("1"))
                         {
                             Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+
+                            onBotonParticiparClic.botonParticiparClic();
+                        }
+                        else if(resultado.equals("2"))
+                        {
+                            Toast.makeText(getContext(), "Error: ya participas en este evento", Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
@@ -268,5 +285,15 @@ public class DatosEventoFragment extends Fragment
         });
 
         VolleySingleton.getinstance(getContext()).addToRequestQueue(imageRequest);
+    }
+
+
+    public void setOnBotonParticiparClic(OnBotonParticiparClic callback) {
+        this.onBotonParticiparClic = callback;
+    }
+
+
+    public interface OnBotonParticiparClic {
+        public void botonParticiparClic();
     }
 }

@@ -131,7 +131,7 @@ public class CrearEventoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.eventosLimpiezaFragement);
+                        DeclaracionFragments.eventosLimpiezaFragement, "EVENTOS");
             }
         });
 

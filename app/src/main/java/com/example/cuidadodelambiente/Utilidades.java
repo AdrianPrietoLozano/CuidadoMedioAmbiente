@@ -43,7 +43,7 @@ public class Utilidades {
 
 
     /* INICIAR FRAGMENTS */
-    public static void iniciarFragment(FragmentTransaction transaction, Fragment fragment)
+    public static void iniciarFragment(FragmentTransaction transaction, Fragment fragment, String tag)
     {
         if (fragment.isAdded()) { // si ya se mostró antes
             transaction.hide(FragmentSingleton.getCurrentFragment()).show(fragment);
@@ -51,7 +51,7 @@ public class Utilidades {
         else // si es la primera vez en mostrarse
         {
             transaction.hide(FragmentSingleton.getCurrentFragment())
-                    .add(R.id.nav_host_fragment, fragment, "currentFragment");
+                    .add(R.id.nav_host_fragment, fragment, tag);
         }
 
         transaction.addToBackStack(null);

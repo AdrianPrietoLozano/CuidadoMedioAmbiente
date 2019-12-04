@@ -128,7 +128,7 @@ public class DialogClicReporte extends DialogFragment
                         reporteContaminacion.getUbicacion().longitude);
 
                 Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        crearEventoFragment);
+                        crearEventoFragment, "CREAR");
                 dismiss();
             }
         });

@@ -17,6 +17,12 @@ public class DeclaracionFragments {
     public static final Fragment eventosLimpiezaFragement = new EventosLimpieza();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();
-    public static final Fragment cuentaFragment = new ParticipaEventos();
+    public static final Fragment participaEventos = new ParticipaEventos();
     public static final Fragment crearEventoFragment = new CrearEventoFragment();
+
+
+    public static Fragment getParticipaEventosFragment()
+    {
+        return participaEventos;
+    }
 }
