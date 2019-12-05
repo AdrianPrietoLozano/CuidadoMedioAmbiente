@@ -33,11 +33,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.KNN;
@@ -158,11 +160,10 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-        swipeRefreshLayout.setRefreshing(false);
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-        layoutSinConexion.setVisibility(View.VISIBLE);
 
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        swipeRefreshLayout.setRefreshing(false);
+        layoutSinConexion.setVisibility(View.VISIBLE);
         cargandoCircular.ocultarCargaMostrarContenido();
     }
 
@@ -175,31 +176,39 @@ public class RecomendacionEventosFragment extends Fragment
 
         try
         {
-            for(int i = 0; i < json.length(); i++)
+            if(json.length() == 0) // no hay recomendaciones
             {
-                jsonObject = json.getJSONObject(i);
-                eventoLimpieza = new EventoLimpieza();
-
-                eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
-                eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
-                eventoLimpieza.setFecha(jsonObject.optString("fecha"));
-                eventoLimpieza.setHora(jsonObject.optString("hora"));
-                eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
-
-                listaEventos.add(eventoLimpieza);
-
+                mensajeProblema.setText(getString(R.string.sin_recomendaciones));
+                layoutSinConexion.setVisibility(View.VISIBLE);
             }
+            else
+            {
+                for(int i = 0; i < json.length(); i++)
+                {
+                    jsonObject = json.getJSONObject(i);
+                    eventoLimpieza = new EventoLimpieza();
 
-            recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
-                @Override
-                public void onClick(View v, int position) {
+                    eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
+                    eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
+                    eventoLimpieza.setFecha(jsonObject.optString("fecha"));
+                    eventoLimpieza.setHora(jsonObject.optString("hora"));
+                    eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
 
-                    Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
-                            listaEventos.get(position).getIdEvento());
-                    Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento, "DATOS");
+                    listaEventos.add(eventoLimpieza);
 
                 }
-            }));
+
+                recyclerEventos.setAdapter(new EventoAdapter(getContext(), listaEventos, new RecyclerViewOnItemClickListener() {
+                    @Override
+                    public void onClick(View v, int position) {
+
+                        Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
+                                listaEventos.get(position).getIdEvento());
+                        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento, "DATOS");
+
+                    }
+                }));
+            }
 
             cargandoCircular.ocultarCargaMostrarContenido();
             swipeRefreshLayout.setRefreshing(false);

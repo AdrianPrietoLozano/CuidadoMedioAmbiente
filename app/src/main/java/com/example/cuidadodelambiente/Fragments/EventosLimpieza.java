@@ -31,6 +31,7 @@ import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -142,6 +143,9 @@ public class EventosLimpieza extends Fragment
 
             @Override
             public void onClick(View v) {
+                DeclaracionFragments.actualAmbientalista += 1;
+                Toast.makeText(getContext(), "Ambientalista: " +
+                        DeclaracionFragments.actualAmbientalista, Toast.LENGTH_SHORT).show();
                 intentarPeticionBD();
             }
         });
@@ -155,6 +159,7 @@ public class EventosLimpieza extends Fragment
 
     private void intentarPeticionBD()
     {
+        Toast.makeText(getContext(), "recargando", Toast.LENGTH_SHORT).show();
         cargandoCircular.ocultarContenidoMostrarCarga();
 
         // si hay conexión a internet
@@ -171,6 +176,17 @@ public class EventosLimpieza extends Fragment
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void recargar()
+    {
+        intentarPeticionBD();
+    }
+
+    public void moverMapa(LatLng ubicacion)
+    {
+        CameraUpdate current = CameraUpdateFactory.newLatLngZoom(ubicacion, 15);
+        mMap.moveCamera(current);
     }
 
     private void iniciarPeticionBD()

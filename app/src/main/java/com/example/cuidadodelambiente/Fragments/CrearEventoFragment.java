@@ -60,7 +60,7 @@ public class CrearEventoFragment extends Fragment {
     private int idReporte;
     // este atributo se necesitan solo cuando se crea un evento desde un DialogClicReporte
     private LatLng ubicacionReporte;
-
+    OnEventoCreado onEventoCreado;
 
     public static CrearEventoFragment newInstance(int idReporte, double latitud, double longitud)
     {
@@ -145,6 +145,13 @@ public class CrearEventoFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        onEventoCreado = (OnEventoCreado) getActivity();
+    }
+
     private View.OnClickListener listenerFecha = new View.OnClickListener() {
         @Override
         public void onClick(View v)
@@ -159,7 +166,7 @@ public class CrearEventoFragment extends Fragment {
                 @Override
                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth)
                 {
-                    fechaView.setText(dayOfMonth + "/" + month + "/" + year);
+                    fechaView.setText(String.format("%s/%s/%s", dayOfMonth, month+1, year));
                 }
             }, anio, mes, dia);
 
@@ -217,10 +224,18 @@ public class CrearEventoFragment extends Fragment {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-
+                            Toast.makeText(getContext(), "id: " + idReporte, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
                             if(response.equals("1"))
                             {
                                 Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+                                onEventoCreado.onEventoCreado(ubicacionReporte);
+
+                            }
+                            else if(response.equals("2"))
+                            {
+                                Toast.makeText(getContext(), "Error: el evento para ese reporte ya existe",
+                                        Toast.LENGTH_SHORT).show();
                             }
                             else
                             {
@@ -240,6 +255,12 @@ public class CrearEventoFragment extends Fragment {
 
             VolleySingleton.getinstance(getContext()).addToRequestQueue(stringRequest);
         }
+    }
+
+
+    public interface OnEventoCreado
+    {
+        public void onEventoCreado(LatLng ubicacion);
     }
 
 }

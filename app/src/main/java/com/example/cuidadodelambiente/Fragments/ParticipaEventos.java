@@ -151,14 +151,14 @@ public class ParticipaEventos extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-        /*
+        //Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
+
         swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
 
         cargandoCircular.ocultarCargaMostrarContenido();
-        */
+
     }
 
     public void recargar()
@@ -177,27 +177,29 @@ public class ParticipaEventos extends Fragment
 
         try
         {
-            for(int i = 0; i < json.length(); i++)
+            if(json.length() == 0) // no participa en ningun evento
             {
-                jsonObject = json.getJSONObject(i);
-                eventoLimpieza = new EventoLimpieza();
-
-                //eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
-                eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
-                eventoLimpieza.setFecha(jsonObject.optString("fecha"));
-                eventoLimpieza.setHora(jsonObject.optString("hora"));
-                eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
-                eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
-                eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
-                eventoLimpieza.setTipoResiduo(jsonObject.optString("tipo"));
-
-                listaEventos.add(eventoLimpieza);
-
+                mensajeProblema.setText("No participas en ningún evento");
+                layoutSinConexion.setVisibility(View.VISIBLE);
             }
+            else {
+                for (int i = 0; i < json.length(); i++) {
+                    jsonObject = json.getJSONObject(i);
+                    eventoLimpieza = new EventoLimpieza();
 
-            recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), listaEventos));
+                    //eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
+                    eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
+                    eventoLimpieza.setFecha(jsonObject.optString("fecha"));
+                    eventoLimpieza.setHora(jsonObject.optString("hora"));
+                    eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
+                    eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
+                    eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
+                    eventoLimpieza.setTipoResiduo(jsonObject.optString("tipo"));
 
-
+                    listaEventos.add(eventoLimpieza);
+                }
+                recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), listaEventos));
+            }
             cargandoCircular.ocultarCargaMostrarContenido();
             swipeRefreshLayout.setRefreshing(false);
 
@@ -254,7 +256,7 @@ class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter
         holder.fechaHoraEvento.setText(String.format("%s, %s",
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
-        holder.creador.setText(listaEventos.get(position).getAmbientalista());
+        holder.creador.setText("Creador: " + listaEventos.get(position).getAmbientalista());
         holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
         holder.descripcion.setText(listaEventos.get(position).getDescripcion());
 

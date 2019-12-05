@@ -14,9 +14,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
 import com.example.cuidadodelambiente.Fragments.ParticipaEventos;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -24,7 +26,7 @@ import java.util.List;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        DatosEventoFragment.OnBotonParticiparClic {
+        DatosEventoFragment.OnBotonParticiparClic, CrearEventoFragment.OnEventoCreado {
 
     public final ParticipaEventos participaEventos = new ParticipaEventos();
 
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         if (fragment != null) {
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.nav_host_fragment, fragment)
+                    .replace(R.id.nav_host_fragment, fragment, "EVENTO")
                     .commit();
             return true;
         }
@@ -212,6 +214,17 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     {
         FragmentManager fragmentManager = MainActivity.this.getSupportFragmentManager();
         return fragmentManager.getFragments().get(0);
+
+    }
+
+    @Override
+    public void onEventoCreado(LatLng ubicacion) {
+        Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
+                DeclaracionFragments.eventosLimpiezaFragement, "EVENTO");
+
+        EventosLimpieza eventosLimpieza = (EventosLimpieza) getSupportFragmentManager().findFragmentByTag("EVENTO");
+        eventosLimpieza.recargar();
+        eventosLimpieza.moverMapa(ubicacion);
 
     }
 }
