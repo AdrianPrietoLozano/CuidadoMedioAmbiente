@@ -42,8 +42,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
-import com.example.cuidadodelambiente.Entidades.KNN;
-import com.example.cuidadodelambiente.Entidades.RegistroKNN;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;

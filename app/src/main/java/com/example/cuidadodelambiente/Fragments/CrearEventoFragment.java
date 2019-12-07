@@ -224,8 +224,6 @@ public class CrearEventoFragment extends Fragment {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Toast.makeText(getContext(), "id: " + idReporte, Toast.LENGTH_SHORT).show();
-                            Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
                             if(response.equals("1"))
                             {
                                 Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();

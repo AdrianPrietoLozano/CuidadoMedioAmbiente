@@ -159,7 +159,6 @@ public class EventosLimpieza extends Fragment
 
     private void intentarPeticionBD()
     {
-        Toast.makeText(getContext(), "recargando", Toast.LENGTH_SHORT).show();
         cargandoCircular.ocultarContenidoMostrarCarga();
 
         // si hay conexión a internet

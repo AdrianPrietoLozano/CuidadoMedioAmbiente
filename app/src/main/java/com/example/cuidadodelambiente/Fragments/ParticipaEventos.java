@@ -72,7 +72,6 @@ public class ParticipaEventos extends Fragment
         View v = inflater.inflate(R.layout.fragment_participa_eventos, container, false);
         // Inflate the layout for this fragment
 
-        Toast.makeText(getContext(), "createView", Toast.LENGTH_SHORT).show();
 
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(

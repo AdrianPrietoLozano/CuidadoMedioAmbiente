@@ -45,7 +45,8 @@ public class DatosEventoFragment extends Fragment
 
     OnBotonParticiparClic onBotonParticiparClic;
     private int eventoId; // id del evento en la base de datos
-    private TextView nombreEvento, fechaHora, creador, descripcion, numPersonasUnidas, mensajeProblema;
+    private TextView nombreEvento, fechaHora, creador, descripcion;
+    private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private Button botonQuieroParticipar;
     private Button botonVolverIntentar;
     private ImageView imagenEvento;
@@ -78,6 +79,7 @@ public class DatosEventoFragment extends Fragment
         nombreEvento = v.findViewById(R.id.nombreEvento);
         fechaHora = v.findViewById(R.id.fecha_hora_evento);
         creador = v.findViewById(R.id.creador_evento);
+        tipoResiduo = v.findViewById(R.id.tipo_residuo_evento);
         descripcion = v.findViewById(R.id.descripcion_evento);
         numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
         imagenEvento = v.findViewById(R.id.imagenEvento);
@@ -247,8 +249,9 @@ public class DatosEventoFragment extends Fragment
             eventoLimpieza.setHora(jsonObject.optString("hora"));
             eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
             eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
-            eventoLimpieza.setNumPersonasUnidas(response.optInt("personas_unidas"));
+            eventoLimpieza.setTipoResiduo(jsonObject.optString("residuo"));
 
+            eventoLimpieza.setNumPersonasUnidas(response.optInt("personas_unidas"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -258,6 +261,7 @@ public class DatosEventoFragment extends Fragment
         fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
                 eventoLimpieza.getHora()));
         creador.setText(eventoLimpieza.getAmbientalista());
+        tipoResiduo.setText(eventoLimpieza.getTipoResiduo());
         descripcion.setText(eventoLimpieza.getDescripcion());
         numPersonasUnidas.setText(String.format("%s %s",
                 eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));

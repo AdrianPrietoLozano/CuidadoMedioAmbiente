@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                         DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
                 return true;
 
-            case R.id.cuenta:
+            case R.id.eventos_participa:
                 Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
                         participaEventos, "PARTICIPA");
                 return true;

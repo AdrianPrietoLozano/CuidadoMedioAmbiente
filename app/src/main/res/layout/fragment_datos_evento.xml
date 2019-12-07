@@ -158,6 +158,17 @@
 
                 <View style="@style/divider" />
 
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Tipo de residuo" />
+
+                <TextView
+                    android:id="@+id/tipo_residuo_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
                 <TextView
                     style="@style/tituloEtiqueta"
                     android:text="Descripción" />
