@@ -21,6 +21,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         android:scaleType="fitXY"
+        android:background="@drawable/imagen_redondeada_borde"
+        android:padding="3dp"
         />
 
     <TextView

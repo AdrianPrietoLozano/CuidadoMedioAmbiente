@@ -158,7 +158,7 @@ public class RecomendacionEventosFragment extends Fragment
 
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         swipeRefreshLayout.setRefreshing(false);
         layoutSinConexion.setVisibility(View.VISIBLE);
