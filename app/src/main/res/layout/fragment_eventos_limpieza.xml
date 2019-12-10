@@ -59,7 +59,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="0dp"
             android:layout_marginEnd="0dp"
-            android:apiKey="AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
+            android:apiKey=""
             app:layout_constraintVertical_bias="0.0" />
 
         <!-- Se muestra solo cuando no hay conexion -->
