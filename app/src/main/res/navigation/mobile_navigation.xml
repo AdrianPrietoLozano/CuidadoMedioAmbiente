@@ -9,7 +9,7 @@
         android:id="@+id/navigation_eventos"
         android:name="com.example.cuidadodelambiente.Fragments.EventosLimpieza"
         android:label="@string/app_name"
-        tools:layout="@layout/fragment_eventos_limpieza" />
+        tools:layout="@layout/content_eventos_limpieza" />
 
     <fragment
         android:id="@+id/navigation_eventos_recomendados"

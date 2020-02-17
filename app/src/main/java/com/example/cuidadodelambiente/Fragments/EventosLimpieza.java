@@ -2,31 +2,22 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.R;
@@ -40,6 +31,7 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -67,6 +59,8 @@ public class EventosLimpieza extends Fragment
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
     private CargandoCircular cargandoCircular;
+    private BottomSheetBehavior sheetBehavior;
+    private LinearLayout bottom_sheet;
 
     public EventosLimpieza() {
         // Required empty public constructor
@@ -75,7 +69,7 @@ public class EventosLimpieza extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_eventos_limpieza, container, false);
+        View v = inflater.inflate(R.layout.content_eventos_limpieza, container, false);
 
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
@@ -149,6 +143,12 @@ public class EventosLimpieza extends Fragment
                 intentarPeticionBD();
             }
         });
+
+
+        // Bottom Sheet
+        bottom_sheet = v.findViewById(R.id.bottom_sheet_opciones);
+        sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
 
         intentarPeticionBD();
