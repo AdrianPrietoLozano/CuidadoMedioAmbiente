@@ -4,11 +4,16 @@ package com.example.cuidadodelambiente.Fragments;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +29,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
+import android.os.ResultReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,8 +51,10 @@ import java.util.Calendar;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CrearEventoFragment extends Fragment {
+public class CrearEventoFragment extends Fragment implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private AddressResultReceiver resultReceiver;
     private TextView fechaView;
     private TextView horaView;
     private EditText ubicacionEvento;
@@ -61,6 +73,59 @@ public class CrearEventoFragment extends Fragment {
     // este atributo se necesitan solo cuando se crea un evento desde un DialogClicReporte
     private LatLng ubicacionReporte;
     OnEventoCreado onEventoCreado;
+    String addressOutput;
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+
+    class AddressResultReceiver extends ResultReceiver {
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            if (resultData == null || resultCode == Constants.FAILURE_RESULT) {
+                addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+                mostrarUbicacionEnTextView(addressOutput);
+                return;
+            }
+
+            // Display the address string
+            // or an error message sent from the intent service.
+            addressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            if (addressOutput == null) {
+                addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+            }
+
+            mostrarUbicacionEnTextView(addressOutput);
+
+        }
+    }
+
+    private void mostrarUbicacionEnTextView(final String direccionCompleta) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ubicacionEvento.setText(direccionCompleta);
+            }
+        });
+    }
+
 
     public static CrearEventoFragment newInstance(int idReporte, double latitud, double longitud)
     {
@@ -98,6 +163,8 @@ public class CrearEventoFragment extends Fragment {
             // indica que al crear la vista se debe llenar el campo de ubicación con los datos de ubicacionReporte
             banderaLlenarUbicacion = true;
         }
+
+        resultReceiver = new AddressResultReceiver(null);
 
     }
 
@@ -138,8 +205,9 @@ public class CrearEventoFragment extends Fragment {
 
         if(banderaLlenarUbicacion == true) // si se debe llenar el campo de ubicación
         {
-            ubicacionEvento.setText(String.format("%s, %s", ubicacionReporte.latitude,
-                    ubicacionReporte.longitude));
+            //ubicacionEvento.setText(String.format("%s, %s", ubicacionReporte.latitude,
+                    //ubicacionReporte.longitude));
+            startIntentService();
         }
 
         return v;
@@ -196,6 +264,16 @@ public class CrearEventoFragment extends Fragment {
 
         }
     };
+
+    protected void startIntentService() {
+        Intent intent = new Intent(getContext(), FetchAddressIntentService.class);
+        intent.putExtra(Constants.RECEIVER, resultReceiver);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(ubicacionReporte.latitude);
+        location.setLongitude(ubicacionReporte.longitude);
+        intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
+        getActivity().startService(intent);
+    }
 
 
     private void clicBotonCrearEvento()

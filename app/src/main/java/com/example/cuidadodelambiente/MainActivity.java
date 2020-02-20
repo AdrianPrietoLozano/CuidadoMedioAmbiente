@@ -205,9 +205,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
          */
 
-
-
-
     }
 
     private Fragment getCurrentFragment()
