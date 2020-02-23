@@ -280,7 +280,8 @@ public class EventosLimpieza extends Fragment
     @Override
     public boolean onMarkerClick(Marker marker) {
         Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int)marker.getTag());
-        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento, "DATOS");
+        ((MainActivity)getActivity())
+                .cambiarFragment(fragmentDatosEvento, "DATOS");
 
         return true;
     }

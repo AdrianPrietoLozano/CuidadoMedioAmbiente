@@ -33,6 +33,7 @@ import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.model.LatLng;
@@ -127,8 +128,8 @@ public class DialogClicReporte extends DialogFragment
                         reporteContaminacion.getId(), reporteContaminacion.getUbicacion().latitude,
                         reporteContaminacion.getUbicacion().longitude);
 
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        crearEventoFragment, "CREAR");
+                ((MainActivity)getActivity())
+                        .cambiarFragment(crearEventoFragment, "CREAR");
                 dismiss();
             }
         });
