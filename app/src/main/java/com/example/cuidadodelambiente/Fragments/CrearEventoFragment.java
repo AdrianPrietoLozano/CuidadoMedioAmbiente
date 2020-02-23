@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.common.ConnectionResult;
@@ -173,6 +175,10 @@ public class CrearEventoFragment extends Fragment implements
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_crear_evento, container, false);
 
+        Log.e("CREAREVENTO", "onCreateView");
+
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+
         tituloEvento = v.findViewById(R.id.editTextTitulo);
         ubicacionEvento = v.findViewById(R.id.editTextUbicacion);
         descripcionEvento = v.findViewById(R.id.editTextDescripcion);
@@ -197,8 +203,7 @@ public class CrearEventoFragment extends Fragment implements
         botonCancelar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.eventosLimpiezaFragement, "EVENTOS");
+                getActivity().onBackPressed();
             }
         });
 
@@ -218,6 +223,46 @@ public class CrearEventoFragment extends Fragment implements
         super.onActivityCreated(savedInstanceState);
 
         onEventoCreado = (OnEventoCreado) getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.e("Crear", "onDetach");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        Log.e("Crear", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e("Crear", "onStop");
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+
+        super.onHiddenChanged(hidden);
+
+        if(hidden) {
+            Log.e("Crear", "hidden true");
+        } else {
+            Log.e("Crear", "hiden false");
+        }
+
+        if(hidden)
+        {
+            getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        }
     }
 
     private View.OnClickListener listenerFecha = new View.OnClickListener() {

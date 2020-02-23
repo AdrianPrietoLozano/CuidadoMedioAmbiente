@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
@@ -21,6 +22,7 @@ import com.example.cuidadodelambiente.Fragments.ParticipaEventos;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -28,7 +30,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         DatosEventoFragment.OnBotonParticiparClic, CrearEventoFragment.OnEventoCreado {
 
-    public final ParticipaEventos participaEventos = new ParticipaEventos();
+    //public final ParticipaEventos participaEventos = new ParticipaEventos();
+
+    private ArrayList<Fragment> listaFragmentos = new ArrayList<Fragment>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //-------------------------------------------
 
         // iniciando el fragment principal
-        loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
+        if(savedInstanceState == null) {
+            loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
+        }
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -97,23 +103,19 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch(menuItem.getItemId()) {
             case R.id.eventosLimpieza:
-                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                        DeclaracionFragments.eventosLimpiezaFragement, "EVENTO");
+                cambiarFragment(DeclaracionFragments.eventosLimpiezaFragement, "EVENTO");
                 return true;
 
             case R.id.eventosRecomendados:
-                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
+                cambiarFragment(DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
                 return true;
 
             case R.id.reportes:
-                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
+                cambiarFragment(DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
                 return true;
 
             case R.id.eventos_participa:
-                Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                        participaEventos, "PARTICIPA");
+                cambiarFragment(DeclaracionFragments.participaEventos, "PARTICIPA");
                 return true;
         }
 
@@ -127,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     .beginTransaction()
                     .replace(R.id.nav_host_fragment, fragment, "EVENTO")
                     .commit();
+
+            listaFragmentos.add(fragment);
             return true;
         }
         return false;
@@ -134,6 +138,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Override
     public void onBackPressed() {
+
+        if(listaFragmentos.size() > 1) {
+            quitarFragmentDeLista();
+        }
+        else {
+            listaFragmentos.clear();
+
+            VolleySingleton.getinstance(getApplicationContext()).getRequestQueue().stop();
+
+            super.onBackPressed();
+        }
+
 
         /*
         if(FragmentSingleton.getOldFragment() != null)
@@ -149,8 +165,46 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }*/
         //else
         //{
-            super.onBackPressed();
         //}
+    }
+
+    public void cambiarFragment(Fragment fragment, String tag)
+    {
+        Fragment currentFragment = listaFragmentos.get(listaFragmentos.size() - 1);
+
+        if(fragment != currentFragment) {
+
+            Log.e("MAIN","entró a cambiarFragment");
+
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+            if (fragment.isAdded()) { // si ya se mostró antes
+                transaction.hide(currentFragment).show(fragment);
+            } else { // si es la primera vez en mostrarse
+                transaction.hide(currentFragment)
+                        .add(R.id.nav_host_fragment, fragment, tag);
+            }
+
+            listaFragmentos.add(fragment);
+            transaction.commit();
+            currentFragment.onDetach();
+
+        }
+    }
+
+    private void quitarFragmentDeLista()
+    {
+        if(listaFragmentos.size() > 1)
+        {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment currentFragment = listaFragmentos.get(listaFragmentos.size() - 1);
+            Fragment fragmentDestion = listaFragmentos.get(listaFragmentos.size() - 2);
+
+            transaction.hide(currentFragment).show(fragmentDestion);
+            transaction.commit();
+
+            listaFragmentos.remove(listaFragmentos.size() - 1);
+        }
     }
 
     @Override

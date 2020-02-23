@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.CameraUpdate;
@@ -71,6 +73,10 @@ public class EventosLimpieza extends Fragment
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.content_eventos_limpieza, container, false);
 
+        Log.e("EVENTOSLIMPIEZA", "onCreateView");
+
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
         Bundle mMapViewBundle = null;
@@ -98,8 +104,8 @@ public class EventosLimpieza extends Fragment
         v.findViewById(R.id.layoutEventoParati).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
+                ((MainActivity)getActivity())
+                        .cambiarFragment(DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
             }
         });
 
@@ -107,8 +113,8 @@ public class EventosLimpieza extends Fragment
         v.findViewById(R.id.layoutCrearEvento).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
+                ((MainActivity)getActivity())
+                        .cambiarFragment(DeclaracionFragments.recomendacionCrearEventoFragment, "RECOMENDACION");
             }
         });
 
@@ -123,11 +129,12 @@ public class EventosLimpieza extends Fragment
 
         // evento clic para el boton flotante que permite crear un nuevo evento
         botonNuevoEvento = v.findViewById(R.id.botonNuevoEvento);
+        botonNuevoEvento.show();
         botonNuevoEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Utilidades.iniciarFragment(getFragmentManager().beginTransaction(),
-                        DeclaracionFragments.crearEventoFragment, "CREAR");
+                ((MainActivity)getActivity())
+                        .cambiarFragment(DeclaracionFragments.crearEventoFragment, "CREAR");
             }
         });
 
