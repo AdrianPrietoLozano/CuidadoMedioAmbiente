@@ -14,6 +14,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
@@ -47,15 +49,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //-------------------------------------------
 
         // iniciando el fragment principal
-        if(savedInstanceState == null) {
-            loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
-        }
+        loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-
-
-
 
 
         /*
@@ -145,8 +142,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         else {
             listaFragmentos.clear();
 
-            VolleySingleton.getinstance(getApplicationContext()).getRequestQueue().stop();
-
             super.onBackPressed();
         }
 
@@ -200,12 +195,20 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Fragment currentFragment = listaFragmentos.get(listaFragmentos.size() - 1);
             Fragment fragmentDestion = listaFragmentos.get(listaFragmentos.size() - 2);
 
-            transaction.hide(currentFragment).show(fragmentDestion);
+
+            if(currentFragment.getTag() == "CREAR") {
+                transaction.remove(currentFragment).show(fragmentDestion);
+            }
+            else {
+                transaction.hide(currentFragment).show(fragmentDestion);
+            }
+
             transaction.commit();
 
             listaFragmentos.remove(listaFragmentos.size() - 1);
         }
     }
+
 
     @Override
     public void botonParticiparClic() {

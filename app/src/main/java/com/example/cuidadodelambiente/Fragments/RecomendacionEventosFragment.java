@@ -202,8 +202,8 @@ public class RecomendacionEventosFragment extends Fragment
 
                         Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
                                 listaEventos.get(position).getIdEvento());
-                        Utilidades.iniciarFragment(getFragmentManager().beginTransaction(), fragmentDatosEvento, "DATOS");
-
+                        ((MainActivity)getActivity())
+                                .cambiarFragment(fragmentDatosEvento, "DATOS");
                     }
                 }));
             }

@@ -117,15 +117,20 @@ public class CrearEventoFragment extends Fragment implements
             mostrarUbicacionEnTextView(addressOutput);
 
         }
+
     }
 
     private void mostrarUbicacionEnTextView(final String direccionCompleta) {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ubicacionEvento.setText(direccionCompleta);
-            }
-        });
+
+        if(!this.isRemoving()) { // ESTO ESTA MAL
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ubicacionEvento.setText(direccionCompleta);
+                }
+            });
+        }
     }
 
 
@@ -218,6 +223,7 @@ public class CrearEventoFragment extends Fragment implements
         return v;
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -245,6 +251,13 @@ public class CrearEventoFragment extends Fragment implements
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e("Crear", "onDestroy");
+        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
 
         super.onHiddenChanged(hidden);
@@ -253,15 +266,6 @@ public class CrearEventoFragment extends Fragment implements
             Log.e("Crear", "hidden true");
         } else {
             Log.e("Crear", "hiden false");
-        }
-
-        if(hidden)
-        {
-            getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         }
     }
 
@@ -317,7 +321,7 @@ public class CrearEventoFragment extends Fragment implements
         location.setLatitude(ubicacionReporte.latitude);
         location.setLongitude(ubicacionReporte.longitude);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
-        getActivity().startService(intent);
+        getContext().startService(intent);
     }
 
 

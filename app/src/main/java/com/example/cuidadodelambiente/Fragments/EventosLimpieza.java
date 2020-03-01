@@ -244,30 +244,35 @@ public class EventosLimpieza extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("EVENTO", "onResume");
         mMapView.onResume();
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.e("EVENTO", "onStart");
         mMapView.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.e("EVENTO", "onStop");
         mMapView.onStop();
     }
 
     @Override
     public void onPause() {
         mMapView.onPause();
+        Log.e("EVENTO", "onPause");
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
         mMapView.onDestroy();
+        Log.e("EVENTO", "onDestroy");
         super.onDestroy();
     }
 
@@ -299,6 +304,8 @@ public class EventosLimpieza extends Fragment
     // se llama cuando se logra conectar
     @Override
     public void onResponse(JSONObject response) {
+        Log.e("EVENTO", "onResponseVolley");
+
         JSONArray json = response.optJSONArray("ubicacion");
 
         JSONObject jsonObject;
