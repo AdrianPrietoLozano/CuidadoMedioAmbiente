@@ -122,14 +122,18 @@ public class CrearEventoFragment extends Fragment implements
 
     private void mostrarUbicacionEnTextView(final String direccionCompleta) {
 
-        if(!this.isRemoving()) { // ESTO ESTA MAL
+        try {
+            if (!this.isRemoving()) { // ESTO ESTA MAL
 
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ubicacionEvento.setText(direccionCompleta);
-                }
-            });
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ubicacionEvento.setText(direccionCompleta);
+                    }
+                });
+            }
+        } catch (Exception e) {
+            Log.e("CREAREVENTOFRAGMENT", e.toString());
         }
     }
 

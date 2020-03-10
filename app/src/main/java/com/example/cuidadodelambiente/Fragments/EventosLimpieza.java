@@ -294,6 +294,8 @@ public class EventosLimpieza extends Fragment
     // se llama cuando no se logra conectar
     @Override
     public void onErrorResponse(VolleyError error) {
+        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+
         cargandoCircular.ocultarCargaMostrarContenido();
         botonNuevoEvento.hide();
         botonRecargar.hide();
