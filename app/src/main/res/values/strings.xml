@@ -16,6 +16,35 @@
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
 
+    <string name="nuevo_reporte">Nuevo reporte ecológico</string>
+    <string name="fecha_hora">Fecha y hora</string>
+    <string name="contaminante">Contaminante</string>
+    <string name="volumen_residuo">Volumen del residuo</string>
+    <string-array name="contaminantes_array">
+        <item>Selecciona una opción</item>
+        <item>Envases</item>
+        <item>Cartón</item>
+        <item>Bolsas</item>
+        <item>Eléctricos y electrónicos</item>
+        <item>Pilas y baterías</item>
+        <item>Neumáticos</item>
+        <item>Medicamentos</item>
+        <item>Escombros</item>
+        <item>Varios</item>
+    </string-array>
+
+    <string-array name="volumen_array">
+        <item>Selecciona una opción</item>
+        <item>Cabe en una mano</item>
+        <item>Cabe en una mochila</item>
+        <item>Cabe en un automóvil</item>
+        <item>Cabe en un contenedor</item>
+        <item>Cabe en un camión</item>
+        <item>Más grande</item>
+    </string-array>
+
+    <string name="fotografia">Fotografía</string>
+
     <string name="titulo_eventos_recomendados">Nuestra recomendación de eventos para ti según tu actividad</string>
 
     <string name="title_eventos_nav_view">Eventos</string>

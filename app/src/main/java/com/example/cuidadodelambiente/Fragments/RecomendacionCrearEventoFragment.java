@@ -3,6 +3,7 @@ package com.example.cuidadodelambiente.Fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,9 +27,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.cuidadodelambiente.ActividadCrearReporte;
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
 import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -62,6 +66,7 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private TextView mensajeProblema, totalReportes;
     private Button botonVolverIntentar;
     private FloatingActionButton botonRecargar;
+    private FloatingActionButton botonNuevoReporte;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private JsonObjectRequest jsonObjectRequest;
     private CargandoCircular cargandoCircular;
@@ -111,6 +116,18 @@ public class RecomendacionCrearEventoFragment extends Fragment
                 intentarPeticionBD();
             }
         });
+
+        // evento clic para el boton flotante crear nuevo reporte
+        botonNuevoReporte = v.findViewById(R.id.botonFlotanteNuevoReporte);
+        botonNuevoReporte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentCrearReporte = new Intent(getActivity(),
+                        ActividadCrearReporte.class);
+                startActivity(intentCrearReporte);
+            }
+        });
+
 
         Bundle mapViewBundle = null;
         if (savedInstanceState != null) {

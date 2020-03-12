@@ -111,7 +111,8 @@
                 <EditText
                     android:id="@+id/editTextUbicacion"
                     style="@style/inputCrearEvento"
-                    android:inputType="text|numberDecimal"/>
+                    android:inputType="text|numberDecimal"
+                    />
 
                 <TextView
                     android:id="@+id/textViewDescripcion"

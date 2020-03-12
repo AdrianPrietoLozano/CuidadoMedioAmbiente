@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             Fragment fragmentDestion = listaFragmentos.get(listaFragmentos.size() - 2);
 
 
-            if(currentFragment.getTag() == "CREAR") {
+            if(currentFragment.getTag() == "CREAR" || currentFragment.getTag() == "CREAR_REPORTE") {
                 transaction.remove(currentFragment).show(fragmentDestion);
             }
             else {
