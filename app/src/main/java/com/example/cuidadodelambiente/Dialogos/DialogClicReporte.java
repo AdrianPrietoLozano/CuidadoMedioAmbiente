@@ -1,15 +1,12 @@
 package com.example.cuidadodelambiente.Dialogos;
 
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,35 +17,24 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
-import com.google.android.gms.maps.model.LatLng;
+import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.sql.Date;
-import java.sql.Time;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 /* Diálogo que se muestra al hacer clic en un reporte de contaminación */
-public class DialogClicReporte extends DialogFragment
-    implements Response.Listener<JSONObject>, Response.ErrorListener{
+public class DialogClicReporte extends DialogFragment {
 
     private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte, mensajeProblema;
     private ImageView imagenReporte;
@@ -57,8 +43,7 @@ public class DialogClicReporte extends DialogFragment
     private Button botonCancelar;
     private Button botonVolverIntentar;
     private ProgressDialog progreso;
-    private JsonObjectRequest jsonObjectRequest;
-    private ReporteContaminacion reporteContaminacion;
+    protected ReporteContaminacion reporteContaminacion;
     private CargandoCircular cargandoCircular;
     private LinearLayout layoutSinConexion;
 
@@ -79,7 +64,7 @@ public class DialogClicReporte extends DialogFragment
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        VolleySingleton.getinstance(getContext()).getRequestQueue().cancelAll(this);
+        //VolleySingleton.getinstance(getContext()).getRequestQueue().cancelAll(this);
     }
 
     @Override
@@ -91,6 +76,8 @@ public class DialogClicReporte extends DialogFragment
 
         // representa al reporte que se esta mostrando en el dialog
         reporteContaminacion = new ReporteContaminacion();
+
+        Log.e("ID", String.valueOf(reporteId));
     }
 
     @NonNull
@@ -125,8 +112,8 @@ public class DialogClicReporte extends DialogFragment
             @Override
             public void onClick(View v) {
                 CrearEventoFragment crearEventoFragment = CrearEventoFragment.newInstance(
-                        reporteContaminacion.getId(), reporteContaminacion.getUbicacion().latitude,
-                        reporteContaminacion.getUbicacion().longitude);
+                        reporteContaminacion.getId(), reporteContaminacion.getLatitud(),
+                        reporteContaminacion.getLongitud());
 
                 ((MainActivity)getActivity())
                         .cambiarFragment(crearEventoFragment, "CREAR");
@@ -191,81 +178,50 @@ public class DialogClicReporte extends DialogFragment
         }
     }
 
+
+
     private void iniciarPeticionBD()
     {
+        /*
         String url = getString(R.string.ip) + "EventosLimpieza/datos_reporte.php?reporte_id="+reporteId;
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         jsonObjectRequest.setTag(this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
-    }
+         */
 
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-        cargandoCircular.ocultarContenidoPrincipal();
-        cargandoCircular.ocultarPantallaCarga();
-        layoutSinConexion.setVisibility(View.VISIBLE);
-
-        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("datos_reporte");
-        JSONObject jsonObject = null;
-
-        try {
-            jsonObject = json.getJSONObject(0);
-
-            reporteContaminacion.setId(jsonObject.optInt("id"));
-            reporteContaminacion.setFecha(jsonObject.optString("fecha"));
-            reporteContaminacion.setHora(jsonObject.optString("hora"));
-            reporteContaminacion.setDescripcion(jsonObject.optString("descripcion"));
-            reporteContaminacion.setTipoResiduo(jsonObject.optString("tipo"));
-            reporteContaminacion.setVolumenResiduo(jsonObject.optString("volumen"));
-            reporteContaminacion.setAmbientalista(jsonObject.optString("nombre_usuario"));
-            reporteContaminacion.setRutaFotografia(jsonObject.optString("foto"));
-            reporteContaminacion.setUbicacion( new LatLng(jsonObject.optDouble("latitud"),
-                                                        jsonObject.optDouble("longitud")));
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        fechaHora.setText(reporteContaminacion.getFecha() + ", " +
-                reporteContaminacion.getHora());
-        tipoResiduo.setText(reporteContaminacion.getTipoResiduo());
-        volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
-        denunciante.setText(reporteContaminacion.getAmbientalista());
-        descripcionReporte.setText(reporteContaminacion.getDescripcion());
-
-        cargandoCircular.ocultarCargaMostrarContenido();
-
-        String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + reporteContaminacion.getRutaFotografia();
-        iniciarCargaImagen(urlImagen);
-    }
-
-    private void iniciarCargaImagen(String urlImagen)
-    {
-        urlImagen.replace(" ", "%20"); // evitar errores con los espacios
-
-        ImageRequest imageRequest = new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<ReporteContaminacion> call = service.doGetReporteContaminacion(this.reporteId);
+        call.enqueue(new Callback<ReporteContaminacion>() {
             @Override
-            public void onResponse(Bitmap response) {
-                imagenReporte.setImageBitmap(response);
+            public void onResponse(Call<ReporteContaminacion> call, retrofit2.Response<ReporteContaminacion> response) {
+
+                reporteContaminacion = response.body();
+
+                fechaHora.setText(reporteContaminacion.getFecha() + ", " +
+                        reporteContaminacion.getHora());
+                tipoResiduo.setText(reporteContaminacion.getTipoResiduo());
+                volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
+                denunciante.setText(reporteContaminacion.getAmbientalista());
+                descripcionReporte.setText(reporteContaminacion.getDescripcion());
+
+                cargandoCircular.ocultarCargaMostrarContenido();
+
+                String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                        reporteContaminacion.getRutaFoto();
+                Picasso.with(getContext()).load(urlFoto).into(imagenReporte);
+
             }
-        }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
-                imagenReporte.setImageResource(R.drawable.imagen_no_disponible);
+            public void onFailure(Call<ReporteContaminacion> call, Throwable throwable) {
+                call.cancel();
+                mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+                cargandoCircular.ocultarContenidoPrincipal();
+                cargandoCircular.ocultarPantallaCarga();
+                layoutSinConexion.setVisibility(View.VISIBLE);
             }
         });
-
-        imageRequest.setTag(this);
-
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(imageRequest);
     }
 }

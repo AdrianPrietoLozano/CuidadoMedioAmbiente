@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/navigation_reportes"
-        android:name="com.example.cuidadodelambiente.Fragments.RecomendacionCrearEventoFragment"
+        android:name="com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment"
         android:label="@string/title_recomendacion_crear_evento"
         tools:layout="@layout/fragment_recomendacion_crear_evento" />
 

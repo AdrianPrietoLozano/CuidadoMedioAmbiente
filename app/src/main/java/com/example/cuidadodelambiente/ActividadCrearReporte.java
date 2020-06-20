@@ -161,6 +161,7 @@ public class ActividadCrearReporte extends AppCompatActivity {
                         loc.getLatitude(), loc.getLongitude(), 1);
                 if (!list.isEmpty()) {
                     Address DirCalle = list.get(0);
+                    Toast.makeText(getApplicationContext(), DirCalle.getAddressLine(0), Toast.LENGTH_SHORT).show();
                     Log.e("UBICACION", DirCalle.getAddressLine(0));
                 }
             } catch (IOException e) {
@@ -235,9 +236,10 @@ public class ActividadCrearReporte extends AppCompatActivity {
                         }
                 );
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
+                showAlert();
+                //Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
+                //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                //startActivity(intent);
             }
         } else {
             requestPermissions();

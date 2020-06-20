@@ -1,16 +1,11 @@
-package com.example.cuidadodelambiente.Fragments;
+package com.example.cuidadodelambiente.ui.fragments.reportes.view;
 
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,43 +16,37 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
+import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
+import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.ActividadCrearReporte;
-import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
-import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
-import com.example.cuidadodelambiente.Entidades.VolleySingleton;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.ReportesPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecomendacionCrearEventoFragment extends Fragment
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
-        Response.Listener<JSONObject>, Response.ErrorListener
+public class ReportesContaminacionFragment extends Fragment
+        implements IReportesView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener
 {
 
     private MapView mMapView;
@@ -70,10 +59,11 @@ public class RecomendacionCrearEventoFragment extends Fragment
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private JsonObjectRequest jsonObjectRequest;
     private CargandoCircular cargandoCircular;
+    private ReportesPresenter reportesPresenter;
 
 
-    public RecomendacionCrearEventoFragment() {
-        // Required empty public constructor
+    public ReportesContaminacionFragment() {
+        reportesPresenter = new ReportesPresenter(this);
     }
 
 
@@ -171,7 +161,8 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
-            iniciarPeticionBD();
+
+            reportesPresenter.cargarReportes();
         }
         else {
             cargandoCircular.ocultarCargaMostrarContenido();
@@ -180,13 +171,6 @@ public class RecomendacionCrearEventoFragment extends Fragment
         }
     }
 
-    private void iniciarPeticionBD()
-    {
-        String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_reportes.php";
-
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
-    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -204,20 +188,20 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     @Override
     public void onResume() {
-        super.onResume();
         mMapView.onResume();
+        super.onResume();
     }
 
     @Override
     public void onStart() {
-        super.onStart();
         mMapView.onStart();
+        super.onStart();
     }
 
     @Override
     public void onStop() {
-        super.onStop();
         mMapView.onStop();
+        super.onStop();
     }
 
     @Override
@@ -234,8 +218,8 @@ public class RecomendacionCrearEventoFragment extends Fragment
 
     @Override
     public void onLowMemory() {
-        super.onLowMemory();
         mMapView.onLowMemory();
+        super.onLowMemory();
     }
 
     @Override
@@ -247,47 +231,25 @@ public class RecomendacionCrearEventoFragment extends Fragment
     }
 
     @Override
-    public void onErrorResponse(VolleyError error) {
-        cargandoCircular.ocultarCargaMostrarContenido();
+    public void onReportesRecibidosCorrectamente(List<UbicacionReporte> reportes) {
+        Log.e("TOTAL", String.valueOf(reportes.size()));
 
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-        layoutSinConexion.setVisibility(View.VISIBLE);
+        totalReportes.setText(reportes.size() + " reportes en total");
+
+        for (UbicacionReporte reporte : reportes) {
+
+            Utilidades.agregarMarcadorMapa(mMap,
+                    new LatLng(reporte.getLatitud(), reporte.getLongitud()),
+                    reporte.getId());
+        }
+        cargandoCircular.ocultarCargaMostrarContenido();
     }
 
     @Override
-    public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("reportes");
-
-        JSONObject jsonObject;
-        LatLng ubicacion;
-        for(int i = 0; i < json.length(); i++)
-        {
-            try {
-                jsonObject = json.getJSONObject(i);
-
-                int idReporte = jsonObject.optInt("id_reporte");
-                int reporteRecomendado = jsonObject.optInt("recomendado");
-
-                double lat = jsonObject.optDouble("latitud");
-                double lng = jsonObject.optDouble("longitud");
-                ubicacion = new LatLng(lat, lng);
-
-                if(reporteRecomendado == 1) {
-                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, idReporte, BitmapDescriptorFactory.HUE_CYAN);
-                }
-                else{
-                    Utilidades.agregarMarcadorMapa(mMap, ubicacion, idReporte);
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // etiqueta de total de reportes
-        totalReportes.setText(response.optString("num_reportes") + " reportes en total");
-
+    public void onReportesRecibidosError() {
+        Log.e("ERRORRRRRR", "BIENENENENEN");
         cargandoCircular.ocultarCargaMostrarContenido();
-
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        layoutSinConexion.setVisibility(View.VISIBLE);
     }
 }

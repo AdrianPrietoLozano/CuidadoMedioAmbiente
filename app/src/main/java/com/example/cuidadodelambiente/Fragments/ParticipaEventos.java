@@ -2,13 +2,10 @@ package com.example.cuidadodelambiente.Fragments;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,30 +20,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
-import com.example.cuidadodelambiente.Entidades.VolleySingleton;
+import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParticipaEventos extends Fragment
-        implements Response.ErrorListener, Response.Listener<JSONObject> {
+public class ParticipaEventos extends Fragment {
 
     private JsonObjectRequest jsonObjectRequest;
     private RecyclerView recyclerEventos;
@@ -141,24 +135,43 @@ public class ParticipaEventos extends Fragment
     }
 
     private void iniciarPeticionBD() {
+        /*
         String url = getString(R.string.ip) + "EventosLimpieza/datos_participacion_evento.php?id_ambientalista="+
                 DeclaracionFragments.actualAmbientalista;
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
+         */
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<List<ParticipaEventoItem>> call = service.doGetEventosParticipa(DeclaracionFragments.actualAmbientalista);
+        call.enqueue(new Callback<List<ParticipaEventoItem>>() {
+            @Override
+            public void onResponse(Call<List<ParticipaEventoItem>> call, final retrofit2.Response<List<ParticipaEventoItem>> response) {
+
+                if(response.body().size() == 0) {
+                    mensajeProblema.setText("No participas en ningún evento");
+                    layoutSinConexion.setVisibility(View.VISIBLE);
+
+                } else {
+                    recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), response.body()));
+                }
+
+                cargandoCircular.ocultarCargaMostrarContenido();
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ParticipaEventoItem>> call, Throwable throwable) {
+                call.cancel();
+                swipeRefreshLayout.setRefreshing(false);
+                mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+                layoutSinConexion.setVisibility(View.VISIBLE);
+                cargandoCircular.ocultarCargaMostrarContenido();
+            }
+        });
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        //Toast.makeText(getContext(), error.toString(), Toast.LENGTH_LONG).show();
-
-        swipeRefreshLayout.setRefreshing(false);
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-        layoutSinConexion.setVisibility(View.VISIBLE);
-
-        cargandoCircular.ocultarCargaMostrarContenido();
-
-    }
 
     public void recargar()
     {
@@ -167,45 +180,7 @@ public class ParticipaEventos extends Fragment
         intentarPeticionBD();
     }
 
-    @Override
-    public void onResponse(JSONObject response) {
-        JSONArray json = response.optJSONArray("datos");
 
-        JSONObject jsonObject;
-        EventoLimpieza eventoLimpieza = null;
-
-        try
-        {
-            if(json.length() == 0) // no participa en ningun evento
-            {
-                mensajeProblema.setText("No participas en ningún evento");
-                layoutSinConexion.setVisibility(View.VISIBLE);
-            }
-            else {
-                for (int i = 0; i < json.length(); i++) {
-                    jsonObject = json.getJSONObject(i);
-                    eventoLimpieza = new EventoLimpieza();
-
-                    //eventoLimpieza.setIdEvento(jsonObject.optInt("id_evento"));
-                    eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
-                    eventoLimpieza.setFecha(jsonObject.optString("fecha"));
-                    eventoLimpieza.setHora(jsonObject.optString("hora"));
-                    eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
-                    eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
-                    eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
-                    eventoLimpieza.setTipoResiduo(jsonObject.optString("tipo"));
-
-                    listaEventos.add(eventoLimpieza);
-                }
-                recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), listaEventos));
-            }
-            cargandoCircular.ocultarCargaMostrarContenido();
-            swipeRefreshLayout.setRefreshing(false);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 }
 
 
@@ -225,11 +200,10 @@ public class ParticipaEventos extends Fragment
 
 class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter.ParticipaEventoViewHolder>
 {
-    private List<EventoLimpieza> listaEventos;
-    private JsonObjectRequest jsonObjectRequest;
+    private List<ParticipaEventoItem> listaEventos;
     private Context context;
 
-    ParticipaEventoAdapter(Context context, List<EventoLimpieza> listaEventos)
+    ParticipaEventoAdapter(Context context, List<ParticipaEventoItem> listaEventos)
     {
         this.context = context;
         this.listaEventos = listaEventos;
@@ -255,11 +229,15 @@ class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter
         holder.fechaHoraEvento.setText(String.format("%s, %s",
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
-        holder.creador.setText("Creador: " + listaEventos.get(position).getAmbientalista());
+        holder.creador.setText("Creador: " + listaEventos.get(position).getCreador());
         holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
         holder.descripcion.setText(listaEventos.get(position).getDescripcion());
 
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                listaEventos.get(position).getFoto();
+        Picasso.with(context).load(urlFoto).into(holder.imagenEvento);
 
+        /*
         if(holder.imagenEvento.getTag().toString() == "NO")
         {
             String urlImagen = holder.itemView.getResources().getString(R.string.ip) +
@@ -270,27 +248,7 @@ class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter
 
             iniciarCargaImagen(urlImagen, holder);
         }
-    }
-
-
-    private void iniciarCargaImagen(String urlImagen, final ParticipaEventoViewHolder holder)
-    {
-        urlImagen.replace(" ", "%20"); // evitar errores con los espacios
-
-        ImageRequest imageRequest = new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                holder.imagenEvento.setImageBitmap(response);
-                holder.imagenEvento.setTag("SI"); // la imagen no se recargará
-            }
-        }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                holder.imagenEvento.setImageResource(R.drawable.imagen_no_disponible);
-            }
-        });
-
-        VolleySingleton.getinstance(context).addToRequestQueue(imageRequest);
+         */
     }
 
 

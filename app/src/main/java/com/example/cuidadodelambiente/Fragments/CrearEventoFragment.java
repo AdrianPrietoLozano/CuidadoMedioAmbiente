@@ -11,7 +11,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
@@ -29,24 +28,18 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Entidades.ReporteContaminacion;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
-import android.os.ResultReceiver;
+import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.os.ResultReceiver;
 
 import java.util.Calendar;
 
@@ -122,7 +115,6 @@ public class CrearEventoFragment extends Fragment implements
     }
 
     private void mostrarUbicacionEnTextView(final String direccionCompleta) {
-
         try {
             if (!this.isRemoving()) { // ESTO ESTA MAL
 

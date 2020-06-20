@@ -8,7 +8,7 @@ import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.CrearReporteFragment;
 import com.example.cuidadodelambiente.Fragments.ParticipaEventos;
 import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
-import com.example.cuidadodelambiente.Fragments.RecomendacionCrearEventoFragment;
+import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 
 
@@ -19,7 +19,7 @@ public class DeclaracionFragments {
 
     public static final Fragment eventosLimpiezaFragement = new EventosLimpieza();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
-    public static final Fragment recomendacionCrearEventoFragment = new RecomendacionCrearEventoFragment();
+    public static final Fragment recomendacionCrearEventoFragment = new ReportesContaminacionFragment();
     public static final Fragment participaEventos = new ParticipaEventos();
     public static final Fragment crearEventoFragment = new CrearEventoFragment();
     public static final Fragment crearReporteFragment = new CrearReporteFragment();
