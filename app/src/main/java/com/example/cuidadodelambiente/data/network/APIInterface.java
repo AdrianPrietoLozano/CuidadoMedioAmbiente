@@ -1,7 +1,7 @@
 package com.example.cuidadodelambiente.data.network;
 
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
-import com.example.cuidadodelambiente.data.models.Evento;
+import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.EventoItem;
 import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
@@ -15,7 +15,7 @@ import retrofit2.http.Query;
 public interface APIInterface {
 
     @GET("ubicaciones_eventos.php")
-    Call<List<Evento>> doGetEventos();
+    Call<List<UbicacionEvento>> doGetEventos();
 
     @GET("ubicaciones_reportes.php")
     Call<List<UbicacionReporte>> doGetReportes();

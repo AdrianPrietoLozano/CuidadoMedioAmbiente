@@ -2,7 +2,7 @@ package com.example.cuidadodelambiente.data.models;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Evento {
+public class UbicacionEvento {
 
     @SerializedName("id_evento")
     private Integer id;

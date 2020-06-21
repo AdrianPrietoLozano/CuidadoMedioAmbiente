@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.CrearReporteFragment;
 import com.example.cuidadodelambiente.Fragments.ParticipaEventos;
-import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
+import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpieza;
 import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 

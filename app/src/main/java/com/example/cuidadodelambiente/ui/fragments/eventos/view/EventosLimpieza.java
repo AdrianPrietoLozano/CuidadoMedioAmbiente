@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.Fragments;
+package com.example.cuidadodelambiente.ui.fragments.eventos.view;
 
 
 import android.app.ProgressDialog;
@@ -16,13 +16,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.data.models.Evento;
+import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
+import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,7 +50,7 @@ import retrofit2.Callback;
 
 
 public class EventosLimpieza extends Fragment
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        implements IEventosView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private MapView mMapView;
     private GoogleMap mMap;
@@ -61,11 +65,10 @@ public class EventosLimpieza extends Fragment
     private CargandoCircular cargandoCircular;
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
-
-    RetrofitClientInstance retrofit;
+    private EventosPresenter presenter;
 
     public EventosLimpieza() {
-        // Required empty public constructor
+        this.presenter = new EventosPresenter(this);
     }
 
     @Override
@@ -170,7 +173,8 @@ public class EventosLimpieza extends Fragment
             layoutSinConexion.setVisibility(View.INVISIBLE);
             botonNuevoEvento.show();
             botonRecargar.show();
-            iniciarPeticionBD();
+            //iniciarPeticionBD();
+            presenter.cargarEventos();
         } else { // no hay conexión a internet
             cargandoCircular.ocultarCargaMostrarContenido();
             botonNuevoEvento.hide();
@@ -189,47 +193,6 @@ public class EventosLimpieza extends Fragment
         mMap.moveCamera(current);
     }
 
-    private void iniciarPeticionBD() {
-        /*
-        String url = getString(R.string.ip) + "EventosLimpieza/ubicaciones_eventos.php";
-
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
-        */
-
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<List<Evento>> call = service.doGetEventos();
-        call.enqueue(new Callback<List<Evento>>() {
-            @Override
-            public void onResponse(Call<List<Evento>> call, retrofit2.Response<List<Evento>> response) {
-
-                Log.e("TOTAL", String.valueOf(response.body().size()));
-
-                for (Evento evento : response.body()) {
-
-                    Utilidades.agregarMarcadorMapa(mMap,
-                            new LatLng(evento.getLatitud(), evento.getLongitud()),
-                            evento.getId());
-                }
-                cargandoCircular.ocultarCargaMostrarContenido();
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Evento>> call, Throwable throwable) {
-                call.cancel();
-                Toast.makeText(getContext(), "onFailure", Toast.LENGTH_SHORT).show();
-
-                cargandoCircular.ocultarCargaMostrarContenido();
-                botonNuevoEvento.hide();
-                botonRecargar.hide();
-                mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-                layoutSinConexion.setVisibility(View.VISIBLE);
-            }
-        });
-
-
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -326,5 +289,29 @@ public class EventosLimpieza extends Fragment
                 .cambiarFragment(fragmentDatosEvento, "DATOS");
 
         return true;
+    }
+
+    @Override
+    public void onEventosCargadosExitosamente(List<UbicacionEvento> eventos) {
+        Log.e("TOTAL", String.valueOf(eventos.size()));
+
+        for (UbicacionEvento evento : eventos) {
+
+            Utilidades.agregarMarcadorMapa(mMap,
+                    new LatLng(evento.getLatitud(), evento.getLongitud()),
+                    evento.getId());
+        }
+        cargandoCircular.ocultarCargaMostrarContenido();
+    }
+
+    @Override
+    public void onEventosCargadosError() {
+        Toast.makeText(getContext(), "onFailure", Toast.LENGTH_SHORT).show();
+
+        cargandoCircular.ocultarCargaMostrarContenido();
+        botonNuevoEvento.hide();
+        botonRecargar.hide();
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        layoutSinConexion.setVisibility(View.VISIBLE);
     }
 }

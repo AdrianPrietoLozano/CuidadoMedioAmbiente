@@ -14,18 +14,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
-import com.example.cuidadodelambiente.Fragments.EventosLimpieza;
-import com.example.cuidadodelambiente.Fragments.ParticipaEventos;
+import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpieza;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 

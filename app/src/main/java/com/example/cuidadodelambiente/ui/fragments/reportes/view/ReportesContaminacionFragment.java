@@ -26,6 +26,7 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
 import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.ReportesPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
