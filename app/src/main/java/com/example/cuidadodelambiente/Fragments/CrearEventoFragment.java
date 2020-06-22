@@ -329,6 +329,7 @@ public class CrearEventoFragment extends Fragment implements
                 descripcionEvento.getText().toString().equals(""))
         {
             Toast.makeText(getContext(), "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
+            tituloEvento.setError("Campo obligatorio");
         }
         else
         {
