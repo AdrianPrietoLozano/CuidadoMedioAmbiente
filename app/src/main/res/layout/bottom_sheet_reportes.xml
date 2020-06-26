@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
-    android:orientation="vertical"
-    android:background="@drawable/redondeado">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/redondeado_verde"
             android:padding="10dp"
             android:text="Datos del reporte de contaminación"
             android:textAlignment="center"
@@ -106,7 +105,6 @@
                     android:id="@+id/linearLayoutBotones"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -120,9 +118,8 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:background="@drawable/fondo_gradient_rojo_redondeado"
                         android:text="@string/boton_cancelar"
-                        android:textColor="@android:color/white"
+                        style="@style/boton_cancelar"
                         />
 
                     <Button
@@ -133,10 +130,9 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="16dp"
                         android:layout_weight="1"
-                        android:background="@color/colorPrimary"
+                        android:background="@drawable/boton_redondo_verde"
                         android:text="Crear evento"
-                        android:textColor="@android:color/white"
-                        />
+                        android:textColor="@android:color/white" />
 
                 </LinearLayout>
 

@@ -17,17 +17,17 @@ import com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment;
 public class DeclaracionFragments {
     public static int actualAmbientalista = 1;
 
-    public static final Fragment eventosLimpiezaFragement = new EventosLimpieza();
+    public static EventosLimpieza eventosLimpiezaFragement = new EventosLimpieza();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new ReportesContaminacionFragment();
     public static final Fragment participaEventos = new ParticipaEventos();
-    public static final Fragment crearEventoFragment = new CrearEventoFragment();
+    public static CrearEventoFragment crearEventoFragment = new CrearEventoFragment();
     public static final Fragment crearReporteFragment = new CrearReporteFragment();
     public static final Activity crearReporteActivity = new ActividadCrearReporte();
-
 
     public static Fragment getParticipaEventosFragment()
     {
         return participaEventos;
+
     }
 }

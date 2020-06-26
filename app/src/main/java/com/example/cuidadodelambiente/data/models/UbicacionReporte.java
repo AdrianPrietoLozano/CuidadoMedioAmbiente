@@ -10,6 +10,11 @@ public class UbicacionReporte {
     @SerializedName("longitud")
     private Double longitud;
 
+    public UbicacionReporte(int id, Double latitud, Double longitud) {
+        this.id = id;
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
 
     public Integer getId() {
         return id;

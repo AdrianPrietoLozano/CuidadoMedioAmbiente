@@ -156,9 +156,8 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/fondo_gradient_rojo_redondeado"
                         android:text="@string/boton_cancelar"
-                        android:textColor="@android:color/white"
+                        style="@style/boton_cancelar"
                         android:textStyle="normal" />
 
                     <Button
@@ -169,7 +168,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="16dp"
                         android:layout_marginTop="16dp"
-                        android:background="@drawable/fondo_gradient_verde_redondeado"
+                        android:background="@drawable/boton_redondo_verde"
                         android:text="@string/boton_aceptar"
                         android:textColor="@android:color/white"
                         android:textStyle="normal"/>

@@ -58,4 +58,23 @@
         <item name="android:popupBackground">@color/colorGrisBlanco</item>
     </style>
 
+    <style name="boton_cancelar">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:background">@android:color/transparent</item>
+
+    </style>
+
+    <!-- set the rounded drawable as background to your bottom sheet -->
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_dialog</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
+
 </resources>

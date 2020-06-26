@@ -11,6 +11,12 @@ public class UbicacionEvento {
     @SerializedName("longitud")
     private Double longitud;
 
+    public UbicacionEvento(int id, Double latitud, Double longitud) {
+        this.id = id;
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
+
 
     public Integer getId() {
         return id;

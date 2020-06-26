@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente.ui.fragments.eventos.view;
 
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -17,7 +18,9 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
+import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
@@ -33,12 +36,16 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,7 +57,7 @@ import retrofit2.Callback;
 
 
 public class EventosLimpieza extends Fragment
-        implements IEventosView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        implements IEventosView, Observer, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private MapView mMapView;
     private GoogleMap mMap;
@@ -69,6 +76,7 @@ public class EventosLimpieza extends Fragment
 
     public EventosLimpieza() {
         this.presenter = new EventosPresenter(this);
+
     }
 
     @Override
@@ -86,7 +94,6 @@ public class EventosLimpieza extends Fragment
         if (savedInstanceState != null) {
             mMapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
-
 
         // para la carga circular
         cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenido),
@@ -158,7 +165,7 @@ public class EventosLimpieza extends Fragment
         // Bottom Sheet
         bottom_sheet = v.findViewById(R.id.bottom_sheet_opciones);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
         intentarPeticionBD();
@@ -313,5 +320,21 @@ public class EventosLimpieza extends Fragment
         botonRecargar.hide();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.e("UPDATE", "Update");
+        Toast.makeText(getContext(), "UPDATE", Toast.LENGTH_SHORT).show();
+
+        UbicacionEvento ubicacionEvento = (UbicacionEvento) arg;
+        LatLng ubicacion = new LatLng(ubicacionEvento.getLatitud(), ubicacionEvento.getLongitud());
+
+        Utilidades.agregarMarcadorMapa(mMap, ubicacion, ubicacionEvento.getId(),
+                BitmapDescriptorFactory.HUE_CYAN);
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition.Builder()
+                .target(ubicacion)
+                .zoom(15.5f).bearing(0).tilt(25).build()));
     }
 }

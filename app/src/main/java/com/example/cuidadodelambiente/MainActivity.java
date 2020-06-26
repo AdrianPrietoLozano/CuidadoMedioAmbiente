@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
 
-
         /*
         BottomNavigationView navView = findViewById(R.id.bottom_navigation);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
@@ -177,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             listaFragmentos.add(fragment);
             transaction.commit();
+
             currentFragment.onDetach();
 
         }

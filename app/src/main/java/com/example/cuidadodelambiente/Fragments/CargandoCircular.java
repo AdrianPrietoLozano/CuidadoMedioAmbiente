@@ -2,6 +2,9 @@ package com.example.cuidadodelambiente.Fragments;
 
 import android.view.View;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 public class CargandoCircular {
     private View pantallaCarga;
     private View contenidoPrincipal;

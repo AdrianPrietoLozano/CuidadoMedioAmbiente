@@ -26,22 +26,35 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
+import com.example.cuidadodelambiente.MainActivity;
+import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
+import com.example.cuidadodelambiente.data.models.UbicacionEvento;
+import com.example.cuidadodelambiente.data.models.UbicacionReporte;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.JsonObject;
 
 import android.os.ResultReceiver;
 
 import java.util.Calendar;
+import java.util.Observable;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -70,6 +83,7 @@ public class CrearEventoFragment extends Fragment implements
     private LatLng ubicacionReporte;
     OnEventoCreado onEventoCreado;
     String addressOutput;
+    public ParaObservar observable = new ParaObservar();
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -169,6 +183,8 @@ public class CrearEventoFragment extends Fragment implements
         }
 
         resultReceiver = new AddressResultReceiver(null);
+
+        observable.addObserver(DeclaracionFragments.eventosLimpiezaFragement);
 
     }
 
@@ -333,6 +349,39 @@ public class CrearEventoFragment extends Fragment implements
         }
         else
         {
+            APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+            service.doAgregarEvento(DeclaracionFragments.actualAmbientalista,
+                    idReporte,
+                    tituloEvento.getText().toString(),
+                    fechaView.getText().toString(),
+                    horaView.getText().toString(),
+                    descripcionEvento.getText().toString())
+                    .enqueue(new Callback<ResultadoJsonAgregarEvento>() {
+                        @Override
+                        public void onResponse(Call<ResultadoJsonAgregarEvento> call, Response<ResultadoJsonAgregarEvento> response) {
+                            ResultadoJsonAgregarEvento json = response.body();
+
+                            Log.e("RESULTADO", String.valueOf(json.getResultado()));
+                            Log.e("MENSAJE", json.getMensaje());
+                            Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
+
+                            if (json.getResultado() == 1) {
+                                observable.notificar(new UbicacionEvento(json.getIdEvento(),
+                                        ubicacionReporte.latitude, ubicacionReporte.longitude));
+                                //((MainActivity) getActivity())
+                                        //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragement, "EVENTOS");
+                            } else {
+                                Toast.makeText(getContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResultadoJsonAgregarEvento> call, Throwable t) {
+                            Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+            /*
             String url = getResources().getString(R.string.ip) + "EventosLimpieza/insertar_evento.php?" +
                     "ambientalista_id=" + DeclaracionFragments.actualAmbientalista +
                     "&reporte_id=" + idReporte +
@@ -352,17 +401,20 @@ public class CrearEventoFragment extends Fragment implements
                             if(response.equals("1"))
                             {
                                 Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
-                                onEventoCreado.onEventoCreado(ubicacionReporte);
+                                //onEventoCreado.onEventoCreado(ubicacionReporte);
+                                observable.notifyObservers(ubicacionReporte);
 
                             }
                             else if(response.equals("2"))
                             {
                                 Toast.makeText(getContext(), "Error: el evento para ese reporte ya existe",
                                         Toast.LENGTH_SHORT).show();
+                                observable.notifyObservers(ubicacionReporte);
                             }
                             else
                             {
                                 Toast.makeText(getContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                                observable.notifyObservers(ubicacionReporte);
                             }
 
                             progreso.hide();
@@ -373,10 +425,14 @@ public class CrearEventoFragment extends Fragment implements
                         public void onErrorResponse(VolleyError error) {
                             progreso.hide();
                             Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            observable.a();
+                            Log.e("COUNT", String.valueOf(observable.countObservers()));
                         }
                     });
 
             VolleySingleton.getinstance(getContext()).addToRequestQueue(stringRequest);
+             */
+
         }
     }
 
