@@ -2,8 +2,6 @@ package com.example.cuidadodelambiente.ui.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,25 +18,29 @@ import androidx.annotation.Nullable;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import retrofit2.Call;
+import retrofit2.Callback;
 
-public class DatosEventoFragment extends BottomSheetDialogFragment
-    implements Response.Listener<JSONObject>, Response.ErrorListener{
+
+public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private BottomSheetBehavior mBehavior;
     private int eventoId; // id del evento en la base de datos
@@ -143,10 +145,43 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
     private void iniciarPeticionBD()
     {
-        String url = getString(R.string.ip) + "EventosLimpieza/datos_evento.php?evento_id="+eventoId;
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<EventoLimpieza> call = service.doGetEventoLimpieza(this.eventoId);
+        call.enqueue(new Callback<EventoLimpieza>() {
+            @Override
+            public void onResponse(Call<EventoLimpieza> call, retrofit2.Response<EventoLimpieza> response) {
 
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                eventoLimpieza = response.body();
+
+                nombreEvento.setText(eventoLimpieza.getTitulo());
+                fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
+                        eventoLimpieza.getHora()));
+                creador.setText(eventoLimpieza.getAmbientalista());
+                tipoResiduo.setText(eventoLimpieza.getTipoResiduo());
+                descripcion.setText(eventoLimpieza.getDescripcion());
+                numPersonasUnidas.setText(String.format("%s %s",
+                        eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
+
+                barraCarga.setVisibility(View.GONE);
+                contenidoPrincipal.setVisibility(View.VISIBLE);
+
+                String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                        eventoLimpieza.getRutaFotografia();
+                Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
+
+            }
+
+            @Override
+            public void onFailure(Call<EventoLimpieza> call, Throwable throwable) {
+                call.cancel();
+                Log.e("ERROR", throwable.getMessage());
+                //mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+                //cargandoCircular.ocultarContenidoPrincipal();
+                //cargandoCircular.ocultarPantallaCarga();
+                //layoutSinConexion.setVisibility(View.VISIBLE);
+
+            }
+        });
     }
 
     public static DatosEventoFragment newInstance(int eventoId) {
@@ -212,74 +247,5 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
                     }
                 });
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
-    }
-
-
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Log.e("ERROR", "OnErrorResponse");
-    }
-
-    @Override
-    public void onResponse(JSONObject response) {
-
-        JSONArray json = response.optJSONArray("datos_evento");
-        JSONObject jsonObject = null;
-
-        // limpia e inicializa un evento
-        eventoLimpieza = null;
-        eventoLimpieza = new EventoLimpieza();
-
-        try {
-            jsonObject = json.getJSONObject(0);
-
-            eventoLimpieza.setRutaFotografia(jsonObject.optString("foto"));
-            eventoLimpieza.setTitulo(jsonObject.optString("titulo"));
-            eventoLimpieza.setFecha(jsonObject.optString("fecha"));
-            eventoLimpieza.setHora(jsonObject.optString("hora"));
-            eventoLimpieza.setAmbientalista(jsonObject.optString("creador"));
-            eventoLimpieza.setDescripcion(jsonObject.optString("descripcion"));
-            eventoLimpieza.setTipoResiduo(jsonObject.optString("residuo"));
-
-            eventoLimpieza.setNumPersonasUnidas(response.optInt("personas_unidas"));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        nombreEvento.setText(eventoLimpieza.getTitulo());
-        fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
-                eventoLimpieza.getHora()));
-        creador.setText(eventoLimpieza.getAmbientalista());
-        tipoResiduo.setText(eventoLimpieza.getTipoResiduo());
-        descripcion.setText(eventoLimpieza.getDescripcion());
-        numPersonasUnidas.setText(String.format("%s %s",
-                eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
-
-        barraCarga.setVisibility(View.GONE);
-        contenidoPrincipal.setVisibility(View.VISIBLE);
-
-        String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + eventoLimpieza.getRutaFotografia();
-        iniciarCargaImagen(urlImagen);
-    }
-
-    private void iniciarCargaImagen(String urlImagen)
-    {
-        urlImagen.replace(" ", "%20"); // evitar errores con los espacios
-
-        ImageRequest imageRequest = new ImageRequest(urlImagen, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                imagenEvento.setImageBitmap(response);
-            }
-        }, 0, 0, ImageView.ScaleType.FIT_XY, null, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                imagenEvento.setImageResource(R.drawable.imagen_no_disponible);
-            }
-        });
-
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(imageRequest);
     }
 }

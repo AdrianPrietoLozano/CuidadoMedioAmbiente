@@ -23,7 +23,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Entidades.EventoLimpieza;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;

@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.data.network;
 
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
@@ -33,6 +34,10 @@ public interface APIInterface {
 
     @GET("datos_reporte.php")
     Call<ReporteContaminacion> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);
+
+    @GET("datos_evento.php")
+    Call<EventoLimpieza> doGetEventoLimpieza(@Query("evento_id") Integer evento);
+
 
     @GET("insertar_evento.php")
     Call<ResultadoJsonAgregarEvento> doAgregarEvento(

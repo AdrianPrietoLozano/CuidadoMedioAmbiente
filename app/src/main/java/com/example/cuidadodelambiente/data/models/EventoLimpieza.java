@@ -1,17 +1,34 @@
-package com.example.cuidadodelambiente.Entidades;
+package com.example.cuidadodelambiente.data.models;
 
-import android.graphics.Bitmap;
+import com.google.gson.annotations.SerializedName;
 
 public class EventoLimpieza {
+
     private int idEvento;
-    private String ambientalista;
-    private String titulo;
     private int idReporte;
+
+    @SerializedName("creador")
+    private String ambientalista;
+
+    @SerializedName("titulo")
+    private String titulo;
+
+    @SerializedName("fecha")
     private String fecha;
+
+    @SerializedName("hora")
     private String hora;
+
+    @SerializedName("descripcion")
     private String descripcion;
+
+    @SerializedName("foto")
     private String rutaFotografia;
+
+    @SerializedName("personas_unidas")
     private int numPersonasUnidas;
+
+    @SerializedName("residuo")
     private String tipoResiduo;
 
     public String getTipoResiduo() {
