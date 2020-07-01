@@ -79,7 +79,6 @@ public class CrearEventoFragment extends Fragment implements
     private StringRequest stringRequest;
     private boolean banderaLlenarUbicacion = false; // para saber si se creará un evento desde la pantalla de reportes
     private int idReporte;
-    // este atributo se necesitan solo cuando se crea un evento desde un DialogClicReporte
     private LatLng ubicacionReporte;
     OnEventoCreado onEventoCreado;
     String addressOutput;

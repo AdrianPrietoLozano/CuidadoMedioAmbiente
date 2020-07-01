@@ -18,16 +18,11 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
-import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
-import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.ActividadCrearReporte;
-import com.example.cuidadodelambiente.Dialogos.DialogClicReporte;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
-import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
 import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.ReportesPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,9 +35,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 
 
 /**
