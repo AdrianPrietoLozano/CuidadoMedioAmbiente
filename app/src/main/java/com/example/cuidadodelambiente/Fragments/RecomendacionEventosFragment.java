@@ -4,6 +4,7 @@ package com.example.cuidadodelambiente.Fragments;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,11 +143,9 @@ public class RecomendacionEventosFragment extends Fragment {
                 recyclerEventos.setAdapter(new EventoAdapter(getContext(), response.body(), new RecyclerViewOnItemClickListener() {
                     @Override
                     public void onClick(View v, int position) {
-
-                        Fragment fragmentDatosEvento = DatosEventoFragment.newInstance(
-                                response.body().get(position).getId());
-                        ((MainActivity)getActivity())
-                                .cambiarFragment(fragmentDatosEvento, "DATOS");
+                        BottomSheetDialogFragment fragmentDatosReporte = com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment.newInstance(response.body().get(position).getId());
+                        fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                        fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
                     }
                 }));
 

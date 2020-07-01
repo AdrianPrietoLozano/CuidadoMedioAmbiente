@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -19,7 +20,6 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
@@ -28,6 +28,7 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
 import com.google.android.gms.maps.CameraUpdate;
@@ -41,6 +42,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -291,9 +293,9 @@ public class EventosLimpieza extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Fragment fragmentDatosEvento = DatosEventoFragment.newInstance((int) marker.getTag());
-        ((MainActivity) getActivity())
-                .cambiarFragment(fragmentDatosEvento, "DATOS");
+        BottomSheetDialogFragment fragmentDatosReporte = DatosEventoFragment.newInstance((int) marker.getTag());
+        fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
 
         return true;
     }
