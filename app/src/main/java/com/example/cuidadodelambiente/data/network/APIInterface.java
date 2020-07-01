@@ -4,18 +4,14 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
-import com.example.cuidadodelambiente.EventoItem;
+import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
-import com.google.gson.JsonObject;
 
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface APIInterface {

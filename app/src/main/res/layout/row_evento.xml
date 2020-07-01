@@ -14,14 +14,13 @@
 
     <ImageView
         android:id="@+id/imagenEvento"
-        android:layout_width="65dp"
-        android:layout_height="65dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
         android:scaleType="fitXY"
-        android:background="@drawable/imagen_redondeada_borde"
         android:padding="3dp"
         />
 

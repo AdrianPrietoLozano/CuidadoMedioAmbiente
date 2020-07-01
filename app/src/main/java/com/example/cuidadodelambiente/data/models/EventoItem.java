@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.data.models;
 
 import com.google.gson.annotations.SerializedName;
 

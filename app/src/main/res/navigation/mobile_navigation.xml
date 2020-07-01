@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_eventos_recomendados"
-        android:name="com.example.cuidadodelambiente.Fragments.RecomendacionEventosFragment"
+        android:name="com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionEventosFragment"
         android:label="@string/eventos_para_ti"
         tools:layout="@layout/fragment_recomendacion_eventos" />
 
