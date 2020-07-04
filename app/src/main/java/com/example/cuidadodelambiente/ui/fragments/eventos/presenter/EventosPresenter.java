@@ -9,7 +9,7 @@ import java.util.List;
 
 public class EventosPresenter implements IEventosPresenter, IEventosInteractor {
 
-    private EventosInteractor interactor;
+    private IEventosPresenter interactor;
     private IEventosView view;
 
     public EventosPresenter(IEventosView view) {
@@ -19,7 +19,7 @@ public class EventosPresenter implements IEventosPresenter, IEventosInteractor {
 
     @Override
     public void cargarEventos() {
-        interactor.getEventosDesdeServidor();
+        interactor.cargarEventos();
     }
 
     @Override

@@ -74,7 +74,7 @@ public class EventosLimpieza extends Fragment
     private CargandoCircular cargandoCircular;
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
-    private EventosPresenter presenter;
+    private IEventosPresenter presenter;
 
     public EventosLimpieza() {
         this.presenter = new EventosPresenter(this);

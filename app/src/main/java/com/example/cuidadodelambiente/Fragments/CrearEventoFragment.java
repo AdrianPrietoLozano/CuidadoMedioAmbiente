@@ -343,6 +343,7 @@ public class CrearEventoFragment extends Fragment implements
             horaView.getText().equals("") || ubicacionEvento.getText().toString().equals("") ||
                 descripcionEvento.getText().toString().equals(""))
         {
+            // falta hacer mas comprobaciones
             Toast.makeText(getContext(), "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
             tituloEvento.setError("Campo obligatorio");
         }

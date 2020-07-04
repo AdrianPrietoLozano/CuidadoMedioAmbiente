@@ -6,22 +6,19 @@ import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
+import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
 
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvento>> {
+public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvento>>,
+        IEventosPresenter {
 
     private EventosPresenter presenter;
 
     public EventosInteractor(EventosPresenter presenter) {
         this.presenter = presenter;
-    }
-
-    public void getEventosDesdeServidor() {
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        service.doGetEventos().enqueue(this);
     }
 
     @Override
@@ -34,5 +31,11 @@ public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvent
         call.cancel();
         presenter.onConexionError();
         Log.e("ERROR CARGA EVENTOS", t.getMessage());
+    }
+
+    @Override
+    public void cargarEventos() {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        service.doGetEventos().enqueue(this);
     }
 }

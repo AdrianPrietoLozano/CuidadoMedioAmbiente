@@ -10,7 +10,7 @@ import java.util.List;
 public class ReportesPresenter implements IReportesPresenter, IReportesInteractor {
 
     private IReportesView view;
-    private ReportesInteractor interactor;
+    private IReportesPresenter interactor;
 
     public ReportesPresenter(IReportesView view) {
         this.view = view;
@@ -19,7 +19,7 @@ public class ReportesPresenter implements IReportesPresenter, IReportesInteracto
 
     @Override
     public void cargarReportes() {
-        interactor.getReportesDesdeServidor();
+        interactor.cargarReportes();
     }
 
     @Override

@@ -23,6 +23,7 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
+import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
 import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.ReportesPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -54,7 +55,7 @@ public class ReportesContaminacionFragment extends Fragment
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private JsonObjectRequest jsonObjectRequest;
     private CargandoCircular cargandoCircular;
-    private ReportesPresenter reportesPresenter;
+    private IReportesPresenter reportesPresenter;
 
 
     public ReportesContaminacionFragment() {
