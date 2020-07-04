@@ -36,6 +36,7 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
@@ -142,7 +143,6 @@ public class CrearEventoFragment extends Fragment implements
             Log.e("CREAREVENTOFRAGMENT", e.toString());
         }
     }
-
 
     public static CrearEventoFragment newInstance(int idReporte, double latitud, double longitud)
     {
@@ -349,25 +349,35 @@ public class CrearEventoFragment extends Fragment implements
         }
         else
         {
+            final EventoLimpieza evento = new EventoLimpieza();
+            evento.setIdReporte(idReporte);
+            //evento.setAmbientalista(//nombre del ambientalista);
+            evento.setTitulo(tituloEvento.getText().toString());
+            evento.setFecha(fechaView.getText().toString());
+            evento.setHora(horaView.getText().toString());
+            evento.setDescripcion(descripcionEvento.getText().toString());
+            evento.setUbicacion(ubicacionReporte);
+
+
             APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
             service.doAgregarEvento(DeclaracionFragments.actualAmbientalista,
-                    idReporte,
-                    tituloEvento.getText().toString(),
-                    fechaView.getText().toString(),
-                    horaView.getText().toString(),
-                    descripcionEvento.getText().toString())
+                    evento.getIdReporte(),
+                    evento.getTitulo(),
+                    evento.getFecha(),
+                    evento.getHora(),
+                    evento.getDescripcion())
                     .enqueue(new Callback<ResultadoJsonAgregarEvento>() {
                         @Override
                         public void onResponse(Call<ResultadoJsonAgregarEvento> call, Response<ResultadoJsonAgregarEvento> response) {
                             ResultadoJsonAgregarEvento json = response.body();
+                            evento.setIdEvento(json.getIdEvento());
 
                             Log.e("RESULTADO", String.valueOf(json.getResultado()));
                             Log.e("MENSAJE", json.getMensaje());
                             Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
 
                             if (json.getResultado() == 1) {
-                                observable.notificar(new UbicacionEvento(json.getIdEvento(),
-                                        ubicacionReporte.latitude, ubicacionReporte.longitude));
+                                observable.notificar(evento);
                                 //((MainActivity) getActivity())
                                         //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragement, "EVENTOS");
                             } else {

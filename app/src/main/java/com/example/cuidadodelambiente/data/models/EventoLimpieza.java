@@ -1,11 +1,15 @@
 package com.example.cuidadodelambiente.data.models;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
 public class EventoLimpieza {
 
     private int idEvento;
+
     private int idReporte;
+
+    private LatLng ubicacion;
 
     @SerializedName("creador")
     private String ambientalista;
@@ -109,5 +113,13 @@ public class EventoLimpieza {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public LatLng getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(LatLng ubicacion) {
+        this.ubicacion = ubicacion;
     }
 }

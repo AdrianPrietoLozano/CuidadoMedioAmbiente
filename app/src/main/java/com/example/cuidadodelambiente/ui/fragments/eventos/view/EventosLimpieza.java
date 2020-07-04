@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
@@ -329,14 +330,14 @@ public class EventosLimpieza extends Fragment
         Log.e("UPDATE", "Update");
         Toast.makeText(getContext(), "UPDATE", Toast.LENGTH_SHORT).show();
 
-        UbicacionEvento ubicacionEvento = (UbicacionEvento) arg;
-        LatLng ubicacion = new LatLng(ubicacionEvento.getLatitud(), ubicacionEvento.getLongitud());
+        EventoLimpieza evento = (EventoLimpieza) arg;
 
-        Utilidades.agregarMarcadorMapa(mMap, ubicacion, ubicacionEvento.getId(),
+        Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento(),
                 BitmapDescriptorFactory.HUE_CYAN);
+
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
-                .target(ubicacion)
+                .target(evento.getUbicacion())
                 .zoom(15.5f).bearing(0).tilt(25).build()));
     }
 }
