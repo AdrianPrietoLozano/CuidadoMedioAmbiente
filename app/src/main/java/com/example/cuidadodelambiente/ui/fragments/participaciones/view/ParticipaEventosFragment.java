@@ -1,10 +1,8 @@
 package com.example.cuidadodelambiente.ui.fragments.participaciones.view;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -15,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +26,8 @@ import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
-import com.squareup.picasso.Picasso;
+import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
+import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.ParticipacionesEventosPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +39,8 @@ import retrofit2.Callback;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParticipaEventos extends Fragment {
+public class ParticipaEventosFragment extends Fragment
+    implements IParticipacionesEventosView{
 
     private JsonObjectRequest jsonObjectRequest;
     private RecyclerView recyclerEventos;
@@ -53,10 +52,10 @@ public class ParticipaEventos extends Fragment {
     private List<EventoLimpieza> listaEventos;
     private CargandoCircular cargandoCircular;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private IParticipacionesEventosPresenter presenter;
 
-
-    public ParticipaEventos() {
-        // Required empty public constructor
+    public ParticipaEventosFragment() {
+        this.presenter = new ParticipacionesEventosPresenter(this);
     }
 
 
@@ -120,7 +119,7 @@ public class ParticipaEventos extends Fragment {
         // si hay internet
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
-            iniciarPeticionBD();
+            this.presenter.cargarParticipacionesEventos(DeclaracionFragments.actualAmbientalista);
         }
         else { // no hay internet
             cargandoCircular.ocultarCargaMostrarContenido();
@@ -135,14 +134,8 @@ public class ParticipaEventos extends Fragment {
         super.onActivityCreated(savedInstanceState);
     }
 
+    /*
     private void iniciarPeticionBD() {
-        /*
-        String url = getString(R.string.ip) + "EventosLimpieza/datos_participacion_evento.php?id_ambientalista="+
-                DeclaracionFragments.actualAmbientalista;
-
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
-         */
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         Call<List<ParticipaEventoItem>> call = service.doGetEventosParticipa(DeclaracionFragments.actualAmbientalista);
         call.enqueue(new Callback<List<ParticipaEventoItem>>() {
@@ -154,7 +147,7 @@ public class ParticipaEventos extends Fragment {
                     layoutSinConexion.setVisibility(View.VISIBLE);
 
                 } else {
-                    recyclerEventos.setAdapter(new ParticipaEventoAdapter(getContext(), response.body()));
+                    recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), response.body()));
                 }
 
                 cargandoCircular.ocultarCargaMostrarContenido();
@@ -172,107 +165,29 @@ public class ParticipaEventos extends Fragment {
             }
         });
     }
+     */
 
-
-    public void recargar()
-    {
-        listaEventos.clear();
-        swipeRefreshLayout.setRefreshing(true);
-        intentarPeticionBD();
-    }
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class ParticipaEventoAdapter extends RecyclerView.Adapter<ParticipaEventoAdapter.ParticipaEventoViewHolder>
-{
-    private List<ParticipaEventoItem> listaEventos;
-    private Context context;
-
-    ParticipaEventoAdapter(Context context, List<ParticipaEventoItem> listaEventos)
-    {
-        this.context = context;
-        this.listaEventos = listaEventos;
-    }
 
     @Override
-    public int getItemCount() {
-        return listaEventos.size();
-    }
+    public void onEventosCargadosExitosamente(List<EventoLimpieza> eventos) {
+        if(eventos.size() == 0) {
+            mensajeProblema.setText("No participas en ningún evento");
+            cargandoCircular.ocultarPantallaCarga();
+            layoutSinConexion.setVisibility(View.VISIBLE);
 
-    @NonNull
-    @Override
-    public ParticipaEventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_participa_evento, parent, false);
-        final ParticipaEventoViewHolder participaEventoViewHolder = new ParticipaEventoViewHolder(v);
-
-        return participaEventoViewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ParticipaEventoViewHolder holder, int position) {
-        holder.tituloEvento.setText(listaEventos.get(position).getTitulo());
-        holder.fechaHoraEvento.setText(String.format("%s, %s",
-                listaEventos.get(position).getFecha(),
-                listaEventos.get(position).getHora()));
-        holder.creador.setText("Creador: " + listaEventos.get(position).getCreador());
-        holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
-        holder.descripcion.setText(listaEventos.get(position).getDescripcion());
-
-        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
-                listaEventos.get(position).getFoto();
-        Picasso.with(context).load(urlFoto).into(holder.imagenEvento);
-
-        /*
-        if(holder.imagenEvento.getTag().toString() == "NO")
-        {
-            String urlImagen = holder.itemView.getResources().getString(R.string.ip) +
-                    "EventosLimpieza/imagenes/" +
-                    listaEventos.get(position).getRutaFotografia();
-
-            System.out.println(urlImagen);
-
-            iniciarCargaImagen(urlImagen, holder);
+        } else {
+            recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), eventos));
+            cargandoCircular.ocultarCargaMostrarContenido();
         }
-         */
+
+        swipeRefreshLayout.setRefreshing(false);
     }
 
-
-    public static class ParticipaEventoViewHolder extends RecyclerView.ViewHolder {
-        // campos de un elemento de la lista
-        public ImageView imagenEvento;
-        public TextView tituloEvento;
-        public TextView fechaHoraEvento;
-        public TextView creador;
-        public TextView descripcion;
-        public TextView tipoResiduo;
-
-        public ParticipaEventoViewHolder(View v)
-        {
-            super(v);
-            imagenEvento = v.findViewById(R.id.imagenEvento);
-            imagenEvento.setTag("NO");
-            tituloEvento = v.findViewById(R.id.tituloEvento);
-            creador = v.findViewById(R.id.creador);
-            fechaHoraEvento = v.findViewById(R.id.fecha_hora);
-            descripcion = v.findViewById(R.id.descripcion);
-            tipoResiduo = v.findViewById(R.id.tipo_residuo);
-
-        }
+    @Override
+    public void onEventosCargadosError() {
+        swipeRefreshLayout.setRefreshing(false);
+        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        layoutSinConexion.setVisibility(View.VISIBLE);
+        cargandoCircular.ocultarCargaMostrarContenido();
     }
 }

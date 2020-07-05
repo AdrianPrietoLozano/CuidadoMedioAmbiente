@@ -5,7 +5,6 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.EventoItem;
-import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 
 import java.util.List;
@@ -26,7 +25,7 @@ public interface APIInterface {
     Call<List<EventoItem>> doGetEventosRecomendados(@Query("id_ambientalista") Integer ambientalista);
 
     @GET("datos_participacion_evento.php")
-    Call<List<ParticipaEventoItem>> doGetEventosParticipa(@Query("id_ambientalista") Integer ambientalista);
+    Call<List<EventoLimpieza>> doGetEventosParticipa(@Query("id_ambientalista") Integer ambientalista);
 
     @GET("datos_reporte.php")
     Call<ReporteContaminacion> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);

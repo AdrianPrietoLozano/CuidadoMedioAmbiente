@@ -27,7 +27,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         DatosEventoFragment.OnBotonParticiparClic, CrearEventoFragment.OnEventoCreado {
 
-    //public final ParticipaEventos participaEventos = new ParticipaEventos();
+    //public final ParticipaEventosFragment participaEventos = new ParticipaEventosFragment();
 
     private ArrayList<Fragment> listaFragmentos = new ArrayList<Fragment>();
 
@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         // esta mal no funciona
         /*
-        ParticipaEventos p = new ParticipaEventos();
+        ParticipaEventosFragment p = new ParticipaEventosFragment();
         Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
                 p);
 
@@ -228,14 +228,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         ft.commit();
         ft.addToBackStack(null);
 
-        ParticipaEventos p = (ParticipaEventos) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
+        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
         if(p != null)
         {
             p.recargar();
         }
         else
         {
-            ParticipaEventos p2 = (ParticipaEventos) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+            ParticipaEventosFragment p2 = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
             p2.recargar();
 
         }
@@ -245,14 +245,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         /*
         getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, participaEventos, "PARTICIPA").addToBackStack(null).commit();
 
-        ParticipaEventos p = (ParticipaEventos) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
+        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
         p.recargar();
         */
 
         //Toast.makeText(getApplicationContext(), "bien", Toast.LENGTH_SHORT).show();
 
         /*
-        ParticipaEventos p = (ParticipaEventos) getSupportFragmentManager().findFragmentById(R.id.fragmentParticipa);
+        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentParticipa);
         p.recargar();
 
          */
