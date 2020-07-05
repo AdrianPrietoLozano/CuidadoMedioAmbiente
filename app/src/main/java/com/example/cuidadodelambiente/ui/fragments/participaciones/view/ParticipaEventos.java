@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.Fragments;
+package com.example.cuidadodelambiente.ui.fragments.participaciones.view;
 
 
 import android.content.Context;
@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;

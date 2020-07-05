@@ -28,6 +28,9 @@
             android:id="@+id/progressBar"
             android:layout_marginTop="20dp"/>
 
+        <include android:visibility="gone"
+            layout="@layout/layout_no_conexion"/>
+
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"

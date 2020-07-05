@@ -47,15 +47,15 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     private TextView nombreEvento, fechaHora, creador, descripcion;
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private Button botonQuieroParticipar;
-    private Button botonVolverIntentar;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private ProgressBar barraCarga;
     private JsonObjectRequest jsonObjectRequest;
     private EventoLimpieza eventoLimpieza; // evento mostrado actualmente
     private CargandoCircular cargandoCircular;
-    private LinearLayout layoutSinConexion;
+    private LinearLayout layoutNoConexion;
     private LinearLayout contenidoPrincipal;
+    private Button botonVolverIntentar;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,6 +98,14 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
             }
         });
 
+        layoutNoConexion = v.findViewById(R.id.layoutNoConexion);
+        botonVolverIntentar = v.findViewById(R.id.btnVolverIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
 
         barraCarga = v.findViewById(R.id.progressBar);
         nombreEvento = v.findViewById(R.id.nombreEvento);
@@ -128,18 +136,14 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private void intentarPeticionBD()
     {
-        //cargandoCircular.ocultarContenidoMostrarCarga();
+        mostrarCarga();
 
         // si hay conexión a internet
         if(Utilidades.hayConexionInternet(getContext())) {
-            //layoutSinConexion.setVisibility(View.INVISIBLE);
             iniciarPeticionBD();
         }
         else { // no hay conexión a internet
-            //cargandoCircular.ocultarPantallaCarga();
-            //cargandoCircular.ocultarContenidoPrincipal();
-            //Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            //layoutSinConexion.setVisibility(View.VISIBLE);
+            mostrarLayoutError();
         }
     }
 
@@ -162,8 +166,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
                 numPersonasUnidas.setText(String.format("%s %s",
                         eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
-                barraCarga.setVisibility(View.GONE);
-                contenidoPrincipal.setVisibility(View.VISIBLE);
+                mostrarContenidoPrincipal();
 
                 String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
                         eventoLimpieza.getRutaFotografia();
@@ -175,10 +178,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
             public void onFailure(Call<EventoLimpieza> call, Throwable throwable) {
                 call.cancel();
                 Log.e("ERROR", throwable.getMessage());
-                //mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-                //cargandoCircular.ocultarContenidoPrincipal();
-                //cargandoCircular.ocultarPantallaCarga();
-                //layoutSinConexion.setVisibility(View.VISIBLE);
+                mostrarLayoutError();
 
             }
         });
@@ -247,5 +247,23 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
                     }
                 });
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
+    }
+
+    private void mostrarCarga() {
+        barraCarga.setVisibility(View.VISIBLE);
+        layoutNoConexion.setVisibility(View.GONE);
+        contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    private void mostrarContenidoPrincipal() {
+        contenidoPrincipal.setVisibility(View.VISIBLE);
+        barraCarga.setVisibility(View.GONE);
+        layoutNoConexion.setVisibility(View.GONE);
+    }
+
+    private void mostrarLayoutError() {
+        layoutNoConexion.setVisibility(View.VISIBLE);
+        barraCarga.setVisibility(View.GONE);
+        contenidoPrincipal.setVisibility(View.GONE);
     }
 }
