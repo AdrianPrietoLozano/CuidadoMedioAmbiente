@@ -184,20 +184,20 @@ public class ReportesContaminacionFragment extends Fragment
 
     @Override
     public void onResume() {
-        mMapView.onResume();
         super.onResume();
+        mMapView.onResume();
     }
 
     @Override
     public void onStart() {
-        mMapView.onStart();
         super.onStart();
+        mMapView.onStart();
     }
 
     @Override
     public void onStop() {
-        mMapView.onStop();
         super.onStop();
+        mMapView.onStop();
     }
 
     @Override
@@ -214,8 +214,8 @@ public class ReportesContaminacionFragment extends Fragment
 
     @Override
     public void onLowMemory() {
-        mMapView.onLowMemory();
         super.onLowMemory();
+        mMapView.onLowMemory();
     }
 
     @Override

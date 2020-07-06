@@ -197,7 +197,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private void clicBotonQuieroParticipar()
     {
-        String url = getString(R.string.ip) + "EventosLimpieza/insertar_unirse_evento.php?" +
+        String url = getString(R.string.ip) + "EventosLimpiezaFragment/insertar_unirse_evento.php?" +
                 "id_ambientalista=" + DeclaracionFragments.actualAmbientalista +
                 "&id_evento=" + eventoId +
                 "&fecha_inicio=" + eventoLimpieza.getFecha() +

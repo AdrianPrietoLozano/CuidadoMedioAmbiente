@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragments.eventos.view.EventosLimpieza">
+    tools:context=".ui.fragments.eventos.view.EventosLimpiezaFragment">
 
 
     <include layout="@layout/main_mapa_eventos"/>

@@ -10,7 +10,10 @@ import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface APIInterface {
@@ -33,8 +36,22 @@ public interface APIInterface {
     @GET("datos_evento.php")
     Call<EventoLimpieza> doGetEventoLimpieza(@Query("evento_id") Integer evento);
 
+    @FormUrlEncoded
+    @POST("insertar_evento.php")
+    Call<ResultadoJsonAgregarEvento> doAgregarEvento(
+            @Field("ambientalista_id") int id_ambientalista,
+            @Field("reporte_id") int id_reporte,
+            @Field("titulo") String titulo,
+            @Field("fecha") String fecha,
+            @Field("hora") String hora,
+            @Field("descripcion") String descripcion
+    );
 
-    @GET("insertar_evento.php")
+}
+
+/*
+
+@GET("insertar_evento.php")
     Call<ResultadoJsonAgregarEvento> doAgregarEvento(
             @Query("ambientalista_id") int id_ambientalista,
             @Query("reporte_id") int id_reporte,
@@ -43,5 +60,4 @@ public interface APIInterface {
             @Query("hora") String hora,
             @Query("descripcion") String descripcion
     );
-
-}
+ */

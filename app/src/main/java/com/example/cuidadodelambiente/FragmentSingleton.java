@@ -16,7 +16,7 @@ public class FragmentSingleton {
     public static Fragment getCurrentFragment()
     {
         if(currentFragment == null)
-            return DeclaracionFragments.eventosLimpiezaFragement; // eventosLimpiezaFragment es el fragment home
+            return DeclaracionFragments.eventosLimpiezaFragmentFragement; // eventosLimpiezaFragment es el fragment home
         else
             return currentFragment;
     }

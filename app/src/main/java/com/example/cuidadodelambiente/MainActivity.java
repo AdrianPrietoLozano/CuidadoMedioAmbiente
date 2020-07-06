@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
-import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpieza;
+import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         //-------------------------------------------
 
         // iniciando el fragment principal
-        loadFragment(DeclaracionFragments.eventosLimpiezaFragement);
+        loadFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
@@ -93,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch(menuItem.getItemId()) {
-            case R.id.eventosLimpieza:
-                cambiarFragment(DeclaracionFragments.eventosLimpiezaFragement, "EVENTO");
+            case R.id.eventosLimpiezaFragment:
+                cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTO");
                 return true;
 
             case R.id.eventosRecomendados:
@@ -269,11 +269,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void onEventoCreado(LatLng ubicacion) {
         Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                DeclaracionFragments.eventosLimpiezaFragement, "EVENTO");
+                DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTO");
 
-        EventosLimpieza eventosLimpieza = (EventosLimpieza) getSupportFragmentManager().findFragmentByTag("EVENTO");
-        eventosLimpieza.recargar();
-        eventosLimpieza.moverMapa(ubicacion);
+        EventosLimpiezaFragment eventosLimpiezaFragment = (EventosLimpiezaFragment) getSupportFragmentManager().findFragmentByTag("EVENTO");
+        eventosLimpiezaFragment.recargar();
+        eventosLimpiezaFragment.moverMapa(ubicacion);
 
     }
 }

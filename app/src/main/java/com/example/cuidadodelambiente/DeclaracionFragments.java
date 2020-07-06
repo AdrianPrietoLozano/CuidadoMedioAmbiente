@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.Fragments.CrearReporteFragment;
+import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.view.ParticipaEventosFragment;
-import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpieza;
 import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionEventosFragment;
 
@@ -17,7 +17,7 @@ import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.Recomend
 public class DeclaracionFragments {
     public static int actualAmbientalista = 1;
 
-    public static EventosLimpieza eventosLimpiezaFragement = new EventosLimpieza();
+    public static EventosLimpiezaFragment eventosLimpiezaFragmentFragement = new EventosLimpiezaFragment();
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new ReportesContaminacionFragment();
     public static final Fragment participaEventos = new ParticipaEventosFragment();

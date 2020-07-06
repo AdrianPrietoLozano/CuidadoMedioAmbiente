@@ -140,7 +140,7 @@ public class DatosEventoFragment extends Fragment
 
     private void iniciarPeticionBD()
     {
-        String url = getString(R.string.ip) + "EventosLimpieza/datos_evento.php?evento_id="+eventoId;
+        String url = getString(R.string.ip) + "EventosLimpiezaFragment/datos_evento.php?evento_id="+eventoId;
 
         jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, this, this);
         VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
@@ -162,7 +162,7 @@ public class DatosEventoFragment extends Fragment
 
     private void clicBotonQuieroParticipar()
     {
-        String url = getString(R.string.ip) + "EventosLimpieza/insertar_unirse_evento.php?" +
+        String url = getString(R.string.ip) + "EventosLimpiezaFragment/insertar_unirse_evento.php?" +
                 "id_ambientalista=" + DeclaracionFragments.actualAmbientalista +
                 "&id_evento=" + eventoId +
                 "&fecha_inicio=" + eventoLimpieza.getFecha() +
@@ -264,7 +264,7 @@ public class DatosEventoFragment extends Fragment
 
         cargandoCircular.ocultarCargaMostrarContenido();
 
-        String urlImagen = getString(R.string.ip) + "EventosLimpieza/imagenes/" + eventoLimpieza.getRutaFotografia();
+        String urlImagen = getString(R.string.ip) + "EventosLimpiezaFragment/imagenes/" + eventoLimpieza.getRutaFotografia();
         iniciarCargaImagen(urlImagen);
     }
 

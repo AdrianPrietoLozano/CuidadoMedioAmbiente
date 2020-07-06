@@ -25,33 +25,25 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
-import com.example.cuidadodelambiente.data.models.UbicacionEvento;
-import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonObject;
 
 import android.os.ResultReceiver;
 
 import java.util.Calendar;
-import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -183,7 +175,7 @@ public class CrearEventoFragment extends Fragment implements
 
         resultReceiver = new AddressResultReceiver(null);
 
-        observable.addObserver(DeclaracionFragments.eventosLimpiezaFragement);
+        observable.addObserver(DeclaracionFragments.eventosLimpiezaFragmentFragement);
 
     }
 
@@ -194,7 +186,7 @@ public class CrearEventoFragment extends Fragment implements
 
         Log.e("CREAREVENTO", "onCreateView");
 
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
+        //getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         tituloEvento = v.findViewById(R.id.editTextTitulo);
         ubicacionEvento = v.findViewById(R.id.editTextUbicacion);
@@ -266,7 +258,7 @@ public class CrearEventoFragment extends Fragment implements
     public void onDestroy() {
         super.onDestroy();
         Log.e("Crear", "onDestroy");
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        //getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -377,9 +369,10 @@ public class CrearEventoFragment extends Fragment implements
                             Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
 
                             if (json.getResultado() == 1) {
+                                Toast.makeText(getContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
                                 observable.notificar(evento);
-                                //((MainActivity) getActivity())
-                                        //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragement, "EVENTOS");
+                                ((MainActivity) getActivity())
+                                        .cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTOS");
                             } else {
                                 Toast.makeText(getContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
                             }
@@ -392,7 +385,7 @@ public class CrearEventoFragment extends Fragment implements
                     });
 
             /*
-            String url = getResources().getString(R.string.ip) + "EventosLimpieza/insertar_evento.php?" +
+            String url = getResources().getString(R.string.ip) + "EventosLimpiezaFragment/insertar_evento.php?" +
                     "ambientalista_id=" + DeclaracionFragments.actualAmbientalista +
                     "&reporte_id=" + idReporte +
                     "&titulo=" + tituloEvento.getText() +

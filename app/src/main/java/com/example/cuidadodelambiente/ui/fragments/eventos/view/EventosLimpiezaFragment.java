@@ -59,7 +59,7 @@ import retrofit2.Callback;
  */
 
 
-public class EventosLimpieza extends Fragment
+public class EventosLimpiezaFragment extends Fragment
         implements IEventosView, Observer, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private MapView mMapView;
@@ -77,7 +77,7 @@ public class EventosLimpieza extends Fragment
     private LinearLayout bottom_sheet;
     private IEventosPresenter presenter;
 
-    public EventosLimpieza() {
+    public EventosLimpiezaFragment() {
         this.presenter = new EventosPresenter(this);
 
     }
@@ -278,22 +278,10 @@ public class EventosLimpieza extends Fragment
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-
-        super.onHiddenChanged(hidden);
-
-        if (hidden) {
-            Log.e("Crear", "hidden true");
-            //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        } else {
-            Log.e("Crear", "hiden false");
-            //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-            //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        }
-    }
-
-    @Override
     public boolean onMarkerClick(Marker marker) {
+
+        Toast.makeText(getContext(), marker.getTag().toString(), Toast.LENGTH_SHORT).show();
+
         BottomSheetDialogFragment fragmentDatosReporte = DatosEventoFragment.newInstance((int) marker.getTag());
         fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
@@ -304,6 +292,7 @@ public class EventosLimpieza extends Fragment
     @Override
     public void onEventosCargadosExitosamente(List<UbicacionEvento> eventos) {
         Log.e("TOTAL", String.valueOf(eventos.size()));
+        mMap.clear();
 
         for (UbicacionEvento evento : eventos) {
 
@@ -325,17 +314,14 @@ public class EventosLimpieza extends Fragment
         layoutSinConexion.setVisibility(View.VISIBLE);
     }
 
+    // se ejecuta cuando se crea un evento de limpieza
     @Override
     public void update(Observable o, Object arg) {
-        Log.e("UPDATE", "Update");
-        Toast.makeText(getContext(), "UPDATE", Toast.LENGTH_SHORT).show();
-
         EventoLimpieza evento = (EventoLimpieza) arg;
 
-        Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento(),
-                BitmapDescriptorFactory.HUE_CYAN);
+        Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento());
 
-        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                 new CameraPosition.Builder()
                 .target(evento.getUbicacion())
                 .zoom(15.5f).bearing(0).tilt(25).build()));
