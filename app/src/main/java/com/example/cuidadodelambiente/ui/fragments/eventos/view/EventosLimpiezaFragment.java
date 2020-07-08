@@ -209,6 +209,7 @@ public class EventosLimpiezaFragment extends Fragment
         mMap = googleMap;
         try {
             mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            /*
             UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
             uiSettings.setScrollGesturesEnabled(true);
@@ -216,6 +217,7 @@ public class EventosLimpiezaFragment extends Fragment
             uiSettings.setCompassEnabled(true);
             uiSettings.setMyLocationButtonEnabled(true);
             uiSettings.setTiltGesturesEnabled(true);
+             */
 
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
             mMap.setOnMarkerClickListener(this);

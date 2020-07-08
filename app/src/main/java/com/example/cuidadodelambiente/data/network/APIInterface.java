@@ -6,6 +6,7 @@ import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -47,6 +48,16 @@ public interface APIInterface {
             @Field("descripcion") String descripcion
     );
 
+    @FormUrlEncoded
+    @POST("insertar_unirse_evento.php")
+    Call<JsonObject> doUnirseEvento(
+            @Field("id_ambientalista") int id_ambientalista,
+            @Field("id_evento") int id_evento,
+            @Field("fecha_inicio") String fechaInicio,
+            @Field("hora_inicio") String horaInicio,
+            @Field("fecha_fin") String fechaFin,
+            @Field("hora_fin") String horaFin
+    );
 }
 
 /*

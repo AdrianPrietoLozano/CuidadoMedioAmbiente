@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente.ui.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -30,6 +31,7 @@ import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -197,56 +199,42 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private void clicBotonQuieroParticipar()
     {
-        String url = getString(R.string.ip) + "EventosLimpiezaFragment/insertar_unirse_evento.php?" +
-                "id_ambientalista=" + DeclaracionFragments.actualAmbientalista +
-                "&id_evento=" + eventoId +
-                "&fecha_inicio=" + eventoLimpieza.getFecha() +
-                "&hora_inicio=" + eventoLimpieza.getHora() +
-                "&fecha_fin=" + eventoLimpieza.getFecha() +
-                "&hora_fin=" + eventoLimpieza.getHora();
-
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
         progreso.show();
 
-        jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        JSONArray json = null;
-                        String resultado;
-                        try {
-                            json = response.getJSONArray("resultado");
-                            resultado = json.getString(0);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            resultado = "0";
-                        }
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.doUnirseEvento(DeclaracionFragments.actualAmbientalista,
+                eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),
+                eventoLimpieza.getFecha(), eventoLimpieza.getHora());
 
-                        if(resultado.equals("1"))
-                        {
-                            Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(resultado.equals("2"))
-                        {
-                            Toast.makeText(getContext(), "Error: ya participas en este evento", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(getContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
-                        }
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+                JsonObject json = response.body();
+                int resultado = json.get("resultado").getAsInt();
+                Log.e("RESULTADO", String.valueOf(resultado));
+                String mensaje = json.get("mensaje").getAsString();
+                Log.e("MENSAJE", mensaje);
 
-                        progreso.hide();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progreso.hide();
-                        Toast.makeText(getContext(), error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-        VolleySingleton.getinstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                if(resultado == 1) { // éxito
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                } else if(resultado == 2) { // ya participa en el evento
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                } else { // ocurrió un error
+                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                }
+
+                progreso.hide();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                call.cancel();
+                progreso.hide();
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void mostrarCarga() {
