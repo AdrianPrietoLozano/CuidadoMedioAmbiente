@@ -65,4 +65,6 @@
     <string name="estamos_teniendo_problemas">Estamos teniendo problemas</string>
     <string name="sin_recomendaciones">Sin recomendaciones</string>
     <string name="participas">Participaciones</string>
+    <string name="title_activity_actividad_crear">ActividadCrear</string>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

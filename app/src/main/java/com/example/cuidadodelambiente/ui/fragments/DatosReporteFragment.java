@@ -2,6 +2,8 @@ package com.example.cuidadodelambiente.ui.fragments;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -122,12 +125,21 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         botonCrearEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /*
                 CrearEventoFragment crearEventoFragment = CrearEventoFragment.newInstance(
                         reporteContaminacion.getId(), reporteContaminacion.getLatitud(),
                         reporteContaminacion.getLongitud());
 
                 ((MainActivity)getActivity())
                         .cambiarFragment(crearEventoFragment, "CREAR");
+                */
+                Intent intent = new Intent(getContext(), ActividadCrearEvento.class);
+                intent.putExtra("ID_REPORTE", reporteContaminacion.getId());
+                intent.putExtra("LATITUD", reporteContaminacion.getLatitud());
+                intent.putExtra("LONGITUD", reporteContaminacion.getLongitud());
+
+                startActivity(intent);
+
                 dismiss();
             }
         });
@@ -220,5 +232,10 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         layoutNoConexion.setVisibility(View.VISIBLE);
         barraCarga.setVisibility(View.GONE);
         contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
     }
 }

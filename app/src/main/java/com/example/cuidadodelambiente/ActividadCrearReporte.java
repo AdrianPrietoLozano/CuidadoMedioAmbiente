@@ -98,34 +98,32 @@ public class ActividadCrearReporte extends AppCompatActivity {
 
     private boolean checkLocation() {
         if (!isLocationEnabled())
-            showAlert();
+            mostrarDialogoHabilitarUbicacion();
         return isLocationEnabled();
     }
 
 
-    private void showAlert() {
+    private void mostrarDialogoHabilitarUbicacion() {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Enable Location")
-                .setMessage("Su ubicación esta desactivada.\npor favor active su ubicación " +
-                        "usa esta app")
+        dialog.setTitle("Habilitar ubicación")
+                .setMessage("Su ubicación esta desactivada.\nPor favor active su ubicación")
                 .setPositiveButton("Configuración de ubicación", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                        ActivityCompat.requestPermissions(
-                                ActividadCrearReporte.this,
-                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                                PERMISSION_ID
-                        );
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        finish();
                     }
                 });
         dialog.show();
     }
 
+    // revisa si se tienen los permisos para acceder a la ubicación del usuario
     private boolean checkPermissions(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -140,6 +138,8 @@ public class ActividadCrearReporte extends AppCompatActivity {
         if (requestCode == PERMISSION_ID) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
+            } else {
+                finish();
             }
         }
     }
@@ -170,7 +170,8 @@ public class ActividadCrearReporte extends AppCompatActivity {
         }
     }
 
-    private void requestPermissions(){
+    // pide permisos al usuario para acceder a su ubicación
+    private void solicitarPermisoUbicacion(){
         ActivityCompat.requestPermissions(
                 this,
                 new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
@@ -178,6 +179,7 @@ public class ActividadCrearReporte extends AppCompatActivity {
         );
     }
 
+    // revisa si la ubicación esta activada
     private boolean isLocationEnabled(){
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
@@ -236,13 +238,10 @@ public class ActividadCrearReporte extends AppCompatActivity {
                         }
                 );
             } else {
-                showAlert();
-                //Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                //startActivity(intent);
+                mostrarDialogoHabilitarUbicacion();
             }
         } else {
-            requestPermissions();
+            solicitarPermisoUbicacion();
         }
     }
 
