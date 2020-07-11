@@ -26,10 +26,6 @@ public class FetchAddressIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Toast.makeText(getApplicationContext(), "INICIO", Toast.LENGTH_SHORT).show();
-
-        Log.i("HKKHK", "address found");
-
         if (intent == null) {
             return;
         }
@@ -54,12 +50,10 @@ public class FetchAddressIntentService extends IntentService {
         } catch (IOException ioException) {
             // Catch network or other I/O problems.
             errorMessage = "Servicio no disponible";
-            Toast.makeText(getApplicationContext(), "Servicio no disponible", Toast.LENGTH_SHORT).show();
 
         } catch (IllegalArgumentException illegalArgumentException) {
             // Catch invalid latitude or longitude values.
             errorMessage = "Lat y Lng inválidas";
-            Toast.makeText(getApplicationContext(), "Lat y Lng inválidas", Toast.LENGTH_SHORT).show();
         }
 
         // Handle case where no address was found.

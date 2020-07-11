@@ -49,13 +49,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-public class ActividadCrearEvento extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class ActividadCrearEvento extends AppCompatActivity {
 
     private ActividadCrearEvento.AddressResultReceiver resultReceiver;
     private TextView fechaView;
     private TextView horaView;
-    private EditText ubicacionEvento;
+    private TextView txtDireccionEvento;
     private EditText tituloEvento;
     private EditText descripcionEvento;
     private Button botonCancelar;
@@ -67,27 +66,41 @@ public class ActividadCrearEvento extends AppCompatActivity implements
     private ProgressDialog progreso;
     private StringRequest stringRequest;
     private boolean banderaLlenarUbicacion = false; // para saber si se creará un evento desde la pantalla de reportes
+    private boolean solicitandoDireccion;
     private int idReporte;
     private LatLng ubicacionReporte;
     CrearEventoFragment.OnEventoCreado onEventoCreado;
-    String addressOutput;
+    private String addressOutput;
     public ParaObservar observable = new ParaObservar();
+    private TextView txtObtenerDireccion;
+    private TextView txtLatitudLongitud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actividad_crear_evento);
 
-        /*
+
         // Cambia el color del status bar a verde
         Window w = getWindow();
         w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         w.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.verde3));
-        */
+
 
         tituloEvento = findViewById(R.id.editTextTitulo);
-        ubicacionEvento = findViewById(R.id.editTextUbicacion);
+        txtDireccionEvento = findViewById(R.id.textViewDireccion);
+        txtObtenerDireccion = findViewById(R.id.txtObtenerDireccion);
+        txtObtenerDireccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!solicitandoDireccion) {
+                    startIntentService();
+                }
+            }
+        });
+
+        txtLatitudLongitud = findViewById(R.id.txtLatitudLongitud);
         descripcionEvento = findViewById(R.id.editTextDescripcion);
 
         fechaView = findViewById(R.id.textViewFecha);
@@ -123,27 +136,15 @@ public class ActividadCrearEvento extends AppCompatActivity implements
             idReporte = extras.getInt("ID_REPORTE");
             ubicacionReporte = new LatLng(extras.getDouble("LATITUD"),
                     extras.getDouble("LONGITUD"));
+            txtLatitudLongitud.setText(String.valueOf(ubicacionReporte.latitude)
+                    .concat(", ")
+                    .concat(String.valueOf(ubicacionReporte.longitude)));
         }
 
-        resultReceiver = new ActividadCrearEvento.AddressResultReceiver(null);
+        resultReceiver = new AddressResultReceiver(new Handler());
         observable.addObserver(DeclaracionFragments.eventosLimpiezaFragmentFragement);
 
         startIntentService();
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
     }
 
     class AddressResultReceiver extends ResultReceiver {
@@ -156,35 +157,29 @@ public class ActividadCrearEvento extends AppCompatActivity implements
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
             if (resultData == null || resultCode == Constants.FAILURE_RESULT) {
-                addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
-                mostrarUbicacionEnTextView(addressOutput);
-                return;
+                //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+                addressOutput = "Ocurrió un error";
+
+            } else {
+                // Display the address string
+                // or an error message sent from the intent service.
+                addressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+                if (addressOutput == null) {
+                    //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+                    addressOutput = "Ocurrió un error";
+                }
             }
 
-            // Display the address string
-            // or an error message sent from the intent service.
-            addressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
-            if (addressOutput == null) {
-                addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
-            }
-
-            mostrarUbicacionEnTextView(addressOutput);
+            mostrarUbicacionEnTextView();
+            solicitandoDireccion = false;
+            actualizarUI();
 
         }
 
     }
 
-    private void mostrarUbicacionEnTextView(final String direccionCompleta) {
-        try {
-            this.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ubicacionEvento.setText(direccionCompleta);
-                }
-            });
-        } catch (Exception e) {
-            Log.e("ERROR GET UBICACION", e.toString());
-        }
+    private void mostrarUbicacionEnTextView() {
+        txtDireccionEvento.setText(addressOutput);
     }
 
     private View.OnClickListener listenerFecha = new View.OnClickListener() {
@@ -232,21 +227,33 @@ public class ActividadCrearEvento extends AppCompatActivity implements
         }
     };
 
+    private void actualizarUI() {
+        if (solicitandoDireccion) {
+            txtObtenerDireccion.setVisibility(View.INVISIBLE);
+            txtDireccionEvento.setText("Obteniendo dirección ...");
+        } else {
+            txtObtenerDireccion.setVisibility(View.VISIBLE);
+        }
+    }
+
     protected void startIntentService() {
-        Intent intent = new Intent(getApplicationContext(), FetchAddressIntentService.class);
+        solicitandoDireccion = true;
+        actualizarUI();
+
+        Intent intent = new Intent(this, FetchAddressIntentService.class);
         intent.putExtra(Constants.RECEIVER, resultReceiver);
         Location location = new Location(LocationManager.GPS_PROVIDER);
         location.setLatitude(ubicacionReporte.latitude);
         location.setLongitude(ubicacionReporte.longitude);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
-        getApplicationContext().startService(intent);
+        startService(intent);
     }
 
 
     private void clicBotonCrearEvento()
     {
         if(tituloEvento.getText().toString().equals("") || fechaView.getText().equals("") ||
-                horaView.getText().equals("") || ubicacionEvento.getText().toString().equals("") ||
+                horaView.getText().equals("") || txtDireccionEvento.getText().toString().equals("") ||
                 descripcionEvento.getText().toString().equals(""))
         {
             // falta hacer mas comprobaciones
