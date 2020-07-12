@@ -81,10 +81,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private AddressResultReceiver resultReceiver;
     private String addressOutput;
-    private String addressOutputAux;
     private boolean solicitandoDireccion;
 
     private boolean ubicacionObtenida;
+    private boolean direccionObtenida;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -119,6 +119,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         resultReceiver = new AddressResultReceiver(new Handler());
         solicitandoDireccion = true;
         ubicacionObtenida = false;
+        direccionObtenida = false;
 
         iniciarRequestUbicacion();
 
@@ -134,48 +135,31 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
 
-            if (resultData == null || resultCode == Constants.FAILURE_RESULT) {
-                //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+            // mostrar ubicación (latitud y longitud)
+            mLastLocation = mLastLocationAux;
+            mostrarUbicacionEnTextView();
+            ubicacionObtenida = true;
 
-                // si la ubicación no había sido obtenida anteriormente
+
+            if (null == resultData || resultCode == Constants.FAILURE_RESULT ||
+                    null == resultData.getString(Constants.RESULT_DATA_KEY)) {
+                // si la dirección no había sido obtenida anteriormente
                 // se muestra un mensaje de error
-                if (!ubicacionObtenida) {
-                    txtDireccionReporte.setText("Ocurrió un error");
-                    return;
+                if (!direccionObtenida) {
+                    txtDireccionReporte.setText("Ocurrió un error. Reintentando...");
                 }
-
-
-            } else {
-                // Display the address string
-                // or an error message sent from the intent service.
-                addressOutputAux = resultData.getString(Constants.RESULT_DATA_KEY);
-                if (addressOutputAux == null) {
-                    //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
-
-                    // si la ubicación no había sido obtenida anteriormente
-                    // se muestra un mensaje de error
-                    if (!ubicacionObtenida) {
-                        txtDireccionReporte.setText("Ocurrió un error");
-                        return;
-                    }
-                }
+                return;
             }
 
-            // ubicación y dirección obtenidas con éxito
-            addressOutput = addressOutputAux;
-            mLastLocation = mLastLocationAux;
-            mostrarDatosUbicacion();
+            // dirección obtenida con éxito
+            addressOutput = resultData.getString(Constants.RESULT_DATA_KEY);
+            mostrarDireccionEnTextView();
+            direccionObtenida = true;
             solicitandoDireccion = false;
-            ubicacionObtenida = true;
+
             actualizarUI();
         }
 
-    }
-
-    // muestra la ubicación y dirección del usuario
-    private void mostrarDatosUbicacion() {
-        mostrarUbicacionEnTextView();
-        mostrarDireccionEnTextView();
     }
 
 
@@ -387,13 +371,9 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     public void onResume(){
         super.onResume();
 
-        // FALTA PONER ALGO AQUI
-
         if(mGoogleApiClient.isConnected()) {
             startLocationUpdates();
         }
-
-        Log.e("RESUME", "onResume");
     }
 
     @Override
