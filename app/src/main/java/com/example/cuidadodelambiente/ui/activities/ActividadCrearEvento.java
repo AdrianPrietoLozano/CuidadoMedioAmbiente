@@ -1,7 +1,5 @@
 package com.example.cuidadodelambiente.ui.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
@@ -31,15 +29,12 @@ import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Calendar;
@@ -130,12 +125,13 @@ public class ActividadCrearEvento extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
 
         if(extras == null) {
-            Toast.makeText(getApplicationContext(), "extras == null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "extras == null", Toast.LENGTH_SHORT).show();
             finish();
         } else {
             idReporte = extras.getInt("ID_REPORTE");
             ubicacionReporte = new LatLng(extras.getDouble("LATITUD"),
                     extras.getDouble("LONGITUD"));
+
             txtLatitudLongitud.setText(String.valueOf(ubicacionReporte.latitude)
                     .concat(", ")
                     .concat(String.valueOf(ubicacionReporte.longitude)));
@@ -170,7 +166,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
                 }
             }
 
-            mostrarUbicacionEnTextView();
+            mostrarDireccionEnTextView();
             solicitandoDireccion = false;
             actualizarUI();
 
@@ -178,7 +174,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
     }
 
-    private void mostrarUbicacionEnTextView() {
+    private void mostrarDireccionEnTextView() {
         txtDireccionEvento.setText(addressOutput);
     }
 

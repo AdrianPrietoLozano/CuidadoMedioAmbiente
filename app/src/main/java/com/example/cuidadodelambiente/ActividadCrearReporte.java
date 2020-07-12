@@ -3,19 +3,14 @@ package com.example.cuidadodelambiente;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -24,16 +19,16 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Looper;
-import android.os.PersistableBundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.provider.MediaStore;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,16 +39,12 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -69,18 +60,31 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private final int PERMISSION_ID = 40;
     private final int REQUEST_CHECK_SETTINGS = 50;
-    private final static int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+    private final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
+    private final int UPDATE_INTERVAL_MILLISECONDS = 20000; // 20 segundos
+    private final int FASTEST_UPDATE_INTERVAL_MILLISECONDS =
+            UPDATE_INTERVAL_MILLISECONDS / 2;
+    private final String TAG = ActividadCrearReporte.class.getSimpleName();
 
     private EditText descripcion;
     private ImageView fotoReporte;
     private TextView fechaHoraReporte;
-    private TextView ubicacionReporte;
-    FusedLocationProviderClient mFusedLocationClient;
+    private TextView txtDireccionReporte; // direccion completa
+    private TextView txtUbicacionReporte; // latitud y longitud
+    private ProgressBar progressBarDireccion;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private Location mLastLocationAux;
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingRequest;
+
+    private AddressResultReceiver resultReceiver;
+    private String addressOutput;
+    private String addressOutputAux;
+    private boolean solicitandoDireccion;
+
+    private boolean ubicacionObtenida;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -98,24 +102,123 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         fotoReporte = findViewById(R.id.fotoReporte);
         fotoReporte.setOnClickListener(listenerElegirFoto);
 
-        ubicacionReporte = findViewById(R.id.textViewUbicacion);
+        txtUbicacionReporte = findViewById(R.id.txtLatitudLongitud);
+        txtDireccionReporte = findViewById(R.id.textViewDireccion);
+        progressBarDireccion = findViewById(R.id.progressBarDireccion);
         fechaHoraReporte = findViewById(R.id.textViewFechaHora);
 
         descripcion = findViewById(R.id.editTextDescripcion);
 
 
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        //getLastLocation();
 
         buildGoogleApiClient();
         createLocationRequest();
         buildLocationSettingRequest();
 
         mostrarFechaHora();
+        resultReceiver = new AddressResultReceiver(new Handler());
+        solicitandoDireccion = true;
+        ubicacionObtenida = false;
 
         iniciarRequestUbicacion();
 
     }
+
+    // Para obtener la dirección dado una latitud y longitud
+    class AddressResultReceiver extends ResultReceiver {
+
+        public AddressResultReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+
+            if (resultData == null || resultCode == Constants.FAILURE_RESULT) {
+                //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+
+                // si la ubicación no había sido obtenida anteriormente
+                // se muestra un mensaje de error
+                if (!ubicacionObtenida) {
+                    txtDireccionReporte.setText("Ocurrió un error");
+                    return;
+                }
+
+
+            } else {
+                // Display the address string
+                // or an error message sent from the intent service.
+                addressOutputAux = resultData.getString(Constants.RESULT_DATA_KEY);
+                if (addressOutputAux == null) {
+                    //addressOutput = String.format("%s, %s", ubicacionReporte.latitude, ubicacionReporte.longitude);
+
+                    // si la ubicación no había sido obtenida anteriormente
+                    // se muestra un mensaje de error
+                    if (!ubicacionObtenida) {
+                        txtDireccionReporte.setText("Ocurrió un error");
+                        return;
+                    }
+                }
+            }
+
+            // ubicación y dirección obtenidas con éxito
+            addressOutput = addressOutputAux;
+            mLastLocation = mLastLocationAux;
+            mostrarDatosUbicacion();
+            solicitandoDireccion = false;
+            ubicacionObtenida = true;
+            actualizarUI();
+        }
+
+    }
+
+    // muestra la ubicación y dirección del usuario
+    private void mostrarDatosUbicacion() {
+        mostrarUbicacionEnTextView();
+        mostrarDireccionEnTextView();
+    }
+
+
+    private void mostrarDireccionEnTextView() {
+        if (addressOutput != null) {
+            Log.e(TAG, "mostrando direccion");
+            txtDireccionReporte.setText(addressOutput);
+        }
+    }
+
+    private void mostrarUbicacionEnTextView() {
+        if (mLastLocation != null) {
+            Log.e(TAG, "mostrando ubicacion");
+            txtUbicacionReporte.setText(String.format("%f, %f", mLastLocation.getLatitude(), mLastLocation.getLongitude()));
+        }
+    }
+
+    // inicia obtener dirección dado una latitud y longitud
+    protected void startIntentService() {
+        solicitandoDireccion = true;
+        actualizarUI();
+
+        Intent intent = new Intent(this, FetchAddressIntentService.class);
+        intent.putExtra(Constants.RECEIVER, resultReceiver);
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(mLastLocationAux.getLatitude());
+        location.setLongitude(mLastLocationAux.getLongitude());
+        intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
+        startService(intent);
+    }
+
+    private void actualizarUI() {
+        if (solicitandoDireccion) {
+            Log.e(TAG, "progress bar visible");
+            progressBarDireccion.setVisibility(View.VISIBLE);
+
+            if (!ubicacionObtenida)
+                txtDireccionReporte.setText("Obteniendo dirección ...");
+        } else {
+            progressBarDireccion.setVisibility(View.INVISIBLE);
+        }
+    }
+
 
     private void iniciarRequestUbicacion() {
         if (checkPermissions()) {
@@ -155,7 +258,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         return true;
     }
 
-
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -164,11 +266,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
                 .build();
     }
 
-
     protected void createLocationRequest() {
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(20000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(UPDATE_INTERVAL_MILLISECONDS);
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MILLISECONDS);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -214,7 +315,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         });
     }
 
-
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient,
@@ -228,17 +328,14 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         });
     }
 
-    private void updateLocationUI() {
-        ubicacionReporte.setText(String.format("%f, %f", mLastLocation.getLatitude(), mLastLocation.getLongitude()));
-        setLocation(mLastLocation);
-    }
+
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        mLastLocationAux = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
-        if(mLastLocation != null) {
-            updateLocationUI();
+        if(mLastLocationAux != null) {
+            startIntentService(); // intentar obtener la dirección del usuario
         }
 
         startLocationUpdates();
@@ -257,9 +354,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocation = location;
+        mLastLocationAux = location;
 
-        updateLocationUI();
+        // intentar obtener la dirección del usuario
+        startIntentService();
     }
 
     protected void stopLocationUpdates() {
@@ -302,12 +400,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
 
-
         if(checkPermissions()) {
             intentarConectar();
         }
     }
-
 
     private void intentarConectar(){
         if (mGoogleApiClient != null) {
@@ -347,23 +443,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         }
     }
 
-    public void setLocation(Location loc) {
-        //Obtener la direccion de la calle a partir de la latitud y la longitud
-        if (loc.getLatitude() != 0.0 && loc.getLongitude() != 0.0) {
-            try {
-                Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-                List<Address> list = geocoder.getFromLocation(
-                        loc.getLatitude(), loc.getLongitude(), 1);
-                if (!list.isEmpty()) {
-                    Address DirCalle = list.get(0);
-                    Toast.makeText(getApplicationContext(), DirCalle.getAddressLine(0), Toast.LENGTH_SHORT).show();
-                    Log.e("UBICACION", DirCalle.getAddressLine(0));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     // pide permisos al usuario para acceder a su ubicación
     private void solicitarPermisoUbicacion(){
