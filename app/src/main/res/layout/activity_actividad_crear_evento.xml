@@ -31,7 +31,7 @@
     <LinearLayout
         android:id="@+id/layout_contenido"
         android:layout_width="match_parent"
-        android:layout_height="0.0dp"
+        android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,6 +50,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!--
                 <TextView
                     android:id="@+id/textViewTituloEvento"
                     android:layout_width="wrap_content"
@@ -61,17 +62,34 @@
                     android:textSize="16.85sp"
                     android:textStyle="bold" />
 
+
                 <EditText
                     android:id="@+id/editTextTitulo"
                     style="@style/inputCrearEvento"
                     android:inputType="text" />
+
+                -->
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/inputEditTextMaterial"
+                    android:hint="@string/titulo_evento"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextTitulo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
 
                 <TextView
                     android:id="@+id/labelFecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/fecha_evento"
                     android:textColor="@color/grisNegro"
                     android:textSize="16.85sp"
@@ -81,6 +99,7 @@
                 <TextView
                     android:id="@+id/textViewFecha"
                     style="@style/inputCrearEvento"
+                    android:background="@drawable/redondeado_transparente_gris"
                     android:gravity="center_vertical"
                     android:textColor="@android:color/black"
                     android:textSize="17sp" />
@@ -91,7 +110,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/hora_evento"
                     android:textColor="@color/grisNegro"
                     android:textSize="16.85sp"
@@ -100,6 +119,7 @@
                 <TextView
                     android:id="@+id/textViewHora"
                     style="@style/inputCrearEvento"
+                    android:background="@drawable/redondeado_transparente_gris"
                     android:gravity="center_vertical"
                     android:textColor="@android:color/black"
                     android:textSize="18sp" />
@@ -114,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="20dp"
                         android:text="@string/ubicacion_evento"
                         android:textColor="@color/grisNegro"
                         android:textSize="16.85sp"
@@ -124,14 +144,13 @@
                         android:id="@+id/txtObtenerDireccion"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginRight="20dp"
+                        android:gravity="end"
                         android:text="Obtener"
                         android:textColor="@color/colorPrimary"
-                        android:textStyle="bold"
                         android:textSize="16.85sp"
-                        android:layout_marginRight="20dp"
-                        android:layout_marginTop="16dp"
-                        android:gravity="end"
-                        />
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -144,13 +163,14 @@
                 <TextView
                     android:id="@+id/textViewDireccion"
                     style="@style/datosEtiqueta"
-                    android:background="@color/colorGrisBlanco"
+                    android:layout_marginBottom="15dp"
+                    android:background="@drawable/redondeado_transparente_gris"
                     android:padding="7dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
                     android:textColor="@android:color/black"
-                    />
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
+                <!--
                 <TextView
                     android:id="@+id/textViewDescripcion"
                     android:layout_width="wrap_content"
@@ -161,6 +181,7 @@
                     android:textColor="@color/grisNegro"
                     android:textSize="16.85sp"
                     android:textStyle="bold" />
+
 
 
                 <EditText
@@ -177,12 +198,28 @@
                     android:inputType="textMultiLine"
                     android:lines="7"
                     android:padding="16dp" />
+                -->
 
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/inputEditTextMaterial"
+                    android:hint="@string/escribeDescripcion"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextDescripcion"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:lines="7" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:gravity="bottom"
                     android:orientation="horizontal">
 
                     <Button

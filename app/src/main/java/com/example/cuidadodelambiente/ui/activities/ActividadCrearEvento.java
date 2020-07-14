@@ -25,6 +25,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.StringRequest;
+import com.example.cuidadodelambiente.ActividadCrearReporte;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
@@ -36,6 +37,7 @@ import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
 
@@ -46,12 +48,14 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadCrearEvento extends AppCompatActivity {
 
+    private final String TAG = ActividadCrearEvento.class.getSimpleName();
+
     private ActividadCrearEvento.AddressResultReceiver resultReceiver;
     private TextView fechaView;
     private TextView horaView;
     private TextView txtDireccionEvento;
-    private EditText tituloEvento;
-    private EditText descripcionEvento;
+    private TextInputEditText tituloEvento;
+    private TextInputEditText descripcionEvento;
     private Button botonCancelar;
     private Button botonAceptar;
     private int dia, mes, anio, hora, minutos;
@@ -248,6 +252,9 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
     private void clicBotonCrearEvento()
     {
+        Log.e(TAG, tituloEvento.getText().toString());
+        Log.e(TAG, descripcionEvento.getText().toString());
+
         if(tituloEvento.getText().toString().equals("") || fechaView.getText().equals("") ||
                 horaView.getText().equals("") || txtDireccionEvento.getText().toString().equals("") ||
                 descripcionEvento.getText().toString().equals(""))
