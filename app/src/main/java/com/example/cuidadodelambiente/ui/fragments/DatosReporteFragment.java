@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.MainActivity;
@@ -43,16 +44,18 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
     private Button botonCrearEvento;
     private Button botonCancelar;
     private ProgressBar barraCarga;
-    protected ReporteContaminacion reporteContaminacion;
+    private ReporteContaminacion reporteContaminacion;
     private CargandoCircular cargandoCircular;
     private LinearLayout layoutNoConexion;
     private Button botonVolverIntentar;
     private LinearLayout contenidoPrincipal;
 
+    private Call<ReporteContaminacion> callDatosReporte;
+
     public static DatosReporteFragment newInstance(int idReporte) {
 
         Bundle args = new Bundle();
-        args.putInt("reporte_id", idReporte);
+        args.putInt(Constants.REPORTE_ID, idReporte);
 
         DatosReporteFragment fragment = new DatosReporteFragment();
         fragment.setArguments(args);
@@ -62,7 +65,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        reporteId = getArguments().getInt("reporte_id");
+        reporteId = getArguments().getInt(Constants.REPORTE_ID);
 
         Log.e("ID", String.valueOf(reporteId));
     }
@@ -152,14 +155,18 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
             }
         });
 
-
-
         intentarPeticionBD();
 
         return dialog;
     }
 
 
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+
+        callDatosReporte.cancel();
+    }
 
 
     private void intentarPeticionBD()
@@ -184,8 +191,8 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
     private void iniciarPeticionBD()
     {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<ReporteContaminacion> call = service.doGetReporteContaminacion(this.reporteId);
-        call.enqueue(new Callback<ReporteContaminacion>() {
+        callDatosReporte = service.doGetReporteContaminacion(this.reporteId);
+        callDatosReporte.enqueue(new Callback<ReporteContaminacion>() {
             @Override
             public void onResponse(Call<ReporteContaminacion> call, retrofit2.Response<ReporteContaminacion> response) {
 
@@ -232,10 +239,5 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         layoutNoConexion.setVisibility(View.VISIBLE);
         barraCarga.setVisibility(View.GONE);
         contenidoPrincipal.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
     }
 }

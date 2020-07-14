@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.Entidades.VolleySingleton;
@@ -44,6 +45,8 @@ import retrofit2.Callback;
 
 public class DatosEventoFragment extends BottomSheetDialogFragment{
 
+    private final String TAG = DatosEventoFragment.class.getSimpleName();
+
     private BottomSheetBehavior mBehavior;
     private int eventoId; // id del evento en la base de datos
     private TextView nombreEvento, fechaHora, creador, descripcion;
@@ -59,12 +62,15 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     private LinearLayout contenidoPrincipal;
     private Button botonVolverIntentar;
 
+    private Call<EventoLimpieza> callDatosEvento;
+    private Call<JsonObject> callUnirseEvento;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         super.onCreate(savedInstanceState);
-        eventoId = getArguments().getInt("evento_id");
+        eventoId = getArguments().getInt(Constants.EVENTO_ID);
     }
 
     @Override
@@ -136,6 +142,12 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     }
 
 
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        callDatosEvento.cancel();
+    }
+
     private void intentarPeticionBD()
     {
         mostrarCarga();
@@ -152,10 +164,15 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     private void iniciarPeticionBD()
     {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<EventoLimpieza> call = service.doGetEventoLimpieza(this.eventoId);
-        call.enqueue(new Callback<EventoLimpieza>() {
+        callDatosEvento = service.doGetEventoLimpieza(this.eventoId);
+        callDatosEvento.enqueue(new Callback<EventoLimpieza>() {
             @Override
             public void onResponse(Call<EventoLimpieza> call, retrofit2.Response<EventoLimpieza> response) {
+
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getContext(), "!response.isSuccessful()", Toast.LENGTH_LONG).show();
+                    return;
+                }
 
                 eventoLimpieza = response.body();
 
@@ -178,10 +195,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
             @Override
             public void onFailure(Call<EventoLimpieza> call, Throwable throwable) {
-                call.cancel();
                 Log.e("ERROR", throwable.getMessage());
                 mostrarLayoutError();
-
             }
         });
     }
@@ -191,7 +206,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
         // Supply num input as an argument.
         Bundle args = new Bundle();
-        args.putInt("evento_id", eventoId);
+        args.putInt(Constants.EVENTO_ID, eventoId);
         f.setArguments(args);
 
         return f;
@@ -204,25 +219,30 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         progreso.show();
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doUnirseEvento(DeclaracionFragments.actualAmbientalista,
+        callUnirseEvento = service.doUnirseEvento(DeclaracionFragments.actualAmbientalista,
                 eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),
                 eventoLimpieza.getFecha(), eventoLimpieza.getHora());
 
-        call.enqueue(new Callback<JsonObject>() {
+        callUnirseEvento.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                JsonObject json = response.body();
-                int resultado = json.get("resultado").getAsInt();
-                Log.e("RESULTADO", String.valueOf(resultado));
-                String mensaje = json.get("mensaje").getAsString();
-                Log.e("MENSAJE", mensaje);
+                if (response.isSuccessful()) {
+                    JsonObject json = response.body();
+                    int resultado = json.get("resultado").getAsInt();
+                    Log.e("RESULTADO", String.valueOf(resultado));
+                    String mensaje = json.get("mensaje").getAsString();
+                    Log.e("MENSAJE", mensaje);
 
-                if(resultado == 1) { // éxito
-                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                } else if(resultado == 2) { // ya participa en el evento
-                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                } else { // ocurrió un error
-                    Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                    if (resultado == 1) { // éxito
+                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                        botonQuieroParticipar.setEnabled(false);
+                    } else if (resultado == 2) { // ya participa en el evento
+                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                    } else { // ocurrió un error
+                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show();
                 }
 
                 progreso.hide();
@@ -230,7 +250,6 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                call.cancel();
                 progreso.hide();
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -11,4 +11,7 @@ public final class Constants {
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
             ".LOCATION_DATA_EXTRA";
 
+    public static final String EVENTO_ID = "id_evento";
+    public static final String REPORTE_ID = "id_reporte";
+
 }
