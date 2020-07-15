@@ -51,7 +51,7 @@
             <ImageView
                 android:id="@+id/fotoReporte"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="250dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginTop="17dp"
                 android:background="@color/colorGrisBlanco"
@@ -89,6 +89,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp" />
 
+            <!--
             <TextView
                 android:id="@+id/textViewDireccion"
                 style="@style/datosEtiqueta"
@@ -97,6 +98,16 @@
                 android:textSize="16.85sp"
                 android:textStyle="bold"
                 android:textColor="@android:color/black" />
+            -->
+
+            <TextView
+                android:id="@+id/textViewDireccion"
+                style="@style/datosEtiqueta"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/redondeado_transparente_gris"
+                android:padding="7dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textView"
@@ -113,25 +124,11 @@
                 android:id="@+id/textViewFechaHora"
                 android:textColor="@android:color/black"
                 android:gravity="center_vertical"
-                style="@style/inputCrearEvento" />
+                style="@style/datosEtiqueta"
+                android:padding="7dp"
+                android:background="@drawable/redondeado_transparente_gris"/>
 
-
-            <TextView
-                android:id="@+id/textViewContaminante"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="20dp"
-                android:text="@string/contaminante"
-                android:textColor="@color/grisNegro"
-                android:textSize="16.85sp"
-                android:textStyle="bold" />
-
-            <Spinner
-                android:id="@+id/opcionesContaminante"
-                style="@style/spinner"
-                android:entries="@array/contaminantes_array"/>
-
+            <!--
             <TextView
                 android:id="@+id/textViewVolumen"
                 android:layout_width="wrap_content"
@@ -142,6 +139,140 @@
                 android:textColor="@color/grisNegro"
                 android:textSize="16.85sp"
                 android:textStyle="bold" />
+            -->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/volumen_residuo"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginTop="25dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu">
+
+                <AutoCompleteTextView
+                    android:id="@+id/volumen_residuo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/textViewContaminante"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="15dp"
+                android:text="@string/contaminante"
+                android:textColor="@color/grisNegro"
+                android:textSize="16.85sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Envases"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Cartón"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Bolsas"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Eléctricos y electrónicos"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pilas y baterías"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Neumáticos"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Medicamentos"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Escombros"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Varios"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--
+            <Spinner
+                android:id="@+id/opcionesContaminante"
+                style="@style/spinner"
+                android:entries="@array/contaminantes_array"/>
 
             <Spinner
                 android:id="@+id/opcionesVolumen"
@@ -158,40 +289,41 @@
                 android:textColor="@color/grisNegro"
                 android:textSize="16.85sp"
                 android:textStyle="bold" />
+            -->
 
-
-            <EditText
-                android:id="@+id/editTextDescripcion"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/redondeado_gris"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/inputEditTextMaterial"
                 android:hint="@string/escribeDescripcion"
-                android:inputType="textMultiLine"
-                android:lines="7"
-                android:gravity="top|start"
-                android:padding="16dp"/>
+                android:layout_marginTop="12dp"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextDescripcion"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine"
+                    android:lines="7" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="15dp">
 
                 <Button
                     android:id="@+id/botonCancelar"
+                    style="@style/boton_cancelar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
-                    android:background="@drawable/fondo_gradient_rojo_redondeado"
+                    android:layout_weight="1"
                     android:text="@string/boton_cancelar"
-                    android:textColor="@android:color/white"
                     android:textStyle="normal" />
 
                 <Button

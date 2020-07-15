@@ -15,6 +15,7 @@
     <string name="escribeDescripcion">Escribe una descripción</string>
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
+    <string name="volver_intentar">Volver a intentarlo</string>
 
     <string name="nuevo_reporte">Nuevo reporte ecológico</string>
     <string name="fecha_hora">Fecha y hora</string>

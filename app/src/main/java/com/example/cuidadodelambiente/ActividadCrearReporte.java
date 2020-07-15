@@ -26,6 +26,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -45,6 +47,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -65,8 +68,17 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private final int FASTEST_UPDATE_INTERVAL_MILLISECONDS =
             UPDATE_INTERVAL_MILLISECONDS / 2;
     private final String TAG = ActividadCrearReporte.class.getSimpleName();
+    private final String OPCION_POR_DEFECTO_VOLUMEN = "Selecciona una opción";
 
-    private EditText descripcion;
+    String[] VOLUMENES_RESIDUO = new String[] {"Cabe en una mano",
+                                            "Cabe en una mochila",
+                                            "Cabe en un automóvil",
+                                            "Cabe en un contenedor",
+                                            "Cabe en un camión",
+                                            "Más grande"};
+
+    private TextInputEditText descripcion;
+    private AutoCompleteTextView volumenResiduoMenu;
     private ImageView fotoReporte;
     private TextView fechaHoraReporte;
     private TextView txtDireccionReporte; // direccion completa
@@ -109,6 +121,14 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         descripcion = findViewById(R.id.editTextDescripcion);
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),
+                R.layout.dropdown_menu_popup_item,
+                VOLUMENES_RESIDUO);
+        volumenResiduoMenu = findViewById(R.id.volumen_residuo);
+        volumenResiduoMenu.setAdapter(adapter);
+        volumenResiduoMenu.setText(OPCION_POR_DEFECTO_VOLUMEN, false);
+
+        Log.e(TAG, volumenResiduoMenu.getText().toString());
 
 
         buildGoogleApiClient();

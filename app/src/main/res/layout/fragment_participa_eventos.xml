@@ -104,13 +104,7 @@
 
             <Button
                 android:id="@+id/volverAIntentarlo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/boton_transparente"
-                android:padding="15dp"
-                android:text="Volver a intentarlo"
-                android:textAllCaps="false"
-                android:textColor="@android:color/white" />
+                style="@style/btnVolverIntentar"/> />
 
         </LinearLayout>
 
