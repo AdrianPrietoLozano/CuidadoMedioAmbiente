@@ -47,6 +47,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
@@ -61,6 +62,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
+    private final int REQUEST_CODE_ELEGIR_FOTO = 10;
     private final int PERMISSION_ID = 40;
     private final int REQUEST_CHECK_SETTINGS = 50;
     private final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
@@ -80,6 +82,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private TextInputEditText descripcion;
     private AutoCompleteTextView volumenResiduoMenu;
     private ImageView fotoReporte;
+    private MaterialButton botonElegirFoto;
     private TextView fechaHoraReporte;
     private TextView txtDireccionReporte; // direccion completa
     private TextView txtUbicacionReporte; // latitud y longitud
@@ -113,6 +116,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         fotoReporte = findViewById(R.id.fotoReporte);
         fotoReporte.setOnClickListener(listenerElegirFoto);
+        botonElegirFoto = findViewById(R.id.btnElegirFoto);
+        botonElegirFoto.setOnClickListener(listenerElegirFoto);
 
         txtUbicacionReporte = findViewById(R.id.txtLatitudLongitud);
         txtDireccionReporte = findViewById(R.id.textViewDireccion);
@@ -473,19 +478,27 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         public void onClick(View v) {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/");
-            startActivityForResult(intent.createChooser(intent, "Selecciona la fotografía"), 10);
+            startActivityForResult(intent.createChooser(intent, "Selecciona la fotografía"),
+                    REQUEST_CODE_ELEGIR_FOTO);
         }
     };
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK) {
-            Uri path = data.getData();
-            fotoReporte.setImageURI(path);
-        }
 
         switch (requestCode) {
+            case REQUEST_CODE_ELEGIR_FOTO:
+                if (resultCode == RESULT_OK) {
+                    Uri path = data.getData();
+                    fotoReporte.setImageURI(path);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error al cargar foto", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+
             case REQUEST_CHECK_SETTINGS:
                 if (resultCode == RESULT_OK) {
                     //iniciarRequestUbicacion();
