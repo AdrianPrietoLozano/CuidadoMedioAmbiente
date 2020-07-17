@@ -306,8 +306,8 @@ public class EventosLimpiezaFragment extends Fragment
     }
 
     @Override
-    public void onEventosCargadosError() {
-        Toast.makeText(getContext(), "onFailure", Toast.LENGTH_SHORT).show();
+    public void onEventosCargadosError(Throwable t) {
+        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
         cargandoCircular.ocultarCargaMostrarContenido();
         botonNuevoEvento.hide();

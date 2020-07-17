@@ -7,10 +7,10 @@ import com.example.cuidadodelambiente.ui.fragments.reportes.view.IReportesView;
 
 import java.util.List;
 
-public class ReportesPresenter implements IReportesPresenter, IReportesInteractor {
+public class ReportesPresenter implements IReportesPresenter {
 
     private IReportesView view;
-    private IReportesPresenter interactor;
+    private IReportesInteractor interactor;
 
     public ReportesPresenter(IReportesView view) {
         this.view = view;
@@ -28,7 +28,7 @@ public class ReportesPresenter implements IReportesPresenter, IReportesInteracto
     }
 
     @Override
-    public void onConexionError() {
-        view.onReportesRecibidosError();
+    public void onConexionError(Throwable t) {
+        view.onReportesRecibidosError(t);
     }
 }

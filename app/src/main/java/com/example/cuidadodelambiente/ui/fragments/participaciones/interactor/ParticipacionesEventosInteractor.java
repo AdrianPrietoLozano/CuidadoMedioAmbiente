@@ -17,12 +17,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ParticipacionesEventosInteractor implements Callback<List<EventoLimpieza>>,
-        IParticipacionesEventosPresenter {
+        IParticipacionesEventosInteractor {
 
-    private IParticipacionesEventosInteractor listener;
+    private IParticipacionesEventosPresenter presenter;
 
-    public ParticipacionesEventosInteractor(IParticipacionesEventosInteractor listener) {
-        this.listener = listener;
+    public ParticipacionesEventosInteractor(IParticipacionesEventosPresenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -34,12 +34,11 @@ public class ParticipacionesEventosInteractor implements Callback<List<EventoLim
 
     @Override
     public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {
-        this.listener.onConexionExitosa(response.body());
+        this.presenter.onConexionExitosa(response.body());
     }
 
     @Override
     public void onFailure(Call<List<EventoLimpieza>> call, Throwable t) {
-        call.cancel();
-        this.listener.onConexionError();
+        this.presenter.onConexionError(t);
     }
 }

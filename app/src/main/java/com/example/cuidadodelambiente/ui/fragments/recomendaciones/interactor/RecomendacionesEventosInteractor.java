@@ -12,12 +12,18 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class RecomendacionesEventosInteractor implements retrofit2.Callback<List<EventoItem>>,
-        IRecomendacionesEventosPresenter {
+        IRecomendacionesEventosInteractor {
 
-    private RecomendacionesEventosPresenter presenter;
+    private IRecomendacionesEventosPresenter presenter;
 
-    public RecomendacionesEventosInteractor(RecomendacionesEventosPresenter presenter) {
+    public RecomendacionesEventosInteractor(IRecomendacionesEventosPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void cargarRecomendacionesEventos(Integer id_usuario) {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        service.doGetEventosRecomendados(id_usuario).enqueue(this);
     }
 
     @Override
@@ -27,13 +33,6 @@ public class RecomendacionesEventosInteractor implements retrofit2.Callback<List
 
     @Override
     public void onFailure(Call<List<EventoItem>> call, Throwable t) {
-        call.cancel();
-        presenter.onConexionError();
-    }
-
-    @Override
-    public void cargarRecomendacionesEventos(Integer id_usuario) {
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        service.doGetEventosRecomendados(id_usuario).enqueue(this);
+        presenter.onConexionError(t);
     }
 }

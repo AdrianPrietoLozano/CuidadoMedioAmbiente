@@ -12,30 +12,22 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ReportesInteractor implements Callback<List<UbicacionReporte>>,
-        IReportesPresenter {
+        IReportesInteractor {
 
-    private IReportesInteractor listener;
-    private RetrofitClientInstance retrofiClient;
+    private IReportesPresenter presenter;
 
-    public ReportesInteractor(IReportesInteractor listener) {
-        this.listener = listener;
-        retrofiClient = new RetrofitClientInstance();
+    public ReportesInteractor(IReportesPresenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
     public void onResponse(Call<List<UbicacionReporte>> call, Response<List<UbicacionReporte>> response) {
-        if(response.body() == null) {
-            listener.onConexionError();
-        }
-        else {
-            listener.onConexionExitosa(response.body());
-        }
+        presenter.onConexionExitosa(response.body());
     }
 
     @Override
     public void onFailure(Call<List<UbicacionReporte>> call, Throwable t) {
-        call.cancel();
-        listener.onConexionError();
+        presenter.onConexionError(t);
     }
 
     @Override

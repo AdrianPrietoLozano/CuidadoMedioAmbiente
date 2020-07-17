@@ -7,11 +7,10 @@ import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.IRecomen
 
 import java.util.List;
 
-public class RecomendacionesEventosPresenter implements IRecomendacionesEventosPresenter,
-        IRecomendacionesEventosInteractor {
+public class RecomendacionesEventosPresenter implements IRecomendacionesEventosPresenter{
 
     private IRecomendacionesEventosView view;
-    private IRecomendacionesEventosPresenter interactor;
+    private IRecomendacionesEventosInteractor interactor;
 
     public RecomendacionesEventosPresenter(IRecomendacionesEventosView view) {
         this.view = view;
@@ -29,7 +28,7 @@ public class RecomendacionesEventosPresenter implements IRecomendacionesEventosP
     }
 
     @Override
-    public void onConexionError() {
-        view.onEventosCargadosError();
+    public void onConexionError(Throwable t) {
+        view.onEventosCargadosError(t);
     }
 }

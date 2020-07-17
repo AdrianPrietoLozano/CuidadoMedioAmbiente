@@ -7,10 +7,9 @@ import com.example.cuidadodelambiente.ui.fragments.participaciones.interactor.IP
 
 import java.util.List;
 
-public class ParticipacionesEventosPresenter implements IParticipacionesEventosPresenter,
-        IParticipacionesEventosInteractor {
+public class ParticipacionesEventosPresenter implements IParticipacionesEventosPresenter {
 
-    private IParticipacionesEventosPresenter interactor;
+    private IParticipacionesEventosInteractor interactor;
     private IParticipacionesEventosView view;
 
     public ParticipacionesEventosPresenter(IParticipacionesEventosView view) {
@@ -29,7 +28,7 @@ public class ParticipacionesEventosPresenter implements IParticipacionesEventosP
     }
 
     @Override
-    public void onConexionError() {
-        view.onEventosCargadosError();
+    public void onConexionError(Throwable t) {
+        view.onEventosCargadosError(t);
     }
 }

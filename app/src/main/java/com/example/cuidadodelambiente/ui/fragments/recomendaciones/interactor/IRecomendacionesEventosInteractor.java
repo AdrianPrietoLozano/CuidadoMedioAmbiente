@@ -5,6 +5,5 @@ import com.example.cuidadodelambiente.data.models.EventoItem;
 import java.util.List;
 
 public interface IRecomendacionesEventosInteractor {
-    void onConexionExitosa(List<EventoItem> eventos);
-    void onConexionError();
+    void cargarRecomendacionesEventos(Integer id_usuario);
 }

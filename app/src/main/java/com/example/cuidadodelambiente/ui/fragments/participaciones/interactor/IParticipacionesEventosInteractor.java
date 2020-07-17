@@ -5,6 +5,5 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import java.util.List;
 
 public interface IParticipacionesEventosInteractor {
-    void onConexionExitosa(List<EventoLimpieza> eventos);
-    void onConexionError();
+    void cargarParticipacionesEventos(Integer idUsuario);
 }

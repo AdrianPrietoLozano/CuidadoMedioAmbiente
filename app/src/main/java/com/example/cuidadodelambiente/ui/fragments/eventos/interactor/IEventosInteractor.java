@@ -5,6 +5,5 @@ import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import java.util.List;
 
 public interface IEventosInteractor {
-    void onConexionExitosa(List<UbicacionEvento> eventos);
-    void onConexionError();
+    void cargarEventos();
 }

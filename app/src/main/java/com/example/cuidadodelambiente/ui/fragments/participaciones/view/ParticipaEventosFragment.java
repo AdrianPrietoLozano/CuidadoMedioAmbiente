@@ -184,7 +184,7 @@ public class ParticipaEventosFragment extends Fragment
     }
 
     @Override
-    public void onEventosCargadosError() {
+    public void onEventosCargadosError(Throwable t) {
         swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);

@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface IRecomendacionesEventosView {
     void onEventosCargadosExitosamente(List<EventoItem> eventos);
-    void onEventosCargadosError();
+    void onEventosCargadosError(Throwable t);
 }

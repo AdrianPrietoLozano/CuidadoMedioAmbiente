@@ -7,9 +7,9 @@ import com.example.cuidadodelambiente.ui.fragments.eventos.view.IEventosView;
 
 import java.util.List;
 
-public class EventosPresenter implements IEventosPresenter, IEventosInteractor {
+public class EventosPresenter implements IEventosPresenter {
 
-    private IEventosPresenter interactor;
+    private IEventosInteractor interactor;
     private IEventosView view;
 
     public EventosPresenter(IEventosView view) {
@@ -28,7 +28,7 @@ public class EventosPresenter implements IEventosPresenter, IEventosInteractor {
     }
 
     @Override
-    public void onConexionError() {
-        view.onEventosCargadosError();
+    public void onConexionError(Throwable t) {
+        view.onEventosCargadosError(t);
     }
 }

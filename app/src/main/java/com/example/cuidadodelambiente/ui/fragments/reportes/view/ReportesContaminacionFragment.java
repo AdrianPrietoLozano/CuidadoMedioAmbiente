@@ -243,8 +243,7 @@ public class ReportesContaminacionFragment extends Fragment
     }
 
     @Override
-    public void onReportesRecibidosError() {
-        Log.e("ERRORRRRRR", "BIENENENENEN");
+    public void onReportesRecibidosError(Throwable t) {
         cargandoCircular.ocultarCargaMostrarContenido();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);

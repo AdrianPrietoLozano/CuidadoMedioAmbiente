@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IEventosView {
     void onEventosCargadosExitosamente(List<UbicacionEvento> eventos);
-    void onEventosCargadosError();
+    void onEventosCargadosError(Throwable t);
 }

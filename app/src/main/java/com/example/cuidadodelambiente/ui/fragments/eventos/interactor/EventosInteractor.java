@@ -13,11 +13,11 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvento>>,
-        IEventosPresenter {
+        IEventosInteractor {
 
-    private EventosPresenter presenter;
+    private IEventosPresenter presenter;
 
-    public EventosInteractor(EventosPresenter presenter) {
+    public EventosInteractor(IEventosPresenter presenter) {
         this.presenter = presenter;
     }
 
@@ -28,9 +28,7 @@ public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvent
 
     @Override
     public void onFailure(Call<List<UbicacionEvento>> call, Throwable t) {
-        call.cancel();
-        presenter.onConexionError();
-        Log.e("ERROR CARGA EVENTOS", t.getMessage());
+        presenter.onConexionError(t);
     }
 
     @Override

@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IParticipacionesEventosView {
     void onEventosCargadosExitosamente(List<EventoLimpieza> eventos);
-    void onEventosCargadosError();
+    void onEventosCargadosError(Throwable t);
 }
