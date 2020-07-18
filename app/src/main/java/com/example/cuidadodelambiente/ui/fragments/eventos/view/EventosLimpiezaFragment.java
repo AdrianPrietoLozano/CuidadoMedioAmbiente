@@ -29,6 +29,7 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
@@ -62,6 +63,8 @@ import retrofit2.Callback;
 public class EventosLimpiezaFragment extends Fragment
         implements IEventosView, Observer, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    private final String TAG = EventosLimpiezaFragment.class.getSimpleName();
+
     private MapView mMapView;
     private GoogleMap mMap;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
@@ -89,7 +92,7 @@ public class EventosLimpiezaFragment extends Fragment
         //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         Log.e("EVENTOSLIMPIEZA", "onCreateView");
 
-        getActivity().findViewById(R.id.bottom_navigation).setVisibility(View.VISIBLE);
+        ActividadCrearEvento.getObservable().addObserver(this);
 
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
         // objects or sub-Bundles.
@@ -271,6 +274,8 @@ public class EventosLimpiezaFragment extends Fragment
     public void onDestroy() {
         mMapView.onDestroy();
         super.onDestroy();
+        ActividadCrearEvento.getObservable().deleteObserver(this);
+        Toast.makeText(getContext(), "Observer eliminado", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -319,13 +324,19 @@ public class EventosLimpiezaFragment extends Fragment
     // se ejecuta cuando se crea un evento de limpieza
     @Override
     public void update(Observable o, Object arg) {
-        EventoLimpieza evento = (EventoLimpieza) arg;
+        if (arg instanceof EventoLimpieza) {
+            Log.e(TAG, "UPDATE");
 
-        Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento());
+            EventoLimpieza evento = (EventoLimpieza) arg;
 
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition.Builder()
-                .target(evento.getUbicacion())
-                .zoom(15.5f).bearing(0).tilt(25).build()));
+            Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento());
+
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition.Builder()
+                            .target(evento.getUbicacion())
+                            .zoom(15.5f).bearing(0).tilt(25).build()));
+
+        }
     }
+
 }

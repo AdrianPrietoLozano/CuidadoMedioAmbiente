@@ -19,13 +19,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.StringRequest;
-import com.example.cuidadodelambiente.ActividadCrearReporte;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
@@ -40,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
+import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -70,9 +69,10 @@ public class ActividadCrearEvento extends AppCompatActivity {
     private LatLng ubicacionReporte;
     CrearEventoFragment.OnEventoCreado onEventoCreado;
     private String addressOutput;
-    public ParaObservar observable = new ParaObservar();
+    private static ParaObservar observable = new ParaObservar();
     private TextView txtObtenerDireccion;
     private TextView txtLatitudLongitud;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +142,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
         }
 
         resultReceiver = new AddressResultReceiver(new Handler());
-        observable.addObserver(DeclaracionFragments.eventosLimpiezaFragmentFragement);
+        //observable.addObserver(DeclaracionFragments.eventosLimpiezaFragmentFragement);
 
         startIntentService();
     }
@@ -176,6 +176,10 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
         }
 
+    }
+
+    public static ParaObservar getObservable() {
+        return observable;
     }
 
     private void mostrarDireccionEnTextView() {
@@ -252,6 +256,8 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
     private void clicBotonCrearEvento()
     {
+        Log.e(TAG, String.valueOf(observable.countObservers()));
+
         Log.e(TAG, tituloEvento.getText().toString());
         Log.e(TAG, descripcionEvento.getText().toString());
 
@@ -294,7 +300,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
                             if (json.getResultado() == 1) {
                                 Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
-                                observable.notificar(evento);
+                                getObservable().notificar(evento);
                                 //((MainActivity) getActivity())
                                         //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTOS");
                             } else {

@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.cuidadodelambiente.Constants;
+import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.MainActivity;
@@ -136,7 +137,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
                 ((MainActivity)getActivity())
                         .cambiarFragment(crearEventoFragment, "CREAR");
                 */
-                Intent intent = new Intent(getContext(), ActividadCrearEvento.class);
+                Intent intent = new Intent(getContext(), DeclaracionFragments.crearEventoActivity.getClass());
                 intent.putExtra("ID_REPORTE", reporteContaminacion.getId());
                 intent.putExtra("LATITUD", reporteContaminacion.getLatitud());
                 intent.putExtra("LONGITUD", reporteContaminacion.getLongitud());
