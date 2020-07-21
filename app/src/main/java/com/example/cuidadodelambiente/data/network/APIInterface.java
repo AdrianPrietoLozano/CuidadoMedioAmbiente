@@ -6,6 +6,7 @@ import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
+import com.example.cuidadodelambiente.data.models.User;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -57,6 +58,12 @@ public interface APIInterface {
             @Field("hora_inicio") String horaInicio,
             @Field("fecha_fin") String fechaFin,
             @Field("hora_fin") String horaFin
+    );
+
+    @FormUrlEncoded
+    @POST("google_id_token.php")
+    Call<User> doVerificarGoogleUser(
+            @Field("id_token") String id_token
     );
 }
 

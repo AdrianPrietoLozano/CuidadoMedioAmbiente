@@ -68,4 +68,7 @@
     <string name="participas">Participaciones</string>
     <string name="title_activity_actividad_crear">ActividadCrear</string>
     <string name="title_activity_main2">Main2Activity</string>
+
+    <!--<string name="server_client_id">192312538883-opoq8nmkcbqmqoc317qogk30r7qurk65.apps.googleusercontent.com</string>-->
+    <string name="server_client_id">192312538883-ttvi1tbb3q79kqruirmgr40r1u781e6g.apps.googleusercontent.com</string>
 </resources>
