@@ -1,19 +1,22 @@
 package com.example.cuidadodelambiente.ui.activities.LogIn.view;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
-import com.example.cuidadodelambiente.data.network.APIInterface;
-import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.LogIn.presenter.ILogInPresenter;
 import com.example.cuidadodelambiente.ui.activities.LogIn.presenter.LogInPresenter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -23,19 +26,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.gson.JsonObject;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
     private final int RC_SIGN_IN = 10;
     private final String TAG = ActividadLogIn.class.getSimpleName();
 
+    private LogInFragment logInFragment = new LogInFragment();
+    private SignUpFragment signUpFragment = new SignUpFragment();
     private GoogleSignInClient mGoogleSignInClient;
     private ILogInPresenter presenter;
+    private TextView txtTitulo;
 
     public ActividadLogIn() {
         presenter = new LogInPresenter(this);
@@ -46,16 +47,12 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actividad_log_in);
 
-        Toast.makeText(getApplicationContext(), "onCreate()", Toast.LENGTH_SHORT).show();
+        Utilidades.cambiarColorStatusBar(getWindow(),
+                ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
-        // solo para pruebas
-        findViewById(R.id.btnSaltar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                iniciarMainActivity();
-                finish();
-            }
-        });
+        txtTitulo = findViewById(R.id.titulo);
+
+        cambiarALogInFragment();
 
         // Set the dimensions of the sign-in button.
         SignInButton signInButton = findViewById(R.id.sign_in_button);
@@ -77,11 +74,27 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
     }
 
+    private void cambiarFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frameLayout, fragment)
+                .commit();
+    }
+
+    public void cambiarALogInFragment() {
+        cambiarFragment(logInFragment);
+        txtTitulo.setText("Inicio de sesión");
+
+    }
+
+    public void cambiarASignUpFragment() {
+        cambiarFragment(signUpFragment);
+        txtTitulo.setText("Crear una cuenta");
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
-
-        Toast.makeText(getApplicationContext(), "onStart()", Toast.LENGTH_SHORT).show();
 
         /*
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
@@ -168,7 +181,6 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Toast.makeText(getApplicationContext(), "handle", Toast.LENGTH_SHORT).show();
 
             /*
             APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);

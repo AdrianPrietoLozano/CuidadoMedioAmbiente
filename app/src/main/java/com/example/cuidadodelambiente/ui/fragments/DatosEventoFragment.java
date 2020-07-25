@@ -27,6 +27,7 @@ import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -219,8 +220,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         progreso.setMessage("Cargando...");
         progreso.show();
 
+        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callUnirseEvento = service.doUnirseEvento(DeclaracionFragments.actualAmbientalista,
+        callUnirseEvento = service.doUnirseEvento(idUsuario,
                 eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),
                 eventoLimpieza.getFecha(), eventoLimpieza.getHora());
 

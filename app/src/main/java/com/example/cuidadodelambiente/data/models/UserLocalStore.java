@@ -3,8 +3,6 @@ package com.example.cuidadodelambiente.data.models;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import androidx.core.content.ContextCompat;
-
 import java.util.Observable;
 
 public class UserLocalStore extends Observable {

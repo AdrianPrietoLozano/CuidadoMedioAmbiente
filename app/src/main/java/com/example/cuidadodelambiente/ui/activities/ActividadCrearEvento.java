@@ -30,6 +30,7 @@ import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.network.APIInterface;
@@ -81,10 +82,8 @@ public class ActividadCrearEvento extends AppCompatActivity {
 
 
         // Cambia el color del status bar a verde
-        Window w = getWindow();
-        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        w.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.verde3));
+        Utilidades.cambiarColorStatusBar(getWindow(),
+                ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
 
         tituloEvento = findViewById(R.id.editTextTitulo);

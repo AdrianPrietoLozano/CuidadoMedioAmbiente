@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -106,10 +107,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
 
         // Cambia el color del status bar a verde
-        Window w = getWindow();
-        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        w.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.verde3));
+        Utilidades.cambiarColorStatusBar(getWindow(),
+                ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
         fotoReporte = findViewById(R.id.fotoReporte);
         fotoReporte.setOnClickListener(listenerElegirFoto);

@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
@@ -120,7 +121,7 @@ public class ParticipaEventosFragment extends Fragment
         // si hay internet
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
-            this.presenter.cargarParticipacionesEventos(ActualAmbientalista.getInstance().getId());
+            this.presenter.cargarParticipacionesEventos(UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId());
         }
         else { // no hay internet
             cargandoCircular.ocultarCargaMostrarContenido();

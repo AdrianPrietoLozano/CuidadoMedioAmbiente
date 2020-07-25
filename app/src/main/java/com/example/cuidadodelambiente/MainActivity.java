@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         setContentView(R.layout.activity_main);
 
         // Cambia el color del status bar a verde
-        Window w = getWindow();
-        w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        w.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        w.setStatusBarColor(ContextCompat.getColor(getApplicationContext(), R.color.verde3));
+
+        Utilidades.cambiarColorStatusBar(getWindow(),
+                ContextCompat.getColor(getApplicationContext(), R.color.verde3));
+
         //-------------------------------------------
 
         // iniciando el fragment principal
