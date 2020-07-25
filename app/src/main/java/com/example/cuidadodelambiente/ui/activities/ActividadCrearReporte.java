@@ -79,7 +79,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private AutoCompleteTextView volumenResiduoMenu;
     private ImageView fotoReporte;
     private MaterialButton botonElegirFoto;
-    private TextView fechaHoraReporte;
+    private TextView fechaReporte;
+    private TextView horaReporte;
     private TextView txtDireccionReporte; // direccion completa
     private TextView txtUbicacionReporte; // latitud y longitud
     private ProgressBar progressBarDireccion;
@@ -118,7 +119,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         txtUbicacionReporte = findViewById(R.id.txtLatitudLongitud);
         txtDireccionReporte = findViewById(R.id.textViewDireccion);
         progressBarDireccion = findViewById(R.id.progressBarDireccion);
-        fechaHoraReporte = findViewById(R.id.textViewFechaHora);
+        fechaReporte = findViewById(R.id.textViewFecha);
+        horaReporte = findViewById(R.id.textViewHora);
 
         descripcion = findViewById(R.id.editTextDescripcion);
 
@@ -463,9 +465,14 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     }
 
     private void mostrarFechaHora() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy,  HH:mm");
+        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy,  HH:mm");
         Date date = new Date();
-        fechaHoraReporte.setText(dateFormat.format(date));
+
+        String hora = date.getHours() + ":" + date.getMinutes();
+        String fecha = date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
+
+        fechaReporte.setText(fecha);
+        horaReporte.setText(hora);
 
     }
 

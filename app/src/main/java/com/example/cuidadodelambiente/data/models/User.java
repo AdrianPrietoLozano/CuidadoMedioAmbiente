@@ -3,6 +3,10 @@ package com.example.cuidadodelambiente.data.models;
 import com.google.gson.annotations.SerializedName;
 
 public class User {
+
+    public static final int USUARIO_GOOGLE = 1;
+    public static final int USUARIO_NORMAL = 2;
+
     @SerializedName("id")
     private Integer id;
 
@@ -20,6 +24,24 @@ public class User {
 
     @SerializedName("mensaje")
     private String mensaje;
+
+    private int tipoUsuario;
+
+    public User(Integer id, String nombre, String email, Integer puntos, int tipo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.puntos = puntos;
+        this.tipoUsuario = tipo;
+    }
+
+    public int getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(int tipo) {
+        this.tipoUsuario = tipo;
+    }
 
     public Integer getId() {
         return id;

@@ -98,8 +98,7 @@
                     android:id="@+id/progressBarDireccion"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="7dp"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="5dp"
                     />
 
             </LinearLayout>
@@ -135,6 +134,7 @@
                 android:layout_margin="20dp"
                 style="@style/divider"/>
 
+            <!--
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
@@ -153,6 +153,97 @@
                 style="@style/datosEtiqueta"
                 android:padding="7dp"
                 android:background="@drawable/redondeado_transparente_gris"/>
+
+            -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="65dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha"
+                            android:textColor="@color/grisNegro"
+                            android:textSize="16.85sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_event_black_24dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewFecha"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_gravity="center_vertical"
+                        android:padding="7dp"
+                        android:background="@drawable/redondeado_transparente_gris"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="65dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hora"
+                            android:textColor="@color/grisNegro"
+                            android:textSize="16.85sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center_horizontal"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_access_time_black_24dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/textViewHora"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="8dp"
+                        android:padding="7dp"
+                        android:background="@drawable/redondeado_transparente_gris"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!--
             <TextView

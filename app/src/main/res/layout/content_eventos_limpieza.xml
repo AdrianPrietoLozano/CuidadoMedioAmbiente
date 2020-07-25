@@ -47,7 +47,7 @@
         android:layout_gravity="top|center"
         android:clickable="true"
         android:focusable="true"
-        android:src="@drawable/ic_autorenew_black_24dp"
+        android:src="@drawable/ic_refresh_white_24dp"
         app:backgroundTint="@color/colorPrimary"
         app:fabSize="normal" />
 

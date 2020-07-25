@@ -62,7 +62,7 @@ public interface APIInterface {
 
     @FormUrlEncoded
     @POST("google_id_token.php")
-    Call<User> doVerificarGoogleUser(
+    Call<JsonObject> doVerificarGoogleUser(
             @Field("id_token") String id_token
     );
 }

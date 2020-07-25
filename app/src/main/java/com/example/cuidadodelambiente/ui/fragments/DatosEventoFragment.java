@@ -69,8 +69,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        super.onCreate(savedInstanceState);
-        eventoId = getArguments().getInt(Constants.EVENTO_ID);
+        if (getArguments() != null) {
+            eventoId = getArguments().getInt(Constants.EVENTO_ID);
+        }
     }
 
     @Override

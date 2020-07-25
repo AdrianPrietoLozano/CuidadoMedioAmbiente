@@ -51,10 +51,15 @@
     <string name="title_eventos_nav_view">Eventos</string>
     <string name="title_mis_eventos_nav_view">Mis eventos</string>
     <string name="title_recomendacion_crear_evento_nav_view">Reportes</string>
-    <string name="title_tu_cuenta_nav_view">Tu cuenta</string>
+    <string name="perfil">Perfil</string>
 
     <string name="quiero_participar">Quiero participar</string>
     <string name="volver_intentarlo">Volver a intentarlo</string>
+    <string name="puntos">Puntos</string>
+    <string name="mas_opciones">Más opciones</string>
+    <string name="mis_reportes">Mis reportes</string>
+    <string name="mis_eventos">Mis eventos</string>
+    <string name="cerrar_sesion">Cerrar sesión</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

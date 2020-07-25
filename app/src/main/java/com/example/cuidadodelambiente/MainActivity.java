@@ -108,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.eventos_participa:
                 cambiarFragment(DeclaracionFragments.participaEventos, "PARTICIPA");
                 return true;
+
+            case R.id.perfil_usuario:
+                cambiarFragment(DeclaracionFragments.perfilUsuario, "PERFIL");
+                return true;
         }
 
         return false;

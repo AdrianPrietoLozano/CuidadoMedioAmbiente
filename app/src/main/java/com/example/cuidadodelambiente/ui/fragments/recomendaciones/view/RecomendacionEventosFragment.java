@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.Fragments.RecyclerViewOnItemClickListener;
+import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
@@ -122,7 +123,7 @@ public class RecomendacionEventosFragment extends Fragment
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             //iniciarPeticionBD();
-            presenter.cargarRecomendacionesEventos(DeclaracionFragments.actualAmbientalista);
+            presenter.cargarRecomendacionesEventos(ActualAmbientalista.getInstance().getId());
         }
         else { // no hay internet
             cargandoCircular.ocultarCargaMostrarContenido();
