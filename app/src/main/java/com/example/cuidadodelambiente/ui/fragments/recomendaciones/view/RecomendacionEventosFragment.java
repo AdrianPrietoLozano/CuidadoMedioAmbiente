@@ -124,7 +124,7 @@ public class RecomendacionEventosFragment extends Fragment
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             //iniciarPeticionBD();
-            int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+            int idUsuario = 2; //UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
             presenter.cargarRecomendacionesEventos(idUsuario);
         }
         else { // no hay internet
@@ -134,9 +134,6 @@ public class RecomendacionEventosFragment extends Fragment
         }
     }
 
-    private void iniciarPeticionBD() {
-
-    }
 
     @Override
     public void onEventosCargadosExitosamente(final List<EventoItem> eventos) {

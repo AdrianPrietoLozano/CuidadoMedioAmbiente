@@ -220,7 +220,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         progreso.setMessage("Cargando...");
         progreso.show();
 
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+        int idUsuario = 2; //UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         callUnirseEvento = service.doUnirseEvento(idUsuario,
                 eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),

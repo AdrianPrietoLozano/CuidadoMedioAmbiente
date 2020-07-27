@@ -157,12 +157,8 @@ public class EventosLimpiezaFragment extends Fragment
         // evento clic para el boton flotante que recarga los marcadores del mapa
         botonRecargar = v.findViewById(R.id.botonFlotanteRecargar);
         botonRecargar.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                DeclaracionFragments.actualAmbientalista += 1;
-                Toast.makeText(getContext(), "Ambientalista: " +
-                        DeclaracionFragments.actualAmbientalista, Toast.LENGTH_SHORT).show();
                 intentarPeticionBD();
             }
         });

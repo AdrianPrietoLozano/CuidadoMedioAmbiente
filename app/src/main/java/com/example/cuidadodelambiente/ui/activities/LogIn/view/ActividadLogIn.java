@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
@@ -60,8 +63,9 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
+                Toast.makeText(getApplicationContext(), "Falta", Toast.LENGTH_SHORT).show();
+                //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                //startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
@@ -72,6 +76,12 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
+    }
+
+    // pasar contexto a Calligraphy
+    @Override
+    protected void attachBaseContext(Context context) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
     }
 
     private void cambiarFragment(Fragment fragment) {
@@ -134,7 +144,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                 );
         */
 
-
+        /*
         UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
         boolean logueado = userLocalStore.isUsuarioLogueado();
         if (logueado){
@@ -160,6 +170,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         } else {
             Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
         }
+        */
         //updateUI(account);
 
     }

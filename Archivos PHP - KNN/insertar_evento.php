@@ -2,6 +2,12 @@
 
 require_once("config.php");
 
+$RESULTADO_STR = "resultado";
+$MENSAJE_STR = "mensaje";
+
+$json = array();
+$json[$RESULTADO_STR] = "0";
+$json[$MENSAJE_STR] = "Ocurrió un error.";
 
 if(isset($_GET['ambientalista_id']) && isset($_GET['reporte_id']) && isset($_GET['titulo'])
 	&& isset($_GET['fecha']) && isset($_GET['hora']) && isset($_GET['descripcion']))
@@ -17,22 +23,24 @@ if(isset($_GET['ambientalista_id']) && isset($_GET['reporte_id']) && isset($_GET
 
 	if(!$conexion)
 	{
-		echo "0";
-		exit();
+		$json[$RESULTADO_STR] = "0";
+		$json[$MENSAJE_STR] = "No fue posible conectarse a la base de datos.";
 	}
 	else
 	{
-
 		if(reporteYaTieneEvento($conexion, $reporte_id))
 		{
-			echo "2"; // ya existe el evento para ese reporte	
+			$json[$RESULTADO_STR] = "2";
+			$json[$MENSAJE_STR] = "Ya existe un evento para ese reporte.";
 		}
 		else
 		{
 			if(insertarEvento($conexion, $ambientalista_id, $reporte_id, $titulo, $fecha, $hora, $descripcion)) {
-				echo "1";
+				$json[$RESULTADO_STR] = "1";
+				$json[$MENSAJE_STR] = "Evento creado con éxito.";
 			} else {
-				echo "0";
+				$json[$RESULTADO_STR] = "0";
+				$json[$MENSAJE_STR] = "Ocurrió un error.";
 			}
 		}	
 
@@ -40,10 +48,8 @@ if(isset($_GET['ambientalista_id']) && isset($_GET['reporte_id']) && isset($_GET
 	}
 
 }
-else
-{
-	echo "0";
-}
+
+echo json_encode($json);
 
 
 function insertarEvento($conexion, $id_ambientalista, $reporte_id, $titulo, $fecha, $hora, $descripcion)
