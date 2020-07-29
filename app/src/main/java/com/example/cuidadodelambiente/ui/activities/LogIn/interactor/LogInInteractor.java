@@ -1,7 +1,6 @@
 package com.example.cuidadodelambiente.ui.activities.LogIn.interactor;
 
-import android.net.DnsResolver;
-import android.telecom.RemoteConference;
+import android.util.Log;
 
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.network.APIInterface;
@@ -23,12 +22,36 @@ public class LogInInteractor implements ILogInInteractor {
 
     @Override
     public void cargarDatosUsuarioNormal(int idUsuario) {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.doCargarDatosUsuario(idUsuario);
 
-    }
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    JsonObject json = response.body();
+                    int resultado = json.get("resultado").getAsInt();
 
-    @Override
-    public void autentificarUsuarioNormal(String email, String contrasenia) {
+                    if (resultado == 1) {
+                        User user = obtenerUsuario(json, User.USUARIO_NORMAL);
+                        presenter.cargarDatosUsuarioNormalExito(user);
+                        Log.e("INTERACTOR", "datos recibidos INTERACTOR");
 
+                    } else {
+                        presenter.cargarDatosUsuarioNormalError(json.get("mensaje").getAsString());
+                    }
+
+                } else {
+                    presenter.cargarDatosUsuarioNormalError("no successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                presenter.cargarDatosUsuarioNormalError(t.getMessage());
+                Log.e("INTERACTOR", "error interactor");
+            }
+        });
     }
 
     @Override
@@ -44,12 +67,7 @@ public class LogInInteractor implements ILogInInteractor {
                     int resultado = json.get("resultado").getAsInt();
 
                     if (resultado == 1) {
-                        int id = json.get("id").getAsInt();
-                        String nombre = json.get("nombre").getAsString();
-                        String email = json.get("email").getAsString();
-                        int puntos = json.get("puntos").getAsInt();
-
-                        User user = new User(id, nombre, email, puntos, User.USUARIO_GOOGLE);
+                        User user = obtenerUsuario(json, User.USUARIO_GOOGLE);
                         presenter.autentificarUsuarioGoogleExito(user);
 
                     } else {
@@ -68,4 +86,17 @@ public class LogInInteractor implements ILogInInteractor {
         });
 
     }
+
+
+    private User obtenerUsuario(JsonObject json, int tipoUsuario) {
+        int id = json.get("id").getAsInt();
+        String nombre = json.get("nombre").getAsString();
+        String email = json.get("email").getAsString();
+        int puntos = json.get("puntos").getAsInt();
+
+        User user = new User(id, nombre, email, puntos, tipoUsuario);
+
+        return user;
+    }
+
 }

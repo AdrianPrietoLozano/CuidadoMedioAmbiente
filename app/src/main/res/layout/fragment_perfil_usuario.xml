@@ -207,7 +207,8 @@
                     android:text="@string/cerrar_sesion"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:layout_margin="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
                     style="@style/boton_cancelar"/>
 
             </LinearLayout>

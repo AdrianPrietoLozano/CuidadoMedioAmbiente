@@ -31,21 +31,6 @@ public class LogInPresenter implements ILogInPresenter {
     }
 
     @Override
-    public void autentificarUsuarioNormal(String email, String contrasenia) {
-        interactor.autentificarUsuarioNormal(email, contrasenia);
-    }
-
-    @Override
-    public void autentificarUsuarioNormalError(String error) {
-        view.autentificarUsuarioNormalError(error);
-    }
-
-    @Override
-    public void autentificarUsuarioNormalExito(User user) {
-        view.autentificarUsuarioNormalExito(user);
-    }
-
-    @Override
     public void autentificarUsuarioGoogle(String idToken) {
         interactor.autentificarUsuarioGoogle(idToken);
     }

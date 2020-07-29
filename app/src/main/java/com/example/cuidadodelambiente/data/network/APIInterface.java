@@ -65,6 +65,27 @@ public interface APIInterface {
     Call<JsonObject> doVerificarGoogleUser(
             @Field("id_token") String id_token
     );
+
+    @FormUrlEncoded
+    @POST("datos_usuario.php")
+    Call<JsonObject> doCargarDatosUsuario(
+            @Field("id_usuario") int id
+    );
+
+    @FormUrlEncoded
+    @POST("login.php")
+    Call<JsonObject> doLogIn(
+            @Field("email") String email,
+            @Field("contrasenia") String contrasenia
+    );
+
+    @FormUrlEncoded
+    @POST("signup.php")
+    Call<JsonObject> doSignUp(
+            @Field("email") String email,
+            @Field("nombre") String nombre,
+            @Field("contrasenia") String contrasenia
+    );
 }
 
 /*

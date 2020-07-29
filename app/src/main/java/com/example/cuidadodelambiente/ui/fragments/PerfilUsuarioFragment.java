@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -18,6 +19,7 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
+import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -26,13 +28,13 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
 
     private static final String TAG = PerfilUsuarioFragment.class.getSimpleName();
 
-    private TextView idUsuario;
-    private TextView nombreUsuario;
-    private TextView emailUsuario;
-    private TextView puntosUsuario;
+    private TextView textIdUsuario;
+    private TextView textNombreUsuario;
+    private TextView textEmailUsuario;
+    private TextView textPuntosUsuario;
     private ProgressBar progressBar;
-    private TextView cerrarSesion;
-    private ImageView editarPerfil;
+    private TextView textCerrarSesion;
+    private ImageView imgEditarPerfil;
 
     public PerfilUsuarioFragment() {
         // Required empty public constructor
@@ -59,25 +61,29 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         UserLocalStore.getInstance(getContext()).addObserver(this);
 
         progressBar = v.findViewById(R.id.progressBar);
-        editarPerfil = v.findViewById(R.id.editarPerfil);
-        editarPerfil.setOnClickListener(new View.OnClickListener() {
+        imgEditarPerfil = v.findViewById(R.id.editarPerfil);
+        imgEditarPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getContext(), "falta por hacer", Toast.LENGTH_SHORT).show();
             }
         });
-        cerrarSesion = v.findViewById(R.id.txtCerrarSesion);
-        cerrarSesion.setOnClickListener(new View.OnClickListener() {
+        textCerrarSesion = v.findViewById(R.id.txtCerrarSesion);
+        textCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "falta por hacer", Toast.LENGTH_SHORT).show();
+                UserLocalStore.getInstance(getContext()).limpiarDatosUsuario();
+                UserLocalStore.getInstance(getContext()).setUsuarioLogueado(false);
+
+                startActivity(new Intent(getContext(), ActividadLogIn.class));
+                getActivity().finish();
             }
         });
 
         //idUsuario = v.findViewById(R.id.idUsuario);
-        nombreUsuario = v.findViewById(R.id.nombreUsuario);
-        emailUsuario = v.findViewById(R.id.emailUsuario);
-        puntosUsuario = v.findViewById(R.id.puntosUsuario);
+        textNombreUsuario = v.findViewById(R.id.nombreUsuario);
+        textEmailUsuario = v.findViewById(R.id.emailUsuario);
+        textPuntosUsuario = v.findViewById(R.id.puntosUsuario);
 
         User usuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado();
         mostrarDatosUsuario(usuario);
@@ -90,13 +96,13 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
 
     private void mostrarDatosUsuario(User usuario) {
         //idUsuario.setText(String.valueOf(usuario.getId()));
-        nombreUsuario.setText(usuario.getNombre());
-        emailUsuario.setText(usuario.getEmail());
+        textNombreUsuario.setText(usuario.getNombre());
+        textEmailUsuario.setText(usuario.getEmail());
 
         if (usuario.getPuntos() == -1) {
-            puntosUsuario.setText("ESPERANDO...");
+            textPuntosUsuario.setText("-");
         } else {
-            puntosUsuario.setText(String.valueOf(usuario.getPuntos()));
+            textPuntosUsuario.setText(String.valueOf(usuario.getPuntos()));
         }
     }
 

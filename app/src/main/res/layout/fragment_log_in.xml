@@ -7,6 +7,16 @@
     android:orientation="vertical"
     tools:context=".ui.activities.LogIn.view.LogInFragment">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:visibility="gone"
+        android:indeterminateTint="@color/rojoNaranja"
+        android:indeterminate="true" />
+
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_height="wrap_content"
@@ -50,6 +60,7 @@
     <TextView
         android:id="@+id/crearUnaCuenta"
         android:layout_marginTop="10dp"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="15sp"

@@ -144,7 +144,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                 );
         */
 
-        /*
+        
         UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
         boolean logueado = userLocalStore.isUsuarioLogueado();
         if (logueado){
@@ -161,7 +161,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
             } else if (tipoUsuario == User.USUARIO_NORMAL) {
                 int idUsuario = userLocalStore.getUsuarioLogueado().getId();
-
+                Log.e(TAG, "solicitando datos");
                 presenter.cargarDatosUsuarioNormal(idUsuario);
             }
 
@@ -170,7 +170,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         } else {
             Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
         }
-        */
+        
         //updateUI(account);
 
     }
@@ -264,27 +264,14 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
     @Override
     public void cargarDatosUsuarioNormalError(String error) {
+        Log.e(TAG, "error en Login");
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void cargarDatosUsuarioNormalExito(User user) {
+        Log.e(TAG, "exito desde LOGIN");
         UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
-
-    }
-
-    @Override
-    public void autentificarUsuarioNormalError(String error) {
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
-    }
-
-    // inicio de sesión exitoso
-    @Override
-    public void autentificarUsuarioNormalExito(User user) {
-        user.setTipoUsuario(User.USUARIO_NORMAL);
-        UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
-        UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
-        iniciarMainActivity();
     }
 
     @Override
