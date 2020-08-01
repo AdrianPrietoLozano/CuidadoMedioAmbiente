@@ -177,22 +177,24 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
                 }
 
                 eventoLimpieza = response.body();
+                if (eventoLimpieza.getResultado() == 1) {
+                    nombreEvento.setText(eventoLimpieza.getTitulo());
+                    fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
+                            eventoLimpieza.getHora()));
+                    creador.setText(eventoLimpieza.getAmbientalista());
+                    tipoResiduo.setText(eventoLimpieza.getResiduos().toString());
+                    descripcion.setText(eventoLimpieza.getDescripcion());
+                    numPersonasUnidas.setText(String.format("%s %s",
+                            eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
-                nombreEvento.setText(eventoLimpieza.getTitulo());
-                fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
-                        eventoLimpieza.getHora()));
-                creador.setText(eventoLimpieza.getAmbientalista());
-                tipoResiduo.setText(eventoLimpieza.getTipoResiduo());
-                descripcion.setText(eventoLimpieza.getDescripcion());
-                numPersonasUnidas.setText(String.format("%s %s",
-                        eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
+                    mostrarContenidoPrincipal();
 
-                mostrarContenidoPrincipal();
-
-                String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
-                        eventoLimpieza.getRutaFotografia();
-                Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
-
+                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                            eventoLimpieza.getRutaFotografia();
+                    Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
+                } else {
+                    Toast.makeText(getContext(), eventoLimpieza.getMensaje(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override

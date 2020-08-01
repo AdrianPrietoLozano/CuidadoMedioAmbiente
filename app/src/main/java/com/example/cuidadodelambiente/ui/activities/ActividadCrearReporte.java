@@ -24,9 +24,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,9 +54,16 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -76,15 +88,18 @@ public class ActividadCrearReporte extends AppCompatActivity implements
                                             "Cabe en un camión",
                                             "Más grande"};
 
-    private TextInputEditText descripcion;
+    private TextInputEditText textDescripcion;
     private AutoCompleteTextView volumenResiduoMenu;
     private ImageView fotoReporte;
     private MaterialButton botonElegirFoto;
+    private TextView textErrorContaminante;
     private TextView fechaReporte;
-    private TextView horaReporte;
     private TextView txtDireccionReporte; // direccion completa
     private TextView txtUbicacionReporte; // latitud y longitud
     private ProgressBar progressBarDireccion;
+    private Button botonCrearReporte;
+    private Button botonCancelar;
+    private LinearLayout layoutCheckBox;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -114,14 +129,29 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         fotoReporte.setOnClickListener(listenerElegirFoto);
         botonElegirFoto = findViewById(R.id.btnElegirFoto);
         botonElegirFoto.setOnClickListener(listenerElegirFoto);
+        botonCrearReporte = findViewById(R.id.botonAceptar);
+        botonCrearReporte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iniciarCrearEvento();
+            }
+        });
+        botonCancelar = findViewById(R.id.botonCancelar);
+        botonCancelar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cancelar();
+            }
+        });
 
+        textErrorContaminante = findViewById(R.id.errorContaminante);
         txtUbicacionReporte = findViewById(R.id.txtLatitudLongitud);
         txtDireccionReporte = findViewById(R.id.textViewDireccion);
         progressBarDireccion = findViewById(R.id.progressBarDireccion);
         fechaReporte = findViewById(R.id.textViewFecha);
-        horaReporte = findViewById(R.id.textViewHora);
+        layoutCheckBox = findViewById(R.id.layoutCheckBox);
 
-        descripcion = findViewById(R.id.editTextDescripcion);
+        textDescripcion = findViewById(R.id.editTextDescripcion);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),
                 R.layout.dropdown_menu_popup_item,
@@ -129,6 +159,12 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         volumenResiduoMenu = findViewById(R.id.volumen_residuo);
         volumenResiduoMenu.setAdapter(adapter);
         volumenResiduoMenu.setText(OPCION_POR_DEFECTO_VOLUMEN, false);
+        volumenResiduoMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                volumenResiduoMenu.setError(null);
+            }
+        });
 
         Log.e(TAG, volumenResiduoMenu.getText().toString());
 
@@ -183,7 +219,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         }
 
     }
-
 
     private void mostrarDireccionEnTextView() {
         if (addressOutput != null) {
@@ -464,14 +499,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     }
 
     private void mostrarFechaHora() {
-        //SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy,  HH:mm");
-        Date date = new Date();
+        Locale espaniolLocale = new Locale("es", "ES");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy", espaniolLocale);
 
-        String hora = date.getHours() + ":" + date.getMinutes();
-        String fecha = date.getDay() + "/" + date.getMonth() + "/" + date.getYear();
-
-        fechaReporte.setText(fecha);
-        horaReporte.setText(hora);
+        fechaReporte.setText(dateFormat.format(new Date()));
 
     }
 
@@ -525,6 +556,78 @@ public class ActividadCrearReporte extends AppCompatActivity implements
                 }
                 break;
         }
+    }
+
+    private void cancelar() {
+        super.onBackPressed();
+    }
+
+    private void iniciarCrearEvento() {
+        textErrorContaminante.setVisibility(View.GONE);
+
+        // fecha y hora
+        SimpleDateFormat sFecha = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat sHora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+        String fecha = sFecha.format(new Date());
+        String hora = sHora.format(new Date());
+        Log.e(TAG, fecha + ", " + hora);
+
+        // ubicación
+        double latitud = mLastLocation.getLatitude();
+        double longitud = mLastLocation.getLongitude();
+        Log.e(TAG, latitud + ", " + longitud);
+
+        // volumen
+        String volumen = volumenResiduoMenu.getText().toString();
+        if (volumen.equals(OPCION_POR_DEFECTO_VOLUMEN)) {
+            volumenResiduoMenu.setError("Debes elegir una opcion");
+            return;
+        }
+        Log.e(TAG, volumen);
+
+        // contaminante o tipo residuo
+        List<String> contaminantes = obtenerContaminantes();
+        if (contaminantes.isEmpty()) {
+            textErrorContaminante.setVisibility(View.VISIBLE);
+            return;
+        }
+        Log.e(TAG, contaminantes.toString());
+
+        // descripción
+        String descripcion = textDescripcion.getText().toString();
+        if (descripcion.equals("")) {
+            textDescripcion.setError("Campo obligatorio");
+            return;
+        }
+
+        Log.e(TAG, textDescripcion.getText().toString());
+
+        crearEvento();
+
+
+    }
+
+    private List<String> obtenerContaminantes() {
+        List<String> contaminantes = new ArrayList<>();
+        for(int i = 0; i < layoutCheckBox.getChildCount(); i++) {
+            if (layoutCheckBox.getChildAt(i) instanceof  LinearLayout) {
+                LinearLayout layout = (LinearLayout) layoutCheckBox.getChildAt(i);
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    if (layout.getChildAt(j) instanceof CheckBox) {
+                        CheckBox checkBox = (CheckBox)layout.getChildAt(j);
+                        if (checkBox.isChecked()) {
+                            contaminantes.add(checkBox.getText().toString());
+                        }
+                    }
+                }
+            }
+        }
+
+        return contaminantes;
+    }
+
+    private void crearEvento() {
+
     }
 
 }

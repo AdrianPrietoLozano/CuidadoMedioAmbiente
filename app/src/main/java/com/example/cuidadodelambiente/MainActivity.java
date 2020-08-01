@@ -10,12 +10,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.Fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -25,7 +22,7 @@ import java.util.ArrayList;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        DatosEventoFragment.OnBotonParticiparClic, CrearEventoFragment.OnEventoCreado {
+        CrearEventoFragment.OnEventoCreado {
 
     //public final ParticipaEventosFragment participaEventos = new ParticipaEventosFragment();
 
@@ -77,10 +74,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
-        if (fragment instanceof DatosEventoFragment) {
-            DatosEventoFragment datosEventoFragment = (DatosEventoFragment) fragment;
-            datosEventoFragment.setOnBotonParticiparClic(this);
-        }
     }
 
     // pasar contexto a Calligraphy
@@ -206,61 +199,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
             listaFragmentos.remove(listaFragmentos.size() - 1);
         }
-    }
-
-
-    @Override
-    public void botonParticiparClic() {
-        Toast.makeText(getApplicationContext(), "desde main", Toast.LENGTH_SHORT).show();
-
-
-        // esta mal no funciona
-        /*
-        ParticipaEventosFragment p = new ParticipaEventosFragment();
-        Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                p);
-
-         */
-        //getCurrentFragment();
-
-        //Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                //participaEventos, "PARTICIPA");
-
-        /*
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.nav_host_fragment, participaEventos, "PARTICIPA");
-        ft.commit();
-        ft.addToBackStack(null);
-
-        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
-        if(p != null)
-        {
-            p.recargar();
-        }
-        else
-        {
-            ParticipaEventosFragment p2 = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-            p2.recargar();
-
-        }
-
-         */
-
-        /*
-        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment, participaEventos, "PARTICIPA").addToBackStack(null).commit();
-
-        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentByTag("PARTICIPA");
-        p.recargar();
-        */
-
-        //Toast.makeText(getApplicationContext(), "bien", Toast.LENGTH_SHORT).show();
-
-        /*
-        ParticipaEventosFragment p = (ParticipaEventosFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentParticipa);
-        p.recargar();
-
-         */
-
     }
 
     private Fragment getCurrentFragment()

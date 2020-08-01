@@ -166,6 +166,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
             }
 
             iniciarMainActivity();
+            finish();
 
         } else {
             Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();

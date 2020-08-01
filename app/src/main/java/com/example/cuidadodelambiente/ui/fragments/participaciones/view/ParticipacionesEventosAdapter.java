@@ -50,7 +50,7 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
         holder.creador.setText("Creador: " + listaEventos.get(position).getAmbientalista());
-        holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
+        //holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
         holder.descripcion.setText(listaEventos.get(position).getDescripcion());
 
         String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +

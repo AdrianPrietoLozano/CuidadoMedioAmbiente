@@ -3,6 +3,8 @@ package com.example.cuidadodelambiente.data.models;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class EventoLimpieza {
 
     private int idEvento;
@@ -32,15 +34,24 @@ public class EventoLimpieza {
     @SerializedName("personas_unidas")
     private int numPersonasUnidas;
 
-    @SerializedName("residuo")
-    private String tipoResiduo;
+    @SerializedName("residuos")
+    private List<String> residuos;
 
-    public String getTipoResiduo() {
-        return tipoResiduo;
+    // nada que ver con un evento
+    @SerializedName("resultado")
+    private int resultado;
+
+    // nada que ver con un evento
+    @SerializedName("mensaje")
+    private String mensaje;
+
+
+    public List<String> getResiduos() {
+        return residuos;
     }
 
-    public void setTipoResiduo(String tipoResiduo) {
-        this.tipoResiduo = tipoResiduo;
+    public void setResiduos(List<String> residuos) {
+        this.residuos = residuos;
     }
 
     public int getNumPersonasUnidas() {
@@ -121,5 +132,21 @@ public class EventoLimpieza {
 
     public void setUbicacion(LatLng ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    public int getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(int resultado) {
+        this.resultado = resultado;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
 }

@@ -33,6 +33,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -197,26 +199,33 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
             @Override
             public void onResponse(Call<ReporteContaminacion> call, retrofit2.Response<ReporteContaminacion> response) {
 
-                Log.e("EXITO", "recibido");
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getContext(), "!isSuccessful", Toast.LENGTH_SHORT);
+                    return;
+                }
+
                 reporteContaminacion = response.body();
+                if (reporteContaminacion.getResultado() == 1) {
+                    fechaHora.setText(reporteContaminacion.getFecha() + ", " +
+                            reporteContaminacion.getHora());
+                    tipoResiduo.setText(reporteContaminacion.getResiduos().toString());
+                    volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
+                    denunciante.setText(reporteContaminacion.getAmbientalista());
+                    descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
-                fechaHora.setText(reporteContaminacion.getFecha() + ", " +
-                        reporteContaminacion.getHora());
-                tipoResiduo.setText(reporteContaminacion.getTipoResiduo());
-                volumenResiduo.setText(reporteContaminacion.getVolumenResiduo());
-                denunciante.setText(reporteContaminacion.getAmbientalista());
-                descripcionReporte.setText(reporteContaminacion.getDescripcion());
+                    mostrarContenidoPrincipal();
 
-                mostrarContenidoPrincipal();
+                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                            reporteContaminacion.getRutaFoto();
+                    Picasso.with(getContext()).load(urlFoto).into(imagenReporte);
 
-                String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
-                        reporteContaminacion.getRutaFoto();
-                Picasso.with(getContext()).load(urlFoto).into(imagenReporte);
+                } else {
+                    Toast.makeText(getContext(), reporteContaminacion.getMensaje(), Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
             public void onFailure(Call<ReporteContaminacion> call, Throwable throwable) {
-                call.cancel();
                 Log.e("ERROR", throwable.getMessage());
                 mostrarLayoutError();
 

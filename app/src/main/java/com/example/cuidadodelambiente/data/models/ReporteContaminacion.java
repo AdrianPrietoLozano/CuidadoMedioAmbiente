@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente.data.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
 
 
 public class ReporteContaminacion {
@@ -15,8 +16,8 @@ public class ReporteContaminacion {
     @SerializedName("hora")
     private String hora;
 
-    @SerializedName("tipo_residuo")
-    private String tipoResiduo;
+    @SerializedName("residuos")
+    private List<String> residuos;
 
     @SerializedName("volumen")
     private String volumenResiduo;
@@ -35,6 +36,14 @@ public class ReporteContaminacion {
 
     @SerializedName("foto")
     private String rutaFoto;
+
+    // nada que ver con un reporte
+    @SerializedName("resultado")
+    private int resultado;
+
+    // nada que ver con un reporte
+    @SerializedName("mensaje")
+    private String mensaje;
 
 
     public Integer getId() {
@@ -61,20 +70,20 @@ public class ReporteContaminacion {
         this.hora = hora;
     }
 
-    public String getTipoResiduo() {
-        return tipoResiduo;
-    }
-
-    public void setTipoResiduo(String tipoResiduo) {
-        this.tipoResiduo = tipoResiduo;
-    }
-
     public String getVolumenResiduo() {
         return volumenResiduo;
     }
 
     public void setVolumenResiduo(String volumenResiduo) {
         this.volumenResiduo = volumenResiduo;
+    }
+
+    public List<String> getResiduos() {
+        return residuos;
+    }
+
+    public void setResiduos(List<String> residuos) {
+        this.residuos = residuos;
     }
 
     public String getDescripcion() {
@@ -115,5 +124,21 @@ public class ReporteContaminacion {
 
     public void setRutaFoto(String rutaFoto) {
         this.rutaFoto = rutaFoto;
+    }
+
+    public int getResultado() {
+        return resultado;
+    }
+
+    public void setResultado(int resultado) {
+        this.resultado = resultado;
+    }
+
+    public String getMensaje() {
+        return mensaje;
+    }
+
+    public void setMensaje(String mensaje) {
+        this.mensaje = mensaje;
     }
 }
