@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.DeclaracionFragments;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
 import com.example.cuidadodelambiente.data.models.User;
@@ -35,6 +38,8 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
     private ProgressBar progressBar;
     private TextView textCerrarSesion;
     private ImageView imgEditarPerfil;
+    private CardView cardEventosReportes;
+    private CardView cardEventosParticipa;
 
     public PerfilUsuarioFragment() {
         // Required empty public constructor
@@ -84,6 +89,22 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         textNombreUsuario = v.findViewById(R.id.nombreUsuario);
         textEmailUsuario = v.findViewById(R.id.emailUsuario);
         textPuntosUsuario = v.findViewById(R.id.puntosUsuario);
+
+        cardEventosReportes = v.findViewById(R.id.cardMisEventosYReportes);
+        cardEventosReportes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).cambiarFragment(DeclaracionFragments.misEventosYReportes, "GGG");
+            }
+        });
+
+        cardEventosParticipa = v.findViewById(R.id.cardEventosParticipa);
+        cardEventosParticipa.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).cambiarFragment(DeclaracionFragments.participaEventos, "GGG");
+            }
+        });
 
         User usuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado();
         mostrarDatosUsuario(usuario);

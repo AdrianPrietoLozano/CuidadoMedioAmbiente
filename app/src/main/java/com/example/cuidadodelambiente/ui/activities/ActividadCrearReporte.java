@@ -6,17 +6,20 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.loader.content.CursorLoader;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.FileUtils;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
@@ -40,6 +43,8 @@ import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -55,7 +60,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonObject;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -65,6 +73,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadCrearReporte extends AppCompatActivity implements
@@ -110,6 +124,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private AddressResultReceiver resultReceiver;
     private String addressOutput;
     private boolean solicitandoDireccion;
+
+    private Uri uriImagen;
 
     private boolean ubicacionObtenida;
     private boolean direccionObtenida;
@@ -523,8 +539,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         switch (requestCode) {
             case REQUEST_CODE_ELEGIR_FOTO:
                 if (resultCode == RESULT_OK) {
-                    Uri path = data.getData();
-                    fotoReporte.setImageURI(path);
+                    uriImagen = data.getData();
+                    fotoReporte.setImageURI(uriImagen);
                 } else {
                     Toast.makeText(getApplicationContext(), "Error al cargar foto", Toast.LENGTH_SHORT).show();
                 }
@@ -602,7 +618,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         Log.e(TAG, textDescripcion.getText().toString());
 
-        crearEvento();
+        //crearEvento();
+        subirImagen(uriImagen);
 
 
     }
@@ -628,6 +645,76 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private void crearEvento() {
 
+    }
+
+    private void subirImagen(Uri uriImagen) {
+        stopLocationUpdates();
+        //File file = FileUtils.getFile(this, uriImagen);
+        File file = new File(getRealPathFromURI(uriImagen));
+        Log.e(TAG, file.getPath());
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage", file.getName(), requestBody);
+        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+
+        /*
+        // create RequestBody instance from file
+        RequestBody requestFile =
+                RequestBody.create(
+                        MediaType.parse(getContentResolver().getType(uriImagen)),
+                        file
+                );
+
+        // MultipartBody.Part is used to send also the actual file name
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
+
+        // add another part within the multipart request
+        String filenameString = file.getName();
+        RequestBody filename =
+                RequestBody.create(
+                        okhttp3.MultipartBody.FORM, filenameString);
+        */
+
+        Log.e(TAG, filename.toString());
+
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.uploadImagen(parts, filename);
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    JsonObject json = response.body();
+                    if (json.get("resultado").getAsBoolean()) {
+                        Toast.makeText(getApplicationContext(), "SUBIDA", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "no subida", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "no successful", Toast.LENGTH_LONG).show();
+                }
+
+                startLocationUpdates();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                startLocationUpdates();
+            }
+        });
+
+    }
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        cursor.close();
+        return result;
     }
 
 }

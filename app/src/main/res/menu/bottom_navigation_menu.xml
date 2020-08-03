@@ -12,10 +12,6 @@
         android:icon="@drawable/ic_trash_black_24dp"
         android:title="@string/title_recomendacion_crear_evento_nav_view" />
 
-    <item android:id="@+id/eventos_participa"
-        android:icon="@drawable/ic_person_black_24dp"
-        android:title="@string/participas" />
-
     <item android:id="@+id/perfil_usuario"
         android:icon="@drawable/ic_person_black_24dp"
         android:title="@string/perfil" />

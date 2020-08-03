@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
@@ -110,6 +111,9 @@ public class ParticipaEventosFragment extends Fragment
 
         listaEventos = new ArrayList<>();
 
+        // oculta el bottomnavigationview
+        ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
+
         intentarPeticionBD();
 
         return v;
@@ -189,8 +193,18 @@ public class ParticipaEventosFragment extends Fragment
     @Override
     public void onEventosCargadosError(Throwable t) {
         swipeRefreshLayout.setRefreshing(false);
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        mensajeProblema.setText(R.string.estamos_teniendo_problemas);
         layoutSinConexion.setVisibility(View.VISIBLE);
         cargandoCircular.ocultarCargaMostrarContenido();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden) {
+            ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.VISIBLE);
+        } else {
+            ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
+        }
     }
 }

@@ -53,6 +53,7 @@ import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Retrofit;
 
 
 /**
@@ -168,7 +169,6 @@ public class EventosLimpiezaFragment extends Fragment
         bottom_sheet = v.findViewById(R.id.bottom_sheet_opciones);
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
 
         intentarPeticionBD();
         return v;
@@ -308,12 +308,12 @@ public class EventosLimpiezaFragment extends Fragment
 
     @Override
     public void onEventosCargadosError(Throwable t) {
-        Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
         cargandoCircular.ocultarCargaMostrarContenido();
         botonNuevoEvento.hide();
         botonRecargar.hide();
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        mensajeProblema.setText(R.string.estamos_teniendo_problemas);
         layoutSinConexion.setVisibility(View.VISIBLE);
     }
 

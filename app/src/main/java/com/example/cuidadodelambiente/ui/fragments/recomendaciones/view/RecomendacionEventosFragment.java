@@ -156,7 +156,7 @@ public class RecomendacionEventosFragment extends Fragment
     @Override
     public void onEventosCargadosError(Throwable t) {
         //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-        mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
+        mensajeProblema.setText(R.string.estamos_teniendo_problemas);
         swipeRefreshLayout.setRefreshing(false);
         layoutSinConexion.setVisibility(View.VISIBLE);
         cargandoCircular.ocultarCargaMostrarContenido();
