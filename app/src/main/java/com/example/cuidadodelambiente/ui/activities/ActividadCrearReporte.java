@@ -515,8 +515,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     }
 
     private void mostrarFechaHora() {
-        Locale espaniolLocale = new Locale("es", "ES");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy", espaniolLocale);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy",
+                Constants.LOCALE_MX);
 
         fechaReporte.setText(dateFormat.format(new Date()));
 

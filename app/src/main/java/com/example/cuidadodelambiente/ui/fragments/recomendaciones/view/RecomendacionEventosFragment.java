@@ -47,7 +47,6 @@ import retrofit2.Callback;
 public class RecomendacionEventosFragment extends Fragment
     implements IRecomendacionesEventosView{
 
-    private JsonObjectRequest jsonObjectRequest;
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
     private LinearLayout layoutSinConexion;
@@ -124,7 +123,7 @@ public class RecomendacionEventosFragment extends Fragment
         if(Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
             //iniciarPeticionBD();
-            int idUsuario = 2; //UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+            int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
             presenter.cargarRecomendacionesEventos(idUsuario);
         }
         else { // no hay internet

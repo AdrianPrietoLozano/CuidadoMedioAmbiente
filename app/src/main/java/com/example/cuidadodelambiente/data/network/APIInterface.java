@@ -36,6 +36,9 @@ public interface APIInterface {
     @GET("datos_participacion_evento.php")
     Call<List<EventoLimpieza>> doGetEventosParticipa(@Query("id_ambientalista") Integer ambientalista);
 
+    @GET("eventos_usuario.php")
+    Call<List<EventoLimpieza>> doGetEventosUsuario(@Query("id_ambientalista") Integer ambientalista);
+
     @GET("datos_reporte.php")
     Call<ReporteContaminacion> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);
 
@@ -94,6 +97,7 @@ public interface APIInterface {
     @Multipart
     @POST("image.php")
     Call<JsonObject> uploadImagen(@Part MultipartBody.Part file, @Part("name") RequestBody name);
+
 }
 
 /*

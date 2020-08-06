@@ -50,9 +50,11 @@ public class MisEventosYReportesFragment extends Fragment {
         chipEventos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cambiarFragment(fragmentEventos);
-                currentFragment = fragmentEventos;
-                actualizarUI();
+                if (currentFragment != fragmentEventos) {
+                    cambiarFragment(fragmentEventos);
+                    currentFragment = fragmentEventos;
+                    actualizarUI();
+                }
             }
         });
 
@@ -60,9 +62,11 @@ public class MisEventosYReportesFragment extends Fragment {
         chipReportes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cambiarFragment(fragmentReportes);
-                currentFragment = fragmentReportes;
-                actualizarUI();
+                if (currentFragment != fragmentReportes) {
+                    cambiarFragment(fragmentReportes);
+                    currentFragment = fragmentReportes;
+                    actualizarUI();
+                }
             }
         });
 
