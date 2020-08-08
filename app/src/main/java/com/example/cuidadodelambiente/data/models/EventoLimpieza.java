@@ -7,8 +7,10 @@ import java.util.List;
 
 public class EventoLimpieza {
 
+    @SerializedName("id_evento")
     private int idEvento;
 
+    @SerializedName("id_reporte")
     private int idReporte;
 
     private LatLng ubicacion;

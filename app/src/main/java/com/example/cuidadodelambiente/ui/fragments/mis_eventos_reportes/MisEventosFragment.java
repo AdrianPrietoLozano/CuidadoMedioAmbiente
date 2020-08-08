@@ -1,11 +1,8 @@
-package com.example.cuidadodelambiente.ui.fragments;
+package com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes;
 
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,36 +13,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cuidadodelambiente.Constants;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
-import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.IRecomendacionesEventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.RecomendacionesEventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionesEventosAdapter;
+import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
+import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.chip.Chip;
-import com.makeramen.roundedimageview.RoundedTransformationBuilder;
-import com.squareup.picasso.Picasso;
 
-import java.sql.Time;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -146,7 +128,10 @@ public class MisEventosFragment extends Fragment {
                         listaEventos, new MisEventosAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        Log.e(TAG, "CLIC");
+                        int idEvento = listaEventos.get(position).getIdEvento();
+                        BottomSheetDialogFragment fragmentEvento = DatosEventoFragment.newInstance(idEvento);
+                        fragmentEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                        fragmentEvento.show(getFragmentManager(), fragmentEvento.getTag());
                     }
                 }));
 

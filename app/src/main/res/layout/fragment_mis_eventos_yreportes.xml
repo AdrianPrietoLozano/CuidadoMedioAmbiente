@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.MisEventosYReportesFragment">
+    tools:context=".ui.fragments.mis_eventos_reportes.MisEventosYReportesFragment">
 
     <TextView
         android:id="@+id/titulo"

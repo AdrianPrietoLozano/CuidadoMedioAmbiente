@@ -39,6 +39,9 @@ public interface APIInterface {
     @GET("eventos_usuario.php")
     Call<List<EventoLimpieza>> doGetEventosUsuario(@Query("id_ambientalista") Integer ambientalista);
 
+    @GET("reportes_usuario.php")
+    Call<List<ReporteContaminacion>> doGetReportesUsuario(@Query("id_ambientalista") Integer ambientalista);
+
     @GET("datos_reporte.php")
     Call<ReporteContaminacion> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ReporteContaminacion {
 
-    @SerializedName("id")
+    @SerializedName("id_reporte")
     private Integer id;
 
     @SerializedName("fecha")
