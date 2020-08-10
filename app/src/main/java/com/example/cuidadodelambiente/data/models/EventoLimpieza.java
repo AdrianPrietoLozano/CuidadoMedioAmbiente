@@ -8,10 +8,10 @@ import java.util.List;
 public class EventoLimpieza {
 
     @SerializedName("id_evento")
-    private int idEvento;
+    private Integer idEvento;
 
     @SerializedName("id_reporte")
-    private int idReporte;
+    private Integer idReporte;
 
     private LatLng ubicacion;
 
@@ -72,11 +72,11 @@ public class EventoLimpieza {
         this.rutaFotografia = rutaFotografia;
     }
 
-    public int getIdEvento() {
+    public Integer getIdEvento() {
         return idEvento;
     }
 
-    public void setIdEvento(int idEvento) {
+    public void setIdEvento(Integer idEvento) {
         this.idEvento = idEvento;
     }
 
@@ -96,11 +96,11 @@ public class EventoLimpieza {
         this.titulo = titulo;
     }
 
-    public int getIdReporte() {
+    public Integer getIdReporte() {
         return idReporte;
     }
 
-    public void setIdReporte(int idReporte) {
+    public void setIdReporte(Integer idReporte) {
         this.idReporte = idReporte;
     }
 

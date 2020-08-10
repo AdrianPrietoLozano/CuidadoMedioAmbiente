@@ -15,19 +15,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Constants;
-import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
-import com.example.cuidadodelambiente.Entidades.VolleySingleton;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
-import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -35,10 +30,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,6 +43,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     private int eventoId; // id del evento en la base de datos
     private TextView nombreEvento, fechaHora, creador, descripcion;
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
+    private LinearLayout layoutDatosReporte;
     private Button botonQuieroParticipar;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
@@ -130,6 +122,18 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         contenidoPrincipal = v.findViewById(R.id.contenidoPrincipal);
         contenidoPrincipal.setVisibility(View.INVISIBLE);
 
+        layoutDatosReporte = v.findViewById(R.id.layoutDatosReporte);
+        layoutDatosReporte.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eventoLimpieza.getIdReporte() != null) {
+                    BottomSheetDialogFragment fragmentDatosReporte = DatosReporteFragment.newInstance(eventoLimpieza.getIdReporte());
+                    fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                    fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
+                }
+            }
+        });
+
         // evento clic boton "Quiero Participar"
         botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -186,6 +190,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
                     descripcion.setText(eventoLimpieza.getDescripcion());
                     numPersonasUnidas.setText(String.format("%s %s",
                             eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
+                    if (eventoLimpieza.getIdReporte() != null) {
+                        layoutDatosReporte.setVisibility(View.VISIBLE);
+                    }
 
                     mostrarContenidoPrincipal();
 
