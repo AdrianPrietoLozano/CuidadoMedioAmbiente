@@ -23,12 +23,15 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,7 +40,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MisEventosFragment extends Fragment {
+public class MisEventosFragment extends Fragment implements Observer {
     public static final String TAG = MisEventosFragment.class.getSimpleName();
 
     private RecyclerView recyclerEventos;
@@ -57,6 +60,8 @@ public class MisEventosFragment extends Fragment {
     {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_mis_eventos, container, false);
+
+        ActividadCrearEvento.getObservable().addObserver(this);
 
         layoutError = v.findViewById(R.id.layoutError);
         textReintentar = v.findViewById(R.id.textReintentar);
@@ -124,7 +129,7 @@ public class MisEventosFragment extends Fragment {
                 }
 
                 listaEventos = response.body();
-                recyclerEventos.setAdapter(new MisEventosAdapter(getContext(),
+                adapter = new MisEventosAdapter(getContext(),
                         listaEventos, new MisEventosAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -133,7 +138,9 @@ public class MisEventosFragment extends Fragment {
                         fragmentEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                         fragmentEvento.show(getFragmentManager(), fragmentEvento.getTag());
                     }
-                }));
+                });
+
+                recyclerEventos.setAdapter(adapter);
 
                 swipeRefreshLayout.setRefreshing(false);
                 layoutError.setVisibility(View.GONE);
@@ -146,6 +153,20 @@ public class MisEventosFragment extends Fragment {
                 layoutError.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.e(TAG, "UPDATE MIS EVENTOS FRAGMENT");
+
+        if (arg instanceof EventoLimpieza) {
+            if (adapter != null) {
+                EventoLimpieza evento = (EventoLimpieza) arg;
+                listaEventos.add(evento);
+                adapter.notifyItemInserted(listaEventos.size() - 1);
+            }
+        }
+
     }
 }
 

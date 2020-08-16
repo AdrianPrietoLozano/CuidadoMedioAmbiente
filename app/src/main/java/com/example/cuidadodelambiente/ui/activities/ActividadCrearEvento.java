@@ -7,11 +7,13 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +35,7 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.maps.model.LatLng;
@@ -62,18 +65,19 @@ public class ActividadCrearEvento extends AppCompatActivity {
     private Calendar calendario;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
-    private ProgressDialog progreso;
+    private ProgressDialog progresoCrearEvento;
     private StringRequest stringRequest;
     private boolean banderaLlenarUbicacion = false; // para saber si se creará un evento desde la pantalla de reportes
     private boolean solicitandoDireccion;
     private int idReporte;
     private LatLng ubicacionReporte;
-    CrearEventoFragment.OnEventoCreado onEventoCreado;
     private String addressOutput;
     private static ParaObservar observable = new ParaObservar();
     private TextView txtObtenerDireccion;
     private TextView txtLatitudLongitud;
 
+
+    private Call<ResultadoJsonAgregarEvento> callAgregarEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,10 +144,27 @@ public class ActividadCrearEvento extends AppCompatActivity {
                     .concat(String.valueOf(ubicacionReporte.longitude)));
         }
 
+        inicializarProgressDialog();
+
         resultReceiver = new AddressResultReceiver(new Handler());
         //observable.addObserver(DeclaracionFragments.eventosLimpiezaFragmentFragement);
 
         startIntentService();
+    }
+
+    private void inicializarProgressDialog() {
+        progresoCrearEvento = new ProgressDialog(ActividadCrearEvento.this);
+        progresoCrearEvento.setTitle("Creando evento");
+        progresoCrearEvento.setMessage("Cargando");
+        progresoCrearEvento.setCancelable(false);
+        progresoCrearEvento.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (callAgregarEvento != null) {
+                    callAgregarEvento.cancel();
+                }
+            }
+        });
     }
 
     class AddressResultReceiver extends ResultReceiver {
@@ -252,68 +273,102 @@ public class ActividadCrearEvento extends AppCompatActivity {
         startService(intent);
     }
 
+    private EventoLimpieza crearEventoDatosInterfaz() {
+        EventoLimpieza evento = new EventoLimpieza();
+        evento.setIdReporte(idReporte);
+        evento.setTitulo(tituloEvento.getText().toString());
+        evento.setFecha(fechaView.getText().toString());
+        evento.setHora(horaView.getText().toString());
+        evento.setDescripcion(descripcionEvento.getText().toString());
+        evento.setUbicacion(ubicacionReporte);
+
+        return evento;
+    }
+
+    private boolean comprobarCampos() {
+        if (tituloEvento.getText().toString().equals("")) {
+            tituloEvento.setError("Campo obligatorio");
+            return false;
+        }
+
+        // falta validar la fecha
+        if (fechaView.getText().toString().equals("")) { // o la fecha ya pasó
+            fechaView.setError("Fecha inválida");
+            return false;
+        }
+
+        // falta validar la hora
+        if (horaView.getText().toString().equals("")) { // o la hora ya pasó
+            horaView.setError("Hora inválida");
+            return false;
+        }
+
+        if (descripcionEvento.getText().toString().equals("")) {
+            descripcionEvento.setError("Campo obligatorio");
+            return false;
+        }
+
+        return true;
+    }
+
 
     private void clicBotonCrearEvento()
     {
+        if (!comprobarCampos())
+            return;
+
+        progresoCrearEvento.show();
+
         Log.e(TAG, String.valueOf(observable.countObservers()));
 
-        Log.e(TAG, tituloEvento.getText().toString());
-        Log.e(TAG, descripcionEvento.getText().toString());
+        final EventoLimpieza evento = crearEventoDatosInterfaz();
 
-        if(tituloEvento.getText().toString().equals("") || fechaView.getText().equals("") ||
-                horaView.getText().equals("") || txtDireccionEvento.getText().toString().equals("") ||
-                descripcionEvento.getText().toString().equals(""))
-        {
-            // falta hacer mas comprobaciones
-            Toast.makeText(getApplicationContext(), "Debes llenar todos los campos", Toast.LENGTH_SHORT).show();
-            tituloEvento.setError("Campo obligatorio");
-        }
-        else
-        {
-            final EventoLimpieza evento = new EventoLimpieza();
-            evento.setIdReporte(idReporte);
-            //evento.setAmbientalista(//nombre del ambientalista);
-            evento.setTitulo(tituloEvento.getText().toString());
-            evento.setFecha(fechaView.getText().toString());
-            evento.setHora(horaView.getText().toString());
-            evento.setDescripcion(descripcionEvento.getText().toString());
-            evento.setUbicacion(ubicacionReporte);
+        int idUsuario = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado().getId();
+        Log.e(TAG, "Usuario: " + String.valueOf(idUsuario));
 
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        callAgregarEvento = service.doAgregarEvento(idUsuario, evento.getIdReporte(), evento.getTitulo(),
+                evento.getFecha(), evento.getHora(), evento.getDescripcion());
 
-            APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-            service.doAgregarEvento(DeclaracionFragments.actualAmbientalista,
-                    evento.getIdReporte(),
-                    evento.getTitulo(),
-                    evento.getFecha(),
-                    evento.getHora(),
-                    evento.getDescripcion())
-                    .enqueue(new Callback<ResultadoJsonAgregarEvento>() {
-                        @Override
-                        public void onResponse(Call<ResultadoJsonAgregarEvento> call, Response<ResultadoJsonAgregarEvento> response) {
-                            ResultadoJsonAgregarEvento json = response.body();
-                            evento.setIdEvento(json.getIdEvento());
+        callAgregarEvento.enqueue(new Callback<ResultadoJsonAgregarEvento>() {
+            @Override
+            public void onResponse(Call<ResultadoJsonAgregarEvento> call, Response<ResultadoJsonAgregarEvento> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                    progresoCrearEvento.dismiss();
+                }
 
-                            Log.e("RESULTADO", String.valueOf(json.getResultado()));
-                            Log.e("MENSAJE", json.getMensaje());
-                            Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
+                ResultadoJsonAgregarEvento json = response.body();
+                evento.setIdEvento(json.getIdEvento());
 
-                            if (json.getResultado() == 1) {
-                                Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
-                                getObservable().notificar(evento);
-                                //((MainActivity) getActivity())
-                                        //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTOS");
-                            } else {
-                                Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
+                Log.e("RESULTADO", String.valueOf(json.getResultado()));
+                Log.e("MENSAJE", json.getMensaje());
+                Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
 
-                        @Override
-                        public void onFailure(Call<ResultadoJsonAgregarEvento> call, Throwable t) {
-                            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                if (json.getResultado() == 1) {
+                    Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
+                    getObservable().notificar(evento);
+                    //((MainActivity) getActivity())
+                            //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTOS");
+                } else {
+                    Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
+                }
 
-        }
+                progresoCrearEvento.dismiss();
+            }
+
+            @Override
+            public void onFailure(Call<ResultadoJsonAgregarEvento> call, Throwable t) {
+                if (call.isCanceled()) {
+                    Log.e(TAG, "SE canceló la creación del evento");
+                }
+
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                progresoCrearEvento.dismiss();
+            }
+        });
+
     }
 
     // pasar contexto a Calligraphy

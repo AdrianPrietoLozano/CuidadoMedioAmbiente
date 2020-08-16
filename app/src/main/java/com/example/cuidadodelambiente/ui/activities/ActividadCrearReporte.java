@@ -589,9 +589,13 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         Log.e(TAG, fecha + ", " + hora);
 
         // ubicación
-        double latitud = mLastLocation.getLatitude();
-        double longitud = mLastLocation.getLongitude();
-        Log.e(TAG, latitud + ", " + longitud);
+        if (ubicacionObtenida) {
+            double latitud = mLastLocation.getLatitude();
+            double longitud = mLastLocation.getLongitude();
+            Log.e(TAG, latitud + ", " + longitud);
+        } else {
+            Log.e(TAG, "Aún no se obtiene la ubicación");
+        }
 
         // volumen
         String volumen = volumenResiduoMenu.getText().toString();

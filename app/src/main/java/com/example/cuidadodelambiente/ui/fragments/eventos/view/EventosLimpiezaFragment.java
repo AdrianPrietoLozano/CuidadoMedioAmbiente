@@ -330,7 +330,7 @@ public class EventosLimpiezaFragment extends Fragment
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                     new CameraPosition.Builder()
                             .target(evento.getUbicacion())
-                            .zoom(15.5f).bearing(0).tilt(25).build()));
+                            .zoom(16.5f).bearing(0).tilt(25).build()));
 
         }
     }
