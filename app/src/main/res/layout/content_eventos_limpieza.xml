@@ -16,35 +16,13 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/botonNuevoEvento"
+        android:id="@+id/botonFlotanteRecargar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
         app:layout_anchor="@id/bottom_sheet_opciones"
         app:layout_anchorGravity="top|right"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_add_black_56dp"
-        app:backgroundTint="@color/colorPrimary"
-        app:fabSize="normal" />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/botonNuevoEvento"
-        app:layout_anchorGravity="top|center"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/botonFlotanteRecargar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="20dp"
-        app:layout_anchor="@id/text"
-        android:layout_gravity="top|center"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_refresh_white_24dp"

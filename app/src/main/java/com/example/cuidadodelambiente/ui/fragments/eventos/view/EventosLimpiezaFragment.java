@@ -72,7 +72,6 @@ public class EventosLimpiezaFragment extends Fragment
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
     private LinearLayout layoutSinConexion;
-    private FloatingActionButton botonNuevoEvento;
     private FloatingActionButton botonRecargar;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
@@ -144,17 +143,6 @@ public class EventosLimpiezaFragment extends Fragment
             }
         });
 
-        // evento clic para el boton flotante que permite crear un nuevo evento
-        botonNuevoEvento = v.findViewById(R.id.botonNuevoEvento);
-        botonNuevoEvento.show();
-        botonNuevoEvento.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((MainActivity) getActivity())
-                        .cambiarFragment(DeclaracionFragments.crearEventoFragment, "CREAR");
-            }
-        });
-
         // evento clic para el boton flotante que recarga los marcadores del mapa
         botonRecargar = v.findViewById(R.id.botonFlotanteRecargar);
         botonRecargar.setOnClickListener(new View.OnClickListener() {
@@ -180,13 +168,11 @@ public class EventosLimpiezaFragment extends Fragment
         // si hay conexión a internet
         if (Utilidades.hayConexionInternet(getContext())) {
             layoutSinConexion.setVisibility(View.INVISIBLE);
-            botonNuevoEvento.show();
             botonRecargar.show();
             //iniciarPeticionBD();
             presenter.cargarEventos();
         } else { // no hay conexión a internet
             cargandoCircular.ocultarCargaMostrarContenido();
-            botonNuevoEvento.hide();
             botonRecargar.hide();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             layoutSinConexion.setVisibility(View.VISIBLE);
@@ -311,7 +297,6 @@ public class EventosLimpiezaFragment extends Fragment
         //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
         cargandoCircular.ocultarCargaMostrarContenido();
-        botonNuevoEvento.hide();
         botonRecargar.hide();
         mensajeProblema.setText(R.string.estamos_teniendo_problemas);
         layoutSinConexion.setVisibility(View.VISIBLE);
