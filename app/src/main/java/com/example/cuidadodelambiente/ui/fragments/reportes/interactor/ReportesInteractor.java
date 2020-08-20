@@ -22,7 +22,11 @@ public class ReportesInteractor implements Callback<List<UbicacionReporte>>,
 
     @Override
     public void onResponse(Call<List<UbicacionReporte>> call, Response<List<UbicacionReporte>> response) {
-        presenter.onConexionExitosa(response.body());
+        if (response.isSuccessful()) {
+            presenter.onConexionExitosa(response.body());
+        } else {
+            presenter.onConexionError(new Throwable());
+        }
     }
 
     @Override

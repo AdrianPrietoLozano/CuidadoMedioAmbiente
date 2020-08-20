@@ -34,7 +34,11 @@ public class ParticipacionesEventosInteractor implements Callback<List<EventoLim
 
     @Override
     public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {
-        this.presenter.onConexionExitosa(response.body());
+        if (response.isSuccessful()) {
+            this.presenter.onConexionExitosa(response.body());
+        } else {
+            presenter.onConexionError(new Throwable());
+        }
     }
 
     @Override

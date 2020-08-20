@@ -23,7 +23,11 @@ public class EventosInteractor implements retrofit2.Callback<List<UbicacionEvent
 
     @Override
     public void onResponse(Call<List<UbicacionEvento>> call, Response<List<UbicacionEvento>> response) {
-        presenter.onConexionExitosa(response.body());
+        if (response.isSuccessful()) {
+            presenter.onConexionExitosa(response.body());
+        } else {
+            presenter.onConexionError(new Throwable());
+        }
     }
 
     @Override

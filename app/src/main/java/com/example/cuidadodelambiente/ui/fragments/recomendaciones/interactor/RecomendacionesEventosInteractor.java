@@ -28,7 +28,11 @@ public class RecomendacionesEventosInteractor implements retrofit2.Callback<List
 
     @Override
     public void onResponse(Call<List<EventoItem>> call, Response<List<EventoItem>> response) {
-        presenter.onConexionExitosa(response.body());
+        if (response.isSuccessful()) {
+            presenter.onConexionExitosa(response.body());
+        } else {
+            presenter.onConexionError(new Throwable());
+        }
     }
 
     @Override
