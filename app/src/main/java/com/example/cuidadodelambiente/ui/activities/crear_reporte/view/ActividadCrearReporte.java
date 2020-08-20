@@ -1,7 +1,9 @@
-package com.example.cuidadodelambiente.ui.activities;
+package com.example.cuidadodelambiente.ui.activities.crear_reporte.view;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -42,6 +44,9 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
+import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.CrearReportePresenter;
+import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.ICrearReportePresenter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -76,7 +81,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadCrearReporte extends AppCompatActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener, ICrearReporteView {
 
     private final int REQUEST_CODE_ELEGIR_FOTO = 10;
     private final int PERMISSION_ID = 40;
@@ -123,6 +128,13 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private boolean ubicacionObtenida;
     private boolean direccionObtenida;
+
+    private ProgressDialog progresoCrearReporte;
+    private ICrearReportePresenter presenter;
+
+    public ActividadCrearReporte() {
+        this.presenter = new CrearReportePresenter(this);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -192,6 +204,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         iniciarRequestUbicacion();
 
     }
+
+
 
     // Para obtener la dirección dado una latitud y longitud
     class AddressResultReceiver extends ResultReceiver {
@@ -623,6 +637,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         //crearEvento();
         //subirImagen(uriImagen);
 
+        presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
 
     }
 
@@ -722,6 +737,40 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         String result = cursor.getString(column_index);
         cursor.close();
         return result;
+    }
+
+
+    @Override
+    public void onReporteCreadoExitosamente() {
+        Log.e(TAG, "onReporteCreadoExitosamente");
+    }
+
+    @Override
+    public void onReporteCreadoError(String error) {
+        Log.e(TAG, "onReporteCreadoError");
+    }
+
+    @Override
+    public void mostrarDialogoCarga() {
+        progresoCrearReporte = new ProgressDialog(ActividadCrearReporte.this);
+        progresoCrearReporte.setTitle("Creando reporte");
+        progresoCrearReporte.setMessage("Cargando");
+        progresoCrearReporte.setCancelable(false);
+        progresoCrearReporte.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.cancelarCrearReporte();
+            }
+        });
+
+        progresoCrearReporte.show();
+    }
+
+    @Override
+    public void cerrarDialgoCarga() {
+        if (progresoCrearReporte.isShowing()) {
+            progresoCrearReporte.dismiss();
+        }
     }
 
 }

@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
-import com.example.cuidadodelambiente.ui.activities.ActividadCrearReporte;
+import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
