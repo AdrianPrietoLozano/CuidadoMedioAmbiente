@@ -28,7 +28,6 @@ public class DeclaracionFragments {
     public static final Fragment perfilUsuario = new PerfilUsuarioFragment();
     public static final Fragment misEventosYReportes = new MisEventosYReportesFragment();
     public static CrearEventoFragment crearEventoFragment = new CrearEventoFragment();
-    public static final Fragment crearReporteFragment = new CrearReporteFragment();
     public static final Activity crearReporteActivity = new ActividadCrearReporte();
     public static final ActividadCrearEvento crearEventoActivity = new ActividadCrearEvento();
 

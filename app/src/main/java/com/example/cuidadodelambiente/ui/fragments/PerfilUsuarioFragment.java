@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.models.ActualAmbientalista;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
@@ -63,7 +62,7 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_perfil_usuario, container, false);
 
-        // SUSCRIBIRSE A ActualAmbientalista
+        // SUSCRIBIRSE
         UserLocalStore.getInstance(getContext()).addObserver(this);
 
         progressBar = v.findViewById(R.id.progressBar);
