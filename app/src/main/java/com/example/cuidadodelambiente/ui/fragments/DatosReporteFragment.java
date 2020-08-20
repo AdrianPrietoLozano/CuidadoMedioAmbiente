@@ -213,6 +213,10 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
                     denunciante.setText(reporteContaminacion.getAmbientalista());
                     descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
+                    if (reporteContaminacion.getTieneEvento()) {
+                        botonCrearEvento.setEnabled(false);
+                    }
+
                     mostrarContenidoPrincipal();
 
                     String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +

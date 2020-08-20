@@ -39,6 +39,9 @@ public class EventoLimpieza {
     @SerializedName("residuos")
     private List<String> residuos;
 
+    @SerializedName("usuario_participa")
+    private boolean usuarioParticipa;
+
     // nada que ver con un evento
     @SerializedName("resultado")
     private int resultado;
@@ -134,6 +137,14 @@ public class EventoLimpieza {
 
     public void setUbicacion(LatLng ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    public boolean getUsuarioParticipa() {
+        return usuarioParticipa;
+    }
+
+    public void setUsuarioParticipa(boolean usuarioParticipa) {
+        this.usuarioParticipa = usuarioParticipa;
     }
 
     public int getResultado() {

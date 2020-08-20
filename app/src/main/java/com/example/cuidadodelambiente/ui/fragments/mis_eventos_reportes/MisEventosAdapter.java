@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,7 +73,7 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
             Date fecha = sdf.parse(String.format("%s %s", evento.getFecha(), evento.getHora()));
             Date now = sdf.parse(sdf.format(new Date()));
 
-            if (fecha.before(now)) {
+            if (fecha.after(now)) {
                 holder.statusEvento.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.statusEvento.setText("En curso");
             } else {

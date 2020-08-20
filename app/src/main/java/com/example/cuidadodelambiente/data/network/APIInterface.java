@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.data.network;
 
+
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
@@ -7,12 +8,15 @@ import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.models.User;
+import com.google.android.gms.common.data.DataBufferObserver;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -46,7 +50,10 @@ public interface APIInterface {
     Call<ReporteContaminacion> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);
 
     @GET("datos_evento.php")
-    Call<EventoLimpieza> doGetEventoLimpieza(@Query("evento_id") Integer evento);
+    Call<EventoLimpieza> doGetEventoLimpieza(
+            @Query("evento_id") Integer evento,
+            @Query("ambientalista_id") Integer ambientalista_id
+    );
 
     @FormUrlEncoded
     @POST("insertar_evento.php")
@@ -57,6 +64,12 @@ public interface APIInterface {
             @Field("fecha") String fecha,
             @Field("hora") String hora,
             @Field("descripcion") String descripcion
+    );
+
+    @FormUrlEncoded
+    @POST("insertar_reporte.php")
+    Call<JsonArray> doAgregarReporte(
+            @Field("contaminantes[]") List<String> contamintantes
     );
 
     @FormUrlEncoded
@@ -97,9 +110,17 @@ public interface APIInterface {
             @Field("contrasenia") String contrasenia
     );
 
+    /*
     @Multipart
     @POST("image.php")
     Call<JsonObject> uploadImagen(@Part MultipartBody.Part file, @Part("name") RequestBody name);
+
+     */
+
+    @Multipart
+    @POST("image.php")
+    Call<JsonObject> uploadImage(@Part MultipartBody.Part file,
+                                    @Part("file") RequestBody name);
 
 }
 

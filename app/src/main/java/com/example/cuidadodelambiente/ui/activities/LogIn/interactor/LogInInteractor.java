@@ -34,8 +34,8 @@ public class LogInInteractor implements ILogInInteractor {
 
                     if (resultado == 1) {
                         User user = obtenerUsuario(json, User.USUARIO_NORMAL);
-                        presenter.cargarDatosUsuarioNormalExito(user);
                         Log.e("INTERACTOR", "datos recibidos INTERACTOR");
+                        presenter.cargarDatosUsuarioNormalExito(user);
 
                     } else {
                         presenter.cargarDatosUsuarioNormalError(json.get("mensaje").getAsString());

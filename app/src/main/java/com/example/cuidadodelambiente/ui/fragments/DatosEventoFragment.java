@@ -23,6 +23,7 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -169,8 +170,10 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private void iniciarPeticionBD()
     {
+        Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callDatosEvento = service.doGetEventoLimpieza(this.eventoId);
+        callDatosEvento = service.doGetEventoLimpieza(this.eventoId, idUsuario);
         callDatosEvento.enqueue(new Callback<EventoLimpieza>() {
             @Override
             public void onResponse(Call<EventoLimpieza> call, retrofit2.Response<EventoLimpieza> response) {
@@ -192,6 +195,12 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
                             eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
                     if (eventoLimpieza.getIdReporte() != null) {
                         layoutDatosReporte.setVisibility(View.VISIBLE);
+                    }
+
+                    // verifiar si el usuario ya participa en este evento
+                    if (eventoLimpieza.getUsuarioParticipa()) {
+                        botonQuieroParticipar.setEnabled(false);
+                        botonQuieroParticipar.setText("Ya participas en este evento");
                     }
 
                     mostrarContenidoPrincipal();
@@ -229,7 +238,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         progreso.setMessage("Cargando...");
         progreso.show();
 
-        int idUsuario = 2; //UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+        Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         callUnirseEvento = service.doUnirseEvento(idUsuario,
                 eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),

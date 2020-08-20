@@ -1,13 +1,5 @@
 package com.example.cuidadodelambiente.ui.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -19,25 +11,29 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.loader.content.CursorLoader;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
@@ -59,16 +55,12 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -648,54 +640,57 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     }
 
     private void crearEvento() {
+        Log.e(TAG, "crear evento");
+        stopLocationUpdates();
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonArray> call = service.doAgregarReporte(obtenerContaminantes());
 
+        call.enqueue(new Callback<JsonArray>() {
+            @Override
+            public void onResponse(Call<JsonArray> call, retrofit2.Response<JsonArray> response) {
+                if (response.isSuccessful()) {
+                    Log.e("RESPONSE", "RESPONSE");
+
+                    JsonArray json = response.body();
+                    Log.e(TAG, String.valueOf(json.size()));
+
+                    Log.e(TAG, json.toString());
+                } else {
+                    Log.e(TAG, response.errorBody().toString());
+                }
+
+                startLocationUpdates();
+            }
+
+            @Override
+            public void onFailure(Call<JsonArray> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                startLocationUpdates();
+            }
+        });
     }
 
     private void subirImagen(Uri uriImagen) {
+
         stopLocationUpdates();
         //File file = FileUtils.getFile(this, uriImagen);
         File file = new File(getRealPathFromURI(uriImagen));
         Log.e(TAG, file.getPath());
 
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part parts = MultipartBody.Part.createFormData("newimage", file.getName(), requestBody);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
         RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
-        /*
-        // create RequestBody instance from file
-        RequestBody requestFile =
-                RequestBody.create(
-                        MediaType.parse(getContentResolver().getType(uriImagen)),
-                        file
-                );
-
-        // MultipartBody.Part is used to send also the actual file name
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("picture", file.getName(), requestFile);
-
-        // add another part within the multipart request
-        String filenameString = file.getName();
-        RequestBody filename =
-                RequestBody.create(
-                        okhttp3.MultipartBody.FORM, filenameString);
-        */
-
-        Log.e(TAG, filename.toString());
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.uploadImagen(parts, filename);
+        Call<JsonObject> call = service.uploadImage(fileToUpload, filename);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                 if (response.isSuccessful()) {
-                    JsonObject json = response.body();
-                    if (json.get("resultado").getAsBoolean()) {
-                        Toast.makeText(getApplicationContext(), "SUBIDA", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(getApplicationContext(), "no subida", Toast.LENGTH_LONG).show();
-                    }
+                    Log.e(TAG, response.body().get("mensaje").getAsString());
                 } else {
-                    Toast.makeText(getApplicationContext(), "no successful", Toast.LENGTH_LONG).show();
+                    Log.e(TAG, "no successful");
                 }
 
                 startLocationUpdates();
@@ -703,10 +698,12 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e(TAG, "onFailure");
+                Log.e(TAG, t.getMessage());
                 startLocationUpdates();
             }
         });
+
 
     }
 

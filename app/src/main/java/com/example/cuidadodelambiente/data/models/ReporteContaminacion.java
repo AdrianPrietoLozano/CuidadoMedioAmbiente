@@ -37,6 +37,9 @@ public class ReporteContaminacion {
     @SerializedName("foto")
     private String rutaFoto;
 
+    @SerializedName("tiene_evento")
+    private boolean tieneEvento;
+
     // nada que ver con un reporte
     @SerializedName("resultado")
     private int resultado;
@@ -124,6 +127,14 @@ public class ReporteContaminacion {
 
     public void setRutaFoto(String rutaFoto) {
         this.rutaFoto = rutaFoto;
+    }
+
+    public boolean getTieneEvento() {
+        return tieneEvento;
+    }
+
+    public void setTieneEvento(boolean tieneEvento) {
+        this.tieneEvento = tieneEvento;
     }
 
     public int getResultado() {
