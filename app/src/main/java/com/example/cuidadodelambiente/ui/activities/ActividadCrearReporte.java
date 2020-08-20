@@ -39,6 +39,7 @@ import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.common.ConnectionResult;
@@ -116,6 +117,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private AddressResultReceiver resultReceiver;
     private String addressOutput;
     private boolean solicitandoDireccion;
+    private ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
 
     private Uri uriImagen;
 
@@ -578,13 +580,15 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         SimpleDateFormat sHora = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
         String fecha = sFecha.format(new Date());
         String hora = sHora.format(new Date());
-        Log.e(TAG, fecha + ", " + hora);
+        reporteContaminacion.setFecha(fecha);
+        reporteContaminacion.setHora(hora);
+        Log.e(TAG, reporteContaminacion.getFecha() + ", " + reporteContaminacion.getHora());
 
         // ubicación
         if (ubicacionObtenida) {
-            double latitud = mLastLocation.getLatitude();
-            double longitud = mLastLocation.getLongitude();
-            Log.e(TAG, latitud + ", " + longitud);
+            reporteContaminacion.setLatitud(mLastLocation.getLatitude());
+            reporteContaminacion.setLongitud(mLastLocation.getLongitude());
+            Log.e(TAG, reporteContaminacion.getLatitud() + ", " + reporteContaminacion.getLongitud());
         } else {
             Log.e(TAG, "Aún no se obtiene la ubicación");
         }
@@ -595,7 +599,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             volumenResiduoMenu.setError("Debes elegir una opcion");
             return;
         }
-        Log.e(TAG, volumen);
+        reporteContaminacion.setVolumenResiduo(volumen);
+        Log.e(TAG, reporteContaminacion.getVolumenResiduo());
 
         // contaminante o tipo residuo
         List<String> contaminantes = obtenerContaminantes();
@@ -603,7 +608,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             textErrorContaminante.setVisibility(View.VISIBLE);
             return;
         }
-        Log.e(TAG, contaminantes.toString());
+        reporteContaminacion.setResiduos(contaminantes);
+        Log.e(TAG, reporteContaminacion.getResiduos().toString());
 
         // descripción
         String descripcion = textDescripcion.getText().toString();
@@ -611,11 +617,11 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             textDescripcion.setError("Campo obligatorio");
             return;
         }
-
-        Log.e(TAG, textDescripcion.getText().toString());
+        reporteContaminacion.setDescripcion(descripcion);
+        Log.e(TAG, reporteContaminacion.getDescripcion());
 
         //crearEvento();
-        subirImagen(uriImagen);
+        //subirImagen(uriImagen);
 
 
     }
