@@ -1,14 +1,9 @@
 package com.example.cuidadodelambiente.ui.fragments.participaciones.interactor;
 
-import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.ParticipaEventoItem;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.interactor.IRecomendacionesEventosInteractor;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.IRecomendacionesEventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.RecomendacionesEventosPresenter;
 
 import java.util.List;
 
