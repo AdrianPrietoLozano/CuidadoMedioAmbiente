@@ -61,7 +61,7 @@ public class RecomendacionesEventosAdapter extends RecyclerView.Adapter<Recomend
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
 
-        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                 listaEventos.get(position).getFoto();
 
         // foto del evento

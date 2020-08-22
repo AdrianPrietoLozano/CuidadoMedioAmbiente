@@ -24,12 +24,15 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,7 +41,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MisReportesFragment extends Fragment {
+public class MisReportesFragment extends Fragment implements Observer {
     public static final String TAG = MisEventosFragment.class.getSimpleName();
 
     private RecyclerView recyclerReportes;
@@ -58,6 +61,9 @@ public class MisReportesFragment extends Fragment {
     {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_mis_reportes, container, false);
+
+        // suscribirse al observable de ActividadCrearReporte
+        ActividadCrearReporte.getObservable().addObserver(this);
 
         layoutError = v.findViewById(R.id.layoutError);
         textReintentar = v.findViewById(R.id.textReintentar);
@@ -123,7 +129,8 @@ public class MisReportesFragment extends Fragment {
                 }
 
                 listaReportes = response.body();
-                recyclerReportes.setAdapter(new MisReportesAdapter(getContext(),
+
+                adapter = new MisReportesAdapter(getContext(),
                         listaReportes, new MisReportesAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
@@ -132,7 +139,9 @@ public class MisReportesFragment extends Fragment {
                         fragmentReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                         fragmentReporte.show(getFragmentManager(), fragmentReporte.getTag());
                     }
-                }));
+                });
+
+                recyclerReportes.setAdapter(adapter);
 
                 swipeRefreshLayout.setRefreshing(false);
                 layoutError.setVisibility(View.GONE);
@@ -145,6 +154,20 @@ public class MisReportesFragment extends Fragment {
                 layoutError.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.e(TAG, "UPDATE MIS REPORTES FRAGMENT");
+
+        // agrega un nuevo reporte al recycler view
+        if (arg instanceof ReporteContaminacion) {
+            if (adapter != null) {
+                ReporteContaminacion nuevoReporte = (ReporteContaminacion) arg;
+                listaReportes.add(nuevoReporte);
+                adapter.notifyItemInserted(listaReportes.size() - 1);
+            }
+        }
     }
 }
 

@@ -85,7 +85,7 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
             holder.statusEvento.setVisibility(View.GONE);
         }
 
-        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                 evento.getRutaFotografia();
 
         // foto del evento

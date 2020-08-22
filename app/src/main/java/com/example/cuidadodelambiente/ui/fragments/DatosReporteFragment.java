@@ -219,7 +219,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
 
                     mostrarContenidoPrincipal();
 
-                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                             reporteContaminacion.getRutaFoto();
                     Picasso.with(getContext()).load(urlFoto).into(imagenReporte);
 

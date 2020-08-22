@@ -68,7 +68,7 @@ public class MisReportesAdapter extends RecyclerView.Adapter<MisReportesAdapter.
                 reporte.getFecha(),
                 reporte.getHora()));
 
-        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                 reporte.getRutaFoto();
 
         // foto del evento

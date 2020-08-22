@@ -205,7 +205,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
                     mostrarContenidoPrincipal();
 
-                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                             eventoLimpieza.getRutaFotografia();
                     Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
                 } else {

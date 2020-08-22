@@ -27,9 +27,9 @@ public class CrearReportePresenter implements ICrearReportePresenter {
     }
 
     @Override
-    public void onReporteCreadoExitosamente() {
+    public void onReporteCreadoExitosamente(ReporteContaminacion reporte) {
         view.cerrarDialgoCarga();
-        view.onReporteCreadoExitosamente();
+        view.onReporteCreadoExitosamente(reporte);
     }
 
     @Override

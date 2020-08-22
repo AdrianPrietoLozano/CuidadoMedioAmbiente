@@ -52,7 +52,7 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
         //holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
         holder.descripcion.setText(listaEventos.get(position).getDescripcion());
 
-        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() + "imagenes/" +
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                 listaEventos.get(position).getRutaFotografia();
         Picasso.with(context).load(urlFoto).into(holder.imagenEvento);
 

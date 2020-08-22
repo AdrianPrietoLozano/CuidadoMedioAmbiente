@@ -39,6 +39,7 @@ import androidx.loader.content.CursorLoader;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
+import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
@@ -120,7 +121,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private LocationRequest mLocationRequest;
     private LocationSettingsRequest mLocationSettingRequest;
 
-    private AddressResultReceiver resultReceiver;
+    private AddressResultReceiver resultReceiver; // para obtener la dirección
     private String addressOutput;
     private boolean solicitandoDireccion;
     private ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
@@ -132,6 +133,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private ProgressDialog progresoCrearReporte;
     private ICrearReportePresenter presenter;
+
+    private static ParaObservar observable = new ParaObservar();
 
     public ActividadCrearReporte() {
         this.presenter = new CrearReportePresenter(this);
@@ -156,7 +159,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         botonCrearReporte.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iniciarCrearEvento();
+                iniciarCrearReporte();
             }
         });
         botonCancelar = findViewById(R.id.botonCancelar);
@@ -243,6 +246,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             actualizarUI();
         }
 
+    }
+
+    public static ParaObservar getObservable() {
+        return observable;
     }
 
     private void mostrarDireccionEnTextView() {
@@ -587,7 +594,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         super.onBackPressed();
     }
 
-    private void iniciarCrearEvento() {
+    private void iniciarCrearReporte() {
         textErrorContaminante.setVisibility(View.GONE);
 
         // fecha y hora
@@ -617,7 +624,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         reporteContaminacion.setVolumenResiduo(volumen);
         Log.e(TAG, reporteContaminacion.getVolumenResiduo());
 
-        // contaminante o tipo residuo
+        // contaminantes o residuos
         List<String> contaminantes = obtenerContaminantes();
         if (contaminantes.isEmpty()) {
             textErrorContaminante.setVisibility(View.VISIBLE);
@@ -635,13 +642,11 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         reporteContaminacion.setDescripcion(descripcion);
         Log.e(TAG, reporteContaminacion.getDescripcion());
 
-        crearReporte();
-        //subirImagen(uriImagen);
-
-        //presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
+        presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
 
     }
 
+    // retorna una lista con los contaminantes que el usuario seleccionó
     private List<String> obtenerContaminantes() {
         List<String> contaminantes = new ArrayList<>();
         for(int i = 0; i < layoutCheckBox.getChildCount(); i++) {
@@ -661,93 +666,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         return contaminantes;
     }
 
-    private void crearReporte() {
-        Log.e(TAG, "crear evento");
-        stopLocationUpdates();
-
-        File file = new File(getRealPathFromURI(uriImagen));
-        Log.e(TAG, file.getPath());
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
-        int idUsuario = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado().getId();
-
-        RequestBody latitud = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(reporteContaminacion.getLatitud()));
-        RequestBody longitud = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(reporteContaminacion.getLongitud()));
-        RequestBody idUsuarioPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idUsuario));
-        RequestBody volumen = RequestBody.create(MediaType.parse("text/plain"), reporteContaminacion.getVolumenResiduo());
-        RequestBody descripcion = RequestBody.create(MediaType.parse("text/plain"), reporteContaminacion.getDescripcion());
-
-        List<RequestBody> residuos = new ArrayList<>();
-        for(int i = 0; i < reporteContaminacion.getResiduos().size(); i++) {
-            RequestBody e = RequestBody.create(MediaType.parse("text"), reporteContaminacion.getResiduos().get(i));
-            residuos.add(e);
-        }
-
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doAgregarReporte(
-                latitud, longitud, residuos, idUsuarioPart, volumen, descripcion, fileToUpload);
-
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.e("RESPONSE", "RESPONSE");
-
-
-                } else {
-                    Log.e(TAG, response.errorBody().toString());
-                }
-
-                startLocationUpdates();
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                startLocationUpdates();
-            }
-        });
-    }
-
-    private void subirImagen(Uri uriImagen) {
-
-        stopLocationUpdates();
-        //File file = FileUtils.getFile(this, uriImagen);
-        File file = new File(getRealPathFromURI(uriImagen));
-        Log.e(TAG, file.getPath());
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
-
-
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.uploadImage(fileToUpload, filename);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    Log.e(TAG, response.body().get("mensaje").getAsString());
-                } else {
-                    Log.e(TAG, "no successful");
-                }
-
-                startLocationUpdates();
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.e(TAG, "onFailure");
-                Log.e(TAG, t.getMessage());
-                startLocationUpdates();
-            }
-        });
-
-
-    }
-
     private String getRealPathFromURI(Uri contentUri) {
         String[] proj = {MediaStore.Images.Media.DATA};
         CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
@@ -761,13 +679,20 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
 
     @Override
-    public void onReporteCreadoExitosamente() {
+    public void onReporteCreadoExitosamente(ReporteContaminacion reporte) {
         Log.e(TAG, "onReporteCreadoExitosamente");
+
+        Toast.makeText(getApplicationContext(), "Evento creado exitosamente.", Toast.LENGTH_LONG).show();
+
+        getObservable().notificar(reporte);
+        finish();
     }
 
     @Override
     public void onReporteCreadoError(String error) {
-        Log.e(TAG, "onReporteCreadoError");
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+
+        startLocationUpdates();
     }
 
     @Override

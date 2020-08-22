@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
@@ -30,19 +31,23 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ReportesContaminacionFragment extends Fragment
-        implements IReportesView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener
+        implements IReportesView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+        Observer
 {
 
     private MapView mMapView;
@@ -68,6 +73,9 @@ public class ReportesContaminacionFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_recomendacion_crear_evento, container, false);
+
+        // suscribirse al observable de ActividadCrearReporte
+        ActividadCrearReporte.getObservable().addObserver(this);
 
         // para la carga circular
         cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
@@ -248,5 +256,24 @@ public class ReportesContaminacionFragment extends Fragment
         cargandoCircular.ocultarCargaMostrarContenido();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
         layoutSinConexion.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.e("UPDATE", "agregando reporte a mapa");
+
+        // agrega un nuevo marcador al mapa cuando se crea un nuevo reporte
+        if (arg instanceof ReporteContaminacion) {
+            ReporteContaminacion nuevoReporte = (ReporteContaminacion) arg;
+
+            LatLng ubicacion = new LatLng(nuevoReporte.getLatitud(), nuevoReporte.getLongitud());
+            Utilidades.agregarMarcadorMapa(mMap, ubicacion, nuevoReporte.getId());
+
+            // centra el mapa a la ubicación del nuevo reporte
+            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition.Builder()
+                            .target(ubicacion)
+                            .zoom(16.5f).bearing(0).tilt(25).build()));
+        }
     }
 }
