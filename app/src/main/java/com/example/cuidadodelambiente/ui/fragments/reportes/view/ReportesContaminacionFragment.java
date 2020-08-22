@@ -230,6 +230,7 @@ public class ReportesContaminacionFragment extends Fragment
     @Override
     public void onReportesRecibidosCorrectamente(List<UbicacionReporte> reportes) {
         Log.e("TOTAL", String.valueOf(reportes.size()));
+        mMap.clear();
 
         totalReportes.setText(reportes.size() + " reportes en total");
 

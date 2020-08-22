@@ -42,6 +42,7 @@ import com.example.cuidadodelambiente.FetchAddressIntentService;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
@@ -634,10 +635,10 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         reporteContaminacion.setDescripcion(descripcion);
         Log.e(TAG, reporteContaminacion.getDescripcion());
 
-        //crearEvento();
+        crearReporte();
         //subirImagen(uriImagen);
 
-        presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
+        //presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
 
     }
 
@@ -660,22 +661,41 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         return contaminantes;
     }
 
-    private void crearEvento() {
+    private void crearReporte() {
         Log.e(TAG, "crear evento");
         stopLocationUpdates();
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonArray> call = service.doAgregarReporte(obtenerContaminantes());
 
-        call.enqueue(new Callback<JsonArray>() {
+        File file = new File(getRealPathFromURI(uriImagen));
+        Log.e(TAG, file.getPath());
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
+        int idUsuario = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado().getId();
+
+        RequestBody latitud = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(reporteContaminacion.getLatitud()));
+        RequestBody longitud = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(reporteContaminacion.getLongitud()));
+        RequestBody idUsuarioPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idUsuario));
+        RequestBody volumen = RequestBody.create(MediaType.parse("text/plain"), reporteContaminacion.getVolumenResiduo());
+        RequestBody descripcion = RequestBody.create(MediaType.parse("text/plain"), reporteContaminacion.getDescripcion());
+
+        List<RequestBody> residuos = new ArrayList<>();
+        for(int i = 0; i < reporteContaminacion.getResiduos().size(); i++) {
+            RequestBody e = RequestBody.create(MediaType.parse("text"), reporteContaminacion.getResiduos().get(i));
+            residuos.add(e);
+        }
+
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.doAgregarReporte(
+                latitud, longitud, residuos, idUsuarioPart, volumen, descripcion, fileToUpload);
+
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse(Call<JsonArray> call, retrofit2.Response<JsonArray> response) {
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
                 if (response.isSuccessful()) {
                     Log.e("RESPONSE", "RESPONSE");
 
-                    JsonArray json = response.body();
-                    Log.e(TAG, String.valueOf(json.size()));
 
-                    Log.e(TAG, json.toString());
                 } else {
                     Log.e(TAG, response.errorBody().toString());
                 }
@@ -684,7 +704,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             }
 
             @Override
-            public void onFailure(Call<JsonArray> call, Throwable t) {
+            public void onFailure(Call<JsonObject> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 startLocationUpdates();
             }

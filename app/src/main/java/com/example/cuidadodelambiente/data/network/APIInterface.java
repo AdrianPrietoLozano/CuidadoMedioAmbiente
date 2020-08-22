@@ -66,10 +66,16 @@ public interface APIInterface {
             @Field("descripcion") String descripcion
     );
 
-    @FormUrlEncoded
+    @Multipart
     @POST("insertar_reporte.php")
-    Call<JsonArray> doAgregarReporte(
-            @Field("contaminantes[]") List<String> contamintantes
+    Call<JsonObject> doAgregarReporte(
+            @Part("latitud") RequestBody latitud,
+            @Part("longitud") RequestBody longitud,
+            @Part("residuos[]") List<RequestBody> residuos,
+            @Part("ambientalista_id") RequestBody id_ambientalista,
+            @Part("volumen") RequestBody volumen,
+            @Part("descripcion") RequestBody descripcion,
+            @Part MultipartBody.Part file
     );
 
     @FormUrlEncoded
