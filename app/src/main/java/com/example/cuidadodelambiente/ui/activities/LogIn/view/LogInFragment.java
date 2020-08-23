@@ -98,6 +98,7 @@ public class LogInFragment extends Fragment {
         // inicia MainActivity
         Intent intent = new Intent(getContext(), MainActivity.class);
         startActivity(intent);
+        getActivity().finish();
     }
 
     private void mostrarError(String mensaje) {

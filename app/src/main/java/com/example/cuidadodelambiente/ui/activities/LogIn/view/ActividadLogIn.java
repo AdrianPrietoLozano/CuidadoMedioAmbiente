@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.ui.activities.LogIn.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -26,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
@@ -63,9 +65,9 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Falta", Toast.LENGTH_SHORT).show();
-                //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                //startActivityForResult(signInIntent, RC_SIGN_IN);
+                //Toast.makeText(getApplicationContext(), "Falta", Toast.LENGTH_SHORT).show();
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
 
@@ -112,11 +114,61 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         if (account == null) {
             Toast.makeText(getApplicationContext(), "No log-in", Toast.LENGTH_SHORT).show();
         } else {
-            //Toast.makeText(getApplicationContext(), "log-in", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "log-in", Toast.LENGTH_SHORT).show();
             iniciarMainActivity();
             finish();
+        }*/
+
+        // verificar en LocalStorage si el usuario ya esta logueado
+        // si esta logueado ver el tipo de usuario
+        // si es de google ejecutar silent
+        // si es normal hacer lo de abajo
+
+        UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
+
+        if (!userLocalStore.isUsuarioLogueado()) {
+            return;
         }
-        */
+
+        if (userLocalStore.getUsuarioLogueado().getTipoUsuario() == User.USUARIO_GOOGLE) {
+            mGoogleSignInClient.silentSignIn()
+                    .addOnCompleteListener(
+                            this,
+                            new OnCompleteListener<GoogleSignInAccount>() {
+                                @Override
+                                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                                    try {
+                                        GoogleSignInAccount account = task.getResult(ApiException.class);
+                                        if (account != null){
+                                            //presenter.autentificarUsuarioGoogle(account.getIdToken());
+                                            Log.e(TAG, "presenter ya logueado");
+                                            iniciarMainActivity();
+                                            finish();
+                                        }
+                                        else {
+                                            handleSignInResult(task);
+                                        }
+
+                                    } catch (ApiException e) {
+                                        handleSignInResult(task);
+                                    }
+                                }
+                            }
+                    );
+
+
+
+        } else {
+            int idUsuario = userLocalStore.getUsuarioLogueado().getId();
+            Log.e(TAG, "solicitando datos");
+            presenter.cargarDatosUsuarioNormal(idUsuario);
+        }
+
+        iniciarMainActivity();
+        finish();
+
+
+
 
         /*
         mGoogleSignInClient.silentSignIn()
@@ -144,7 +196,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                 );
         */
 
-        
+        /*
         UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
         boolean logueado = userLocalStore.isUsuarioLogueado();
         if (logueado){
@@ -171,6 +223,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         } else {
             Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
         }
+        */
         
         //updateUI(account);
 
@@ -194,6 +247,10 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
+
+            Log.e(TAG, "presenter");
+            //presenter.autentificarUsuarioGoogle(account.getIdToken());
+
             /*
             APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
             Log.e(TAG, account.getIdToken());
@@ -202,7 +259,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
             callLogIn.enqueue(callback);
             */
 
-            presenter.autentificarUsuarioGoogle(account.getIdToken());
+
 
 
         } catch (ApiException e) {
@@ -284,10 +341,9 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     public void autentificarUsuarioGoogleExito(User user) {
         user.setTipoUsuario(User.USUARIO_GOOGLE);
         UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
-        boolean logueado = UserLocalStore.getInstance(getApplicationContext()).isUsuarioLogueado();
-        if (!logueado) {
-            UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
-            iniciarMainActivity();
-        }
+        UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
+
+        iniciarMainActivity();
+        finish();
     }
 }
