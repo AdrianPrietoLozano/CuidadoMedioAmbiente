@@ -140,10 +140,8 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                                     try {
                                         GoogleSignInAccount account = task.getResult(ApiException.class);
                                         if (account != null){
-                                            //presenter.autentificarUsuarioGoogle(account.getIdToken());
+                                            presenter.autentificarUsuarioGoogle(account.getIdToken());
                                             Log.e(TAG, "presenter ya logueado");
-                                            iniciarMainActivity();
-                                            finish();
                                         }
                                         else {
                                             handleSignInResult(task);
@@ -249,7 +247,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
 
             Log.e(TAG, "presenter");
-            //presenter.autentificarUsuarioGoogle(account.getIdToken());
+            presenter.autentificarUsuarioGoogle(account.getIdToken());
 
             /*
             APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
@@ -341,9 +339,11 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     public void autentificarUsuarioGoogleExito(User user) {
         user.setTipoUsuario(User.USUARIO_GOOGLE);
         UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
-        UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
 
-        iniciarMainActivity();
-        finish();
+        if (!UserLocalStore.getInstance(getApplicationContext()).isUsuarioLogueado()) {
+            UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
+            iniciarMainActivity();
+            finish();
+        }
     }
 }

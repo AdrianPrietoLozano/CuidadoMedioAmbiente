@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
@@ -23,6 +24,11 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -41,6 +47,8 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
     private CardView cardEventosReportes;
     private CardView cardEventosParticipa;
 
+    private GoogleSignInClient mGoogleSignInClient;
+
     public PerfilUsuarioFragment() {
         // Required empty public constructor
     }
@@ -53,6 +61,13 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.server_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
     }
 
@@ -77,11 +92,16 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         textCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserLocalStore.getInstance(getContext()).limpiarDatosUsuario();
-                UserLocalStore.getInstance(getContext()).setUsuarioLogueado(false);
+                int tipoUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getTipoUsuario();
 
-                startActivity(new Intent(getContext(), ActividadLogIn.class));
-                getActivity().finish();
+                limpiarDatosUsuario();
+
+                if (tipoUsuario == User.USUARIO_GOOGLE) {
+                    signOutGoogleUser();
+
+                } else {
+                    mostrarActividadLogIn();
+                }
             }
         });
 
@@ -113,6 +133,26 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         // get instance de actualUser y establecer los valores
 
         return v;
+    }
+
+    private void signOutGoogleUser() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        mostrarActividadLogIn();
+                    }
+                });
+    }
+
+    private void limpiarDatosUsuario() {
+        UserLocalStore.getInstance(getContext()).limpiarDatosUsuario();
+        UserLocalStore.getInstance(getContext()).setUsuarioLogueado(false);
+    }
+
+    private void mostrarActividadLogIn() {
+        startActivity(new Intent(getContext(), ActividadLogIn.class));
+        getActivity().finish();
     }
 
     private void mostrarDatosUsuario(User usuario) {
