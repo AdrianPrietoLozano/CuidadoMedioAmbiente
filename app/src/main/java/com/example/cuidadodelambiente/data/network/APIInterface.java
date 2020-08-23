@@ -89,11 +89,6 @@ public interface APIInterface {
             @Field("hora_fin") String horaFin
     );
 
-    @FormUrlEncoded
-    @POST("google_id_token.php")
-    Call<JsonObject> doVerificarGoogleUser(
-            @Field("id_token") String id_token
-    );
 
     @FormUrlEncoded
     @POST("datos_usuario.php")
@@ -106,6 +101,12 @@ public interface APIInterface {
     Call<JsonObject> doLogIn(
             @Field("email") String email,
             @Field("contrasenia") String contrasenia
+    );
+
+    @FormUrlEncoded
+    @POST("login_google.php")
+    Call<JsonObject> doVerificarGoogleUser(
+            @Field("id_token") String id_token
     );
 
     @FormUrlEncoded

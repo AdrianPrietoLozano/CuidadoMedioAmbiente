@@ -108,28 +108,16 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     protected void onStart() {
         super.onStart();
 
-        /*
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-
-        if (account == null) {
-            Toast.makeText(getApplicationContext(), "No log-in", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), "log-in", Toast.LENGTH_SHORT).show();
-            iniciarMainActivity();
-            finish();
-        }*/
-
-        // verificar en LocalStorage si el usuario ya esta logueado
-        // si esta logueado ver el tipo de usuario
-        // si es de google ejecutar silent
-        // si es normal hacer lo de abajo
-
         UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
 
+        // si el usuario no esta logueado
         if (!userLocalStore.isUsuarioLogueado()) {
             return;
         }
 
+        // el usuario ya esta logueado
+
+        // si el usuario inicio sesión con su cuenta de google
         if (userLocalStore.getUsuarioLogueado().getTipoUsuario() == User.USUARIO_GOOGLE) {
             mGoogleSignInClient.silentSignIn()
                     .addOnCompleteListener(
@@ -140,15 +128,19 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                                     try {
                                         GoogleSignInAccount account = task.getResult(ApiException.class);
                                         if (account != null){
+                                            // obtener los datos del usuario desde el servidor
                                             presenter.autentificarUsuarioGoogle(account.getIdToken());
-                                            Log.e(TAG, "presenter ya logueado");
+
+                                            iniciarMainActivity();
                                         }
                                         else {
-                                            handleSignInResult(task);
+                                            Toast.makeText(ActividadLogIn.this,
+                                                    "Ocurrió un error", Toast.LENGTH_SHORT).show();
                                         }
 
                                     } catch (ApiException e) {
-                                        handleSignInResult(task);
+                                        Toast.makeText(ActividadLogIn.this,
+                                                "Ocurrió un error", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -156,74 +148,12 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
 
 
-        } else {
+        } else { // el usuario inició sesión de forma normal
             int idUsuario = userLocalStore.getUsuarioLogueado().getId();
-            Log.e(TAG, "solicitando datos");
             presenter.cargarDatosUsuarioNormal(idUsuario);
-        }
-
-        iniciarMainActivity();
-        finish();
-
-
-
-
-        /*
-        mGoogleSignInClient.silentSignIn()
-                .addOnCompleteListener(
-                        this,
-                        new OnCompleteListener<GoogleSignInAccount>() {
-                            @Override
-                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-
-                                try {
-                                    GoogleSignInAccount account = task.getResult(ApiException.class);
-                                    if (account == null)
-                                        Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
-                                    else {
-                                        Log.e(TAG, account.getEmail());
-                                        Toast.makeText(getApplicationContext(), "log in", Toast.LENGTH_SHORT).show();
-                                    }
-
-                                } catch (ApiException e) {
-                                    Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
-                                }
-
-                            }
-                        }
-                );
-        */
-
-        /*
-        UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
-        boolean logueado = userLocalStore.isUsuarioLogueado();
-        if (logueado){
-            Toast.makeText(getApplicationContext(), "log in", Toast.LENGTH_SHORT).show();
-
-            int tipoUsuario = userLocalStore.getUsuarioLogueado().getTipoUsuario();
-
-            if (tipoUsuario == User.USUARIO_GOOGLE) {
-                GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-                if (account == null)
-                    return;
-
-                presenter.autentificarUsuarioGoogle(account.getIdToken());
-
-            } else if (tipoUsuario == User.USUARIO_NORMAL) {
-                int idUsuario = userLocalStore.getUsuarioLogueado().getId();
-                Log.e(TAG, "solicitando datos");
-                presenter.cargarDatosUsuarioNormal(idUsuario);
-            }
 
             iniciarMainActivity();
-            finish();
-
-        } else {
-            Toast.makeText(getApplicationContext(), "not log in", Toast.LENGTH_SHORT).show();
         }
-        */
-        
-        //updateUI(account);
 
     }
 
@@ -245,77 +175,19 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-
-            Log.e(TAG, "presenter");
             presenter.autentificarUsuarioGoogle(account.getIdToken());
 
-            /*
-            APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-            Log.e(TAG, account.getIdToken());
-            callLogIn = service.doVerificarGoogleUser(account.getIdToken());
-            Toast.makeText(getApplicationContext(), "enviando id token", Toast.LENGTH_SHORT).show();
-            callLogIn.enqueue(callback);
-            */
-
-
-
-
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.e(TAG, "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
-            //updateUI(null);
         }
     }
-
-    /*
-    private Callback<JsonObject> callback = new Callback<JsonObject>(){
-
-        @Override
-        public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-            Toast.makeText(getApplicationContext(), "onResponse", Toast.LENGTH_SHORT).show();
-            if (response.isSuccessful()) {
-                Toast.makeText(getApplicationContext(), "successful", Toast.LENGTH_SHORT).show();
-                JsonObject json = response.body();
-                int resultado = json.get("resultado").getAsInt();
-
-                if (resultado == 1) {
-                    int id = json.get("id").getAsInt();
-                    String nombre = json.get("nombre").getAsString();
-                    String email = json.get("email").getAsString();
-                    int puntos = json.get("puntos").getAsInt();
-
-                    User user = new User(id, nombre, email, puntos);
-
-                    Log.e(TAG, String.valueOf(user.getId()));
-                    Log.e(TAG, user.getEmail());
-                    Log.e(TAG, user.getNombre());
-                    Log.e(TAG, String.valueOf(user.getPuntos()));
-
-                    UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
-                    UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
-
-                    //iniciarMainActivity();
-
-                } else {
-                    Log.e(TAG, json.get("mensaje").getAsString());
-                }
-            }
-        }
-
-        @Override
-        public void onFailure(Call<JsonObject> call, Throwable t) {
-            Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            callLogIn.enqueue(callback);
-            Toast.makeText(getApplicationContext(), "enqueue", Toast.LENGTH_SHORT).show();
-        }
-    };
-     */
 
     private void iniciarMainActivity() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
+
+        finish();
     }
 
     @Override
@@ -340,10 +212,10 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         user.setTipoUsuario(User.USUARIO_GOOGLE);
         UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
 
+        // si el usuario aun no esta logueado inicia la actividad principal
         if (!UserLocalStore.getInstance(getApplicationContext()).isUsuarioLogueado()) {
             UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
             iniciarMainActivity();
-            finish();
         }
     }
 }
