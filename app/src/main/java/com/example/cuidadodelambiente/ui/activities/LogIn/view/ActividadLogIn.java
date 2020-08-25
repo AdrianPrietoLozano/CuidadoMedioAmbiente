@@ -2,14 +2,21 @@ package com.example.cuidadodelambiente.ui.activities.LogIn.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -19,6 +26,7 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
+import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.example.cuidadodelambiente.ui.activities.LogIn.presenter.ILogInPresenter;
 import com.example.cuidadodelambiente.ui.activities.LogIn.presenter.LogInPresenter;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -42,6 +50,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     private GoogleSignInClient mGoogleSignInClient;
     private ILogInPresenter presenter;
     private TextView txtTitulo;
+    private ProgressDialog progressLogIn;
 
     public ActividadLogIn() {
         presenter = new LogInPresenter(this);
@@ -52,17 +61,16 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actividad_log_in);
 
+        txtTitulo = findViewById(R.id.titulo);
+
         Utilidades.cambiarColorStatusBar(getWindow(),
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
-
-        txtTitulo = findViewById(R.id.titulo);
 
         cambiarALogInFragment();
 
         // Set the dimensions of the sign-in button.
-        SignInButton signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        CardView googleSignIn = findViewById(R.id.google_sign_in);
+        googleSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(), "Falta", Toast.LENGTH_SHORT).show();
@@ -77,6 +85,8 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                 .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        Log.e(TAG, "onCreate() saliendo");
 
     }
 
@@ -108,6 +118,8 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     protected void onStart() {
         super.onStart();
 
+        Log.e(TAG, "onStart");
+
         UserLocalStore userLocalStore = UserLocalStore.getInstance(getApplicationContext());
 
         // si el usuario no esta logueado
@@ -116,45 +128,50 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         }
 
         // el usuario ya esta logueado
+        iniciarMainActivity();
 
         // si el usuario inicio sesión con su cuenta de google
         if (userLocalStore.getUsuarioLogueado().getTipoUsuario() == User.USUARIO_GOOGLE) {
-            mGoogleSignInClient.silentSignIn()
-                    .addOnCompleteListener(
-                            this,
-                            new OnCompleteListener<GoogleSignInAccount>() {
-                                @Override
-                                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                                    try {
-                                        GoogleSignInAccount account = task.getResult(ApiException.class);
-                                        if (account != null){
-                                            // obtener los datos del usuario desde el servidor
-                                            presenter.autentificarUsuarioGoogle(account.getIdToken());
+            Log.e(TAG, "tipo GOOGLE");
 
-                                            iniciarMainActivity();
-                                        }
-                                        else {
-                                            Toast.makeText(ActividadLogIn.this,
-                                                    "Ocurrió un error", Toast.LENGTH_SHORT).show();
-                                        }
+            silentSignIn();
 
-                                    } catch (ApiException e) {
+        } else { // el usuario inició sesión de forma normal
+            Log.e(TAG, "tipo NORMAL");
+            int idUsuario = userLocalStore.getUsuarioLogueado().getId();
+            presenter.cargarDatosUsuarioNormal(idUsuario);
+        }
+
+        Log.e(TAG, "onStart() saliendo");
+
+    }
+
+    private void silentSignIn() {
+        mGoogleSignInClient.silentSignIn()
+                .addOnCompleteListener(
+                        this,
+                        new OnCompleteListener<GoogleSignInAccount>() {
+                            @Override
+                            public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
+                                try {
+                                    GoogleSignInAccount account = task.getResult(ApiException.class);
+                                    if (account != null){
+                                        // obtener los datos del usuario desde el servidor
+                                        presenter.autentificarUsuarioGoogle(account.getIdToken());
+                                        Log.e(TAG, "MainActivity desde silentSignIn");
+                                    }
+                                    else {
                                         Toast.makeText(ActividadLogIn.this,
                                                 "Ocurrió un error", Toast.LENGTH_SHORT).show();
                                     }
+
+                                } catch (ApiException e) {
+                                    Toast.makeText(ActividadLogIn.this,
+                                            "Ocurrió un error", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                    );
-
-
-
-        } else { // el usuario inició sesión de forma normal
-            int idUsuario = userLocalStore.getUsuarioLogueado().getId();
-            presenter.cargarDatosUsuarioNormal(idUsuario);
-
-            iniciarMainActivity();
-        }
-
+                        }
+                );
     }
 
 
@@ -172,6 +189,11 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        progressLogIn = new ProgressDialog(ActividadLogIn.this);
+        progressLogIn.setMessage("Cargando");
+        progressLogIn.setCancelable(false);
+        progressLogIn.show();
+
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
@@ -180,6 +202,8 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         } catch (ApiException e) {
             Log.e(TAG, "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(getApplicationContext(), "error", Toast.LENGTH_LONG).show();
+
+            progressLogIn.dismiss();
         }
     }
 
@@ -205,6 +229,11 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     @Override
     public void autentificarUsuarioGoogleError(String error) {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+
+        if (!UserLocalStore.getInstance(getApplicationContext()).isUsuarioLogueado()) {
+            if (progressLogIn != null)
+                progressLogIn.dismiss();
+        }
     }
 
     @Override
@@ -214,6 +243,9 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
         // si el usuario aun no esta logueado inicia la actividad principal
         if (!UserLocalStore.getInstance(getApplicationContext()).isUsuarioLogueado()) {
+            if (progressLogIn != null)
+                progressLogIn.dismiss();
+
             UserLocalStore.getInstance(getApplicationContext()).setUsuarioLogueado(true);
             iniciarMainActivity();
         }

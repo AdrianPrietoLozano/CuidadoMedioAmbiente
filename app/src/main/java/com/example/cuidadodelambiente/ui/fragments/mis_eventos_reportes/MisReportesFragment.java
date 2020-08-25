@@ -19,13 +19,11 @@ import android.widget.Toast;
 
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
-import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
-import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 

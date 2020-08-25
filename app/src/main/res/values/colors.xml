@@ -6,8 +6,10 @@
     <color name="colorGrisBlanco">#E7E7E7</color>
     <color name="grisNegro">#6C6C6C</color>
     <color name="rojoNaranja">#FF3600</color>
+    <color name="rojoClaro">#F44336</color>
     <color name="verdeFondo">#52D47A</color>
     <color name="amarillo">#ECEC0D</color>
+    <color name="azulGoogle">#4285F4</color>
 
     <color name="colorGradientStart">#D9FF43</color>
     <color name="colorGradientCenter">#F67831</color>

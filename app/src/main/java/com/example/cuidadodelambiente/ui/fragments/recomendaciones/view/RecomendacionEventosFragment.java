@@ -23,6 +23,7 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.IRecomendacionesEventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.RecomendacionesEventosPresenter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -130,7 +131,7 @@ public class RecomendacionEventosFragment extends Fragment
             @Override
             public void onItemClick(View view, int position) {
                 int idEvento = eventos.get(position).getId();
-                BottomSheetDialogFragment fragmentDatosEvento = com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment.newInstance(idEvento);
+                BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(idEvento);
                 fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                 fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());
             }

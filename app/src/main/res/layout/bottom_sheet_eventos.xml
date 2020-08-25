@@ -148,7 +148,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
-                android:background="@drawable/fondo_gradient_verde_redondeado"
+
                 android:padding="10dp"
                 android:text="@string/quiero_participar"
                 android:textAllCaps="false"

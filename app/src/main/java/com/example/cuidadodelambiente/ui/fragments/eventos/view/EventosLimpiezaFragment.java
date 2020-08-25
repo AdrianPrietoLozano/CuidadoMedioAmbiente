@@ -2,7 +2,6 @@ package com.example.cuidadodelambiente.ui.fragments.eventos.view;
 
 
 import android.app.ProgressDialog;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -19,18 +18,14 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
-import com.example.cuidadodelambiente.data.models.UbicacionReporte;
-import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
-import com.example.cuidadodelambiente.ui.fragments.DatosEventoFragment;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
 import com.google.android.gms.maps.CameraUpdate;
@@ -38,8 +33,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -50,10 +43,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
 
 
 /**

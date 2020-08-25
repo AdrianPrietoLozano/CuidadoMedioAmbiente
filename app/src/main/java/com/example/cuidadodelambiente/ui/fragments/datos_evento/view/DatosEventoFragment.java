@@ -1,8 +1,9 @@
-package com.example.cuidadodelambiente.ui.fragments;
+package com.example.cuidadodelambiente.ui.fragments.datos_evento.view;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,6 +27,9 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -36,7 +40,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 
-public class DatosEventoFragment extends BottomSheetDialogFragment{
+public class DatosEventoFragment extends BottomSheetDialogFragment
+    implements IDatosEventoView{
 
     private final String TAG = DatosEventoFragment.class.getSimpleName();
 
@@ -58,6 +63,12 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
 
     private Call<EventoLimpieza> callDatosEvento;
     private Call<JsonObject> callUnirseEvento;
+
+    private IDatosEventoPresenter presenter;
+
+    public DatosEventoFragment() {
+        this.presenter = new DatosEventoPresenter(this);
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -152,7 +163,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        callDatosEvento.cancel();
+
+        presenter.cancelarCargarDatosEvento();
+        //callDatosEvento.cancel();
     }
 
     private void intentarPeticionBD()
@@ -172,53 +185,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
     {
         Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
 
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callDatosEvento = service.doGetEventoLimpieza(this.eventoId, idUsuario);
-        callDatosEvento.enqueue(new Callback<EventoLimpieza>() {
-            @Override
-            public void onResponse(Call<EventoLimpieza> call, retrofit2.Response<EventoLimpieza> response) {
-
-                if (!response.isSuccessful()) {
-                    Toast.makeText(getContext(), "!response.isSuccessful()", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                eventoLimpieza = response.body();
-                if (eventoLimpieza.getResultado() == 1) {
-                    nombreEvento.setText(eventoLimpieza.getTitulo());
-                    fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
-                            eventoLimpieza.getHora()));
-                    creador.setText(eventoLimpieza.getAmbientalista());
-                    tipoResiduo.setText(eventoLimpieza.getResiduos().toString());
-                    descripcion.setText(eventoLimpieza.getDescripcion());
-                    numPersonasUnidas.setText(String.format("%s %s",
-                            eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
-                    if (eventoLimpieza.getIdReporte() != null) {
-                        layoutDatosReporte.setVisibility(View.VISIBLE);
-                    }
-
-                    // verifiar si el usuario ya participa en este evento
-                    if (eventoLimpieza.getUsuarioParticipa()) {
-                        botonQuieroParticipar.setEnabled(false);
-                        botonQuieroParticipar.setText("Ya participas en este evento");
-                    }
-
-                    mostrarContenidoPrincipal();
-
-                    String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
-                            eventoLimpieza.getRutaFotografia();
-                    Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
-                } else {
-                    Toast.makeText(getContext(), eventoLimpieza.getMensaje(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<EventoLimpieza> call, Throwable throwable) {
-                Log.e("ERROR", throwable.getMessage());
-                mostrarLayoutError();
-            }
-        });
+        presenter.cargarDatosEvento(this.eventoId, idUsuario);
     }
 
     public static DatosEventoFragment newInstance(int eventoId) {
@@ -232,6 +199,46 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         return f;
     }
 
+    private void configurarBotonQuieroParticipar() {
+        botonQuieroParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        botonQuieroParticipar.setText("Quiero participar");
+        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progreso = new ProgressDialog(getContext());
+                progreso.setMessage("Cargando...");
+                progreso.show();
+
+                presenter.participarEnEvento(
+                        eventoLimpieza.getIdEvento(),
+                        UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId(),
+                        eventoLimpieza.getFecha(),
+                        eventoLimpieza.getHora(),
+                        eventoLimpieza.getFecha(),
+                        eventoLimpieza.getHora()
+                );
+            }
+        });
+    }
+
+    private void configurarBotonDejarParticipar() {
+        botonQuieroParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
+        botonQuieroParticipar.setText("Dejar de participar");
+        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progreso = new ProgressDialog(getContext());
+                progreso.setMessage("Cargando...");
+                progreso.show();
+
+                presenter.dejarDeParticiparEnEvento(
+                        eventoLimpieza.getIdEvento(),
+                        UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId()
+                );
+            }
+        });
+    }
+
     private void clicBotonQuieroParticipar()
     {
         progreso = new ProgressDialog(getContext());
@@ -239,42 +246,14 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         progreso.show();
 
         Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callUnirseEvento = service.doUnirseEvento(idUsuario,
-                eventoId, eventoLimpieza.getFecha(), eventoLimpieza.getHora(),
-                eventoLimpieza.getFecha(), eventoLimpieza.getHora());
-
-        callUnirseEvento.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-                if (response.isSuccessful()) {
-                    JsonObject json = response.body();
-                    int resultado = json.get("resultado").getAsInt();
-                    Log.e("RESULTADO", String.valueOf(resultado));
-                    String mensaje = json.get("mensaje").getAsString();
-                    Log.e("MENSAJE", mensaje);
-
-                    if (resultado == 1) { // éxito
-                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                        botonQuieroParticipar.setEnabled(false);
-                    } else if (resultado == 2) { // ya participa en el evento
-                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                    } else { // ocurrió un error
-                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getContext(), response.errorBody().toString(), Toast.LENGTH_SHORT).show();
-                }
-
-                progreso.hide();
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                progreso.hide();
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+        presenter.participarEnEvento(
+                eventoLimpieza.getIdEvento(),
+                idUsuario,
+                eventoLimpieza.getFecha(),
+                eventoLimpieza.getHora(),
+                eventoLimpieza.getFecha(),
+                eventoLimpieza.getHora()
+        );
     }
 
     private void mostrarCarga() {
@@ -293,5 +272,71 @@ public class DatosEventoFragment extends BottomSheetDialogFragment{
         layoutNoConexion.setVisibility(View.VISIBLE);
         barraCarga.setVisibility(View.GONE);
         contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onCargarDatosEventoError(String error) {
+        mostrarLayoutError();
+    }
+
+    @Override
+    public void onParticiparEnEventoError(int resultado, String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        progreso.dismiss();
+    }
+
+    @Override
+    public void onDejarParticiparEventoError(int resultado, String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        progreso.dismiss();
+    }
+
+    @Override
+    public void onCargarDatosEventoExito(EventoLimpieza evento) {
+        this.eventoLimpieza = evento;
+
+        nombreEvento.setText(eventoLimpieza.getTitulo());
+        fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
+                eventoLimpieza.getHora()));
+        creador.setText(eventoLimpieza.getAmbientalista());
+        tipoResiduo.setText(eventoLimpieza.getResiduos().toString());
+        descripcion.setText(eventoLimpieza.getDescripcion());
+        numPersonasUnidas.setText(String.format("%s %s",
+                eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
+        if (eventoLimpieza.getIdReporte() != null) {
+            layoutDatosReporte.setVisibility(View.VISIBLE);
+        }
+
+        // verifiar si el usuario ya participa en este evento
+        if (eventoLimpieza.getUsuarioParticipa()) {
+            //botonQuieroParticipar.setEnabled(false);
+            //botonQuieroParticipar.setText("Ya participas en este evento");
+            configurarBotonDejarParticipar();
+        } else {
+            configurarBotonQuieroParticipar();
+        }
+
+        mostrarContenidoPrincipal();
+
+        String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
+                eventoLimpieza.getRutaFotografia();
+        Picasso.with(getContext()).load(urlFoto).into(imagenEvento);
+    }
+
+    @Override
+    public void onParticiparEnEventoExito() {
+        Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+        configurarBotonDejarParticipar();
+        numPersonasUnidas.setText(String.format("%s %s",
+                eventoLimpieza.getNumPersonasUnidas() + 1, "personas unidas"));
+
+        progreso.dismiss();
+    }
+
+    @Override
+    public void onDejarParticiparEventoExito() {
+        Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
+        configurarBotonQuieroParticipar();
+        progreso.dismiss();
     }
 }
