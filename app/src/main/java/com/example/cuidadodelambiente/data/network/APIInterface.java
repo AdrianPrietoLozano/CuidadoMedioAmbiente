@@ -89,6 +89,13 @@ public interface APIInterface {
             @Field("hora_fin") String horaFin
     );
 
+    @FormUrlEncoded
+    @POST("dejar_participar_evento.php")
+    Call<JsonObject> doDejarParticiparEvento(
+            @Field("id_ambientalista") int id_ambientalista,
+            @Field("id_evento") int id_evento
+    );
+
 
     @FormUrlEncoded
     @POST("datos_usuario.php")

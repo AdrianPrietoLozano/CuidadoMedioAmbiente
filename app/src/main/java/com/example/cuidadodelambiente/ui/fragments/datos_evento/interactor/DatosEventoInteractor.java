@@ -92,7 +92,34 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
     }
 
     @Override
-    public void dejarDeParticiparEnEvento(int idEvento, int idUsuario) {
+    public void dejarDeParticiparEnEvento(int idUsuario, int idEvento) {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.doDejarParticiparEvento(idUsuario, idEvento);
 
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                if (!response.isSuccessful()) {
+                    presenter.onDejarParticiparEventoError(0, "Ocurrió un error");
+                    return;
+                }
+
+                JsonObject json = response.body();
+                int resultado = json.get("resultado").getAsInt();
+
+                if (resultado != 1) {
+                    presenter.onDejarParticiparEventoError(resultado, json.get("mensaje").getAsString());
+                    return;
+                }
+
+                presenter.onDejarParticiparEventoExito();
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                presenter.onDejarParticiparEventoError(0, t.getMessage());
+            }
+        });
     }
 }

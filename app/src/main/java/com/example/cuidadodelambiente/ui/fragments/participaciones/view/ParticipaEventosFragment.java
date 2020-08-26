@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +25,21 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.ParticipacionesEventosPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ParticipaEventosFragment extends Fragment
-    implements IParticipacionesEventosView{
+    implements IParticipacionesEventosView, Observer {
 
     private JsonObjectRequest jsonObjectRequest;
     private RecyclerView recyclerEventos;
@@ -61,6 +65,7 @@ public class ParticipaEventosFragment extends Fragment
         View v = inflater.inflate(R.layout.fragment_participa_eventos, container, false);
         // Inflate the layout for this fragment
 
+        DatosEventoFragment.getObservable().addObserver(this);
 
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(
@@ -198,5 +203,12 @@ public class ParticipaEventosFragment extends Fragment
         } else {
             ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
         }
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Log.e("PARTICIPACIONES", "UPDATE PARTICIPACIONES");
+        intentarPeticionBD();
+
     }
 }

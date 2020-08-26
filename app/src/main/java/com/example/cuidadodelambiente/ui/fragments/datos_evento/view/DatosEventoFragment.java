@@ -20,12 +20,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Constants;
+import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
-import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
@@ -33,11 +33,8 @@ import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatos
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
-import retrofit2.Call;
-import retrofit2.Callback;
 
 
 public class DatosEventoFragment extends BottomSheetDialogFragment
@@ -47,10 +44,11 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
     private BottomSheetBehavior mBehavior;
     private int eventoId; // id del evento en la base de datos
+    private int idUsuario;
     private TextView nombreEvento, fechaHora, creador, descripcion;
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private LinearLayout layoutDatosReporte;
-    private Button botonQuieroParticipar;
+    private Button botonParticipar;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private ProgressBar barraCarga;
@@ -61,13 +59,15 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     private LinearLayout contenidoPrincipal;
     private Button botonVolverIntentar;
 
-    private Call<EventoLimpieza> callDatosEvento;
-    private Call<JsonObject> callUnirseEvento;
-
+    private static ParaObservar observable = new ParaObservar();
     private IDatosEventoPresenter presenter;
 
     public DatosEventoFragment() {
         this.presenter = new DatosEventoPresenter(this);
+    }
+
+    public static ParaObservar getObservable() {
+        return observable;
     }
 
     @Override
@@ -77,6 +77,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         if (getArguments() != null) {
             eventoId = getArguments().getInt(Constants.EVENTO_ID);
         }
+
+        idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
     }
 
     @Override
@@ -129,7 +131,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         descripcion = v.findViewById(R.id.descripcion_evento);
         numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
         imagenEvento = v.findViewById(R.id.imagenEvento);
-        botonQuieroParticipar = v.findViewById(R.id.botonQuieroParticipar);
+        botonParticipar = v.findViewById(R.id.botonParticipar);
 
         contenidoPrincipal = v.findViewById(R.id.contenidoPrincipal);
         contenidoPrincipal.setVisibility(View.INVISIBLE);
@@ -146,13 +148,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             }
         });
 
-        // evento clic boton "Quiero Participar"
-        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clicBotonQuieroParticipar();
-            }
-        });
+
+        inicializarProgressDialog();
 
         intentarPeticionBD();
 
@@ -165,7 +162,11 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         super.onDismiss(dialog);
 
         presenter.cancelarCargarDatosEvento();
-        //callDatosEvento.cancel();
+    }
+
+    private void inicializarProgressDialog() {
+        progreso = new ProgressDialog(getContext());
+        progreso.setMessage("Cargando...");
     }
 
     private void intentarPeticionBD()
@@ -183,8 +184,6 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
     private void iniciarPeticionBD()
     {
-        Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-
         presenter.cargarDatosEvento(this.eventoId, idUsuario);
     }
 
@@ -200,40 +199,29 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     }
 
     private void configurarBotonQuieroParticipar() {
-        botonQuieroParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        botonQuieroParticipar.setText("Quiero participar");
-        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+        botonParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        botonParticipar.setText("Quiero participar");
+        botonParticipar.setTextColor(Color.WHITE);
+        botonParticipar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progreso = new ProgressDialog(getContext());
-                progreso.setMessage("Cargando...");
-                progreso.show();
-
-                presenter.participarEnEvento(
-                        eventoLimpieza.getIdEvento(),
-                        UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId(),
-                        eventoLimpieza.getFecha(),
-                        eventoLimpieza.getHora(),
-                        eventoLimpieza.getFecha(),
-                        eventoLimpieza.getHora()
-                );
+                clicBotonQuieroParticipar();
             }
         });
     }
 
     private void configurarBotonDejarParticipar() {
-        botonQuieroParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
-        botonQuieroParticipar.setText("Dejar de participar");
-        botonQuieroParticipar.setOnClickListener(new View.OnClickListener() {
+        botonParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
+        botonParticipar.setText("Dejar de participar");
+        botonParticipar.setTextColor(Color.BLACK);
+        botonParticipar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progreso = new ProgressDialog(getContext());
-                progreso.setMessage("Cargando...");
                 progreso.show();
 
                 presenter.dejarDeParticiparEnEvento(
-                        eventoLimpieza.getIdEvento(),
-                        UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId()
+                        idUsuario,
+                        eventoLimpieza.getIdEvento()
                 );
             }
         });
@@ -241,11 +229,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
     private void clicBotonQuieroParticipar()
     {
-        progreso = new ProgressDialog(getContext());
-        progreso.setMessage("Cargando...");
         progreso.show();
 
-        Integer idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         presenter.participarEnEvento(
                 eventoLimpieza.getIdEvento(),
                 idUsuario,
@@ -309,8 +294,6 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
         // verifiar si el usuario ya participa en este evento
         if (eventoLimpieza.getUsuarioParticipa()) {
-            //botonQuieroParticipar.setEnabled(false);
-            //botonQuieroParticipar.setText("Ya participas en este evento");
             configurarBotonDejarParticipar();
         } else {
             configurarBotonQuieroParticipar();
@@ -331,12 +314,19 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
                 eventoLimpieza.getNumPersonasUnidas() + 1, "personas unidas"));
 
         progreso.dismiss();
+
+        getObservable().notificar(eventoLimpieza);
     }
 
     @Override
     public void onDejarParticiparEventoExito() {
         Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
         configurarBotonQuieroParticipar();
+        numPersonasUnidas.setText(String.format("%s %s",
+                eventoLimpieza.getNumPersonasUnidas() - 1, "personas unidas"));
+
         progreso.dismiss();
+
+        getObservable().notificar(eventoLimpieza);
     }
 }

@@ -26,8 +26,8 @@ public class DatosEventoPresenter implements IDatosEventoPresenter {
     }
 
     @Override
-    public void dejarDeParticiparEnEvento(int idEvento, int idUsuario) {
-        interactor.dejarDeParticiparEnEvento(idEvento, idUsuario);
+    public void dejarDeParticiparEnEvento(int idUsuario, int idEvento) {
+        interactor.dejarDeParticiparEnEvento(idUsuario, idEvento);
     }
 
     @Override
