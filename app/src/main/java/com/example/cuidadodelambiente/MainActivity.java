@@ -24,8 +24,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         CrearEventoFragment.OnEventoCreado {
 
@@ -83,11 +81,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         super.onAttachFragment(fragment);
     }
 
-    // pasar contexto a Calligraphy
-    @Override
-    protected void attachBaseContext(Context context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

@@ -21,8 +21,8 @@ public class DatosEventoPresenter implements IDatosEventoPresenter {
     }
 
     @Override
-    public void participarEnEvento(int idEvento, int idUsuario, String fecha, String hora, String fecha2, String hora2) {
-        interactor.participarEnEvento(idEvento, idUsuario, fecha, hora, fecha2, hora2);
+    public void participarEnEvento(int idEvento, int idUsuario) {
+        interactor.participarEnEvento(idEvento, idUsuario);
     }
 
     @Override

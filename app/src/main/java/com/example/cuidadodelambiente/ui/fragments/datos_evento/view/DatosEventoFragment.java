@@ -233,11 +233,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
         presenter.participarEnEvento(
                 eventoLimpieza.getIdEvento(),
-                idUsuario,
-                eventoLimpieza.getFecha(),
-                eventoLimpieza.getHora(),
-                eventoLimpieza.getFecha(),
-                eventoLimpieza.getHora()
+                idUsuario
         );
     }
 
@@ -310,8 +306,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     public void onParticiparEnEventoExito() {
         Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
         configurarBotonDejarParticipar();
+        eventoLimpieza.setNumPersonasUnidas(eventoLimpieza.getNumPersonasUnidas() + 1);
         numPersonasUnidas.setText(String.format("%s %s",
-                eventoLimpieza.getNumPersonasUnidas() + 1, "personas unidas"));
+                eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
         progreso.dismiss();
 
@@ -322,8 +319,9 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     public void onDejarParticiparEventoExito() {
         Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
         configurarBotonQuieroParticipar();
+        eventoLimpieza.setNumPersonasUnidas(eventoLimpieza.getNumPersonasUnidas() - 1);
         numPersonasUnidas.setText(String.format("%s %s",
-                eventoLimpieza.getNumPersonasUnidas() - 1, "personas unidas"));
+                eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
         progreso.dismiss();
 

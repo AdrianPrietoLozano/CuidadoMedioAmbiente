@@ -20,7 +20,6 @@ android {
 }
 
 dependencies {
-    implementation 'uk.co.chrisjenx:calligraphy:2.1.0'
     implementation 'com.alespero:expandable-cardview:0.8'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])

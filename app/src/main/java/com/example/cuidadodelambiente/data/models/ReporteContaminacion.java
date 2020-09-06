@@ -40,6 +40,9 @@ public class ReporteContaminacion {
     @SerializedName("tiene_evento")
     private boolean tieneEvento;
 
+    @SerializedName("tiene_limpieza")
+    private boolean tieneLimpieza;
+
     // nada que ver con un reporte
     @SerializedName("resultado")
     private int resultado;
@@ -133,8 +136,8 @@ public class ReporteContaminacion {
         return tieneEvento;
     }
 
-    public void setTieneEvento(boolean tieneEvento) {
-        this.tieneEvento = tieneEvento;
+    public boolean getTieneLimpieza() {
+        return tieneLimpieza;
     }
 
     public int getResultado() {

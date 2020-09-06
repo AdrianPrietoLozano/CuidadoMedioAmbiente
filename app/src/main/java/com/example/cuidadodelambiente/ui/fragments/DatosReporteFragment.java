@@ -25,18 +25,23 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
+import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class DatosReporteFragment extends BottomSheetDialogFragment {
 
@@ -45,7 +50,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
     private ImageView imagenReporte;
     private int reporteId;
     private Button botonCrearEvento;
-    private Button botonCancelar;
+    private Button botonLimpiar;
     private ProgressBar barraCarga;
     private ReporteContaminacion reporteContaminacion;
     private CargandoCircular cargandoCircular;
@@ -150,11 +155,11 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
             }
         });
 
-        botonCancelar = v.findViewById(R.id.botonCancelar);
-        botonCancelar.setOnClickListener(new View.OnClickListener() {
+        botonLimpiar = v.findViewById(R.id.botonLimpiar);
+        botonLimpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                iniciarCrearLimpieza();
             }
         });
 
@@ -169,6 +174,46 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         super.onDismiss(dialog);
 
         callDatosReporte.cancel();
+    }
+
+    // NO ESTA COMPLETO AÚN
+    private void iniciarCrearLimpieza() {
+        final ProgressDialog progresoCrearReporte = new ProgressDialog(getContext());
+        progresoCrearReporte.setTitle("Creando reporte");
+        progresoCrearReporte.setMessage("Cargando");
+        progresoCrearReporte.setCancelable(false);
+        progresoCrearReporte.show();
+
+        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        Call<JsonObject> call = service.doAgregarLimpieza(this.reporteId, idUsuario, "descripcion");
+        call.enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                progresoCrearReporte.dismiss();
+                if (response.isSuccessful()) {
+                    JsonObject json = response.body();
+                    String mensaje = json.get("mensaje").getAsString();
+                    int resultado = json.get("resultado").getAsInt();
+
+                    if (resultado == 1) {
+                        botonCrearEvento.setEnabled(false);
+                        botonLimpiar.setEnabled(false);
+                        Toast.makeText(getContext(), "EXITO", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "No successful", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                progresoCrearReporte.dismiss();
+            }
+        });
     }
 
 
@@ -213,8 +258,12 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
                     denunciante.setText(reporteContaminacion.getAmbientalista());
                     descripcionReporte.setText(reporteContaminacion.getDescripcion());
 
-                    if (reporteContaminacion.getTieneEvento()) {
+                    if (reporteContaminacion.getTieneEvento() || reporteContaminacion.getTieneLimpieza()) {
                         botonCrearEvento.setEnabled(false);
+                        botonLimpiar.setEnabled(false);
+                    } else {
+                        botonCrearEvento.setEnabled(true);
+                        botonLimpiar.setEnabled(true);
                     }
 
                     mostrarContenidoPrincipal();

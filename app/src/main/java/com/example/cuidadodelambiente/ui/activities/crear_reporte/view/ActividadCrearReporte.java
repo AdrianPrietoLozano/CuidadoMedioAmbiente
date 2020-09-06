@@ -73,14 +73,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
 public class ActividadCrearReporte extends AppCompatActivity implements
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener, ICrearReporteView {
@@ -478,12 +470,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
-    }
-
-    // pasar contexto a Calligraphy
-    @Override
-    protected void attachBaseContext(Context context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
     }
 
 

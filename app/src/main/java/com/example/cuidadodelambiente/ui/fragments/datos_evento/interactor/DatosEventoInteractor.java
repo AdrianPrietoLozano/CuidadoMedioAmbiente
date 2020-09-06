@@ -54,10 +54,9 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
     }
 
     @Override
-    public void participarEnEvento(int idEvento, int idUsuario, String fecha, String hora, String fecha2, String hora2) {
+    public void participarEnEvento(int idEvento, int idUsuario) {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> callUnirseEvento = service.doUnirseEvento(idUsuario,
-                idEvento, fecha, hora, fecha2, hora2);
+        Call<JsonObject> callUnirseEvento = service.doUnirseEvento(idUsuario, idEvento);
 
         callUnirseEvento.enqueue(new Callback<JsonObject>() {
             @Override

@@ -47,7 +47,6 @@ import java.util.Observable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadCrearEvento extends AppCompatActivity {
 
@@ -369,11 +368,5 @@ public class ActividadCrearEvento extends AppCompatActivity {
             }
         });
 
-    }
-
-    // pasar contexto a Calligraphy
-    @Override
-    protected void attachBaseContext(Context context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
     }
 }

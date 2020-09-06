@@ -65,10 +65,14 @@ public class Utilidades {
 
     public static boolean hayConexionInternet(Context context)
     {
-        ConnectivityManager con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = con.getActiveNetworkInfo();
+        try {
+            ConnectivityManager con = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = con.getActiveNetworkInfo();
 
-        return (networkInfo != null && networkInfo.isConnected());
+            return (networkInfo != null && networkInfo.isConnected());
+        } catch (Exception e) {
+            return true;
+        }
     }
 
     public static void cambiarColorStatusBar(Window w, int color) {

@@ -38,7 +38,6 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
@@ -88,12 +87,6 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
 
         Log.e(TAG, "onCreate() saliendo");
 
-    }
-
-    // pasar contexto a Calligraphy
-    @Override
-    protected void attachBaseContext(Context context) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(context));
     }
 
     private void cambiarFragment(Fragment fragment) {
