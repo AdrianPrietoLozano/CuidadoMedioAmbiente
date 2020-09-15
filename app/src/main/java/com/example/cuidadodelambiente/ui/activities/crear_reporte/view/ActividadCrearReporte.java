@@ -628,7 +628,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         reporteContaminacion.setDescripcion(descripcion);
         Log.e(TAG, reporteContaminacion.getDescripcion());
 
-        presenter.crearReporte(reporteContaminacion, getRealPathFromURI(uriImagen));
+        presenter.crearReporte(reporteContaminacion,
+                Utilidades.getRealPathFromURI(uriImagen, getApplicationContext()));
 
     }
 
@@ -651,18 +652,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         return contaminantes;
     }
-
-    private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
-        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
-        Cursor cursor = loader.loadInBackground();
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String result = cursor.getString(column_index);
-        cursor.close();
-        return result;
-    }
-
 
     @Override
     public void onReporteCreadoExitosamente(ReporteContaminacion reporte) {

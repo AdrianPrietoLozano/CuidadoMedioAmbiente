@@ -9,6 +9,11 @@
         <item name="android:fontFamily">@font/alata</item>
     </style>
 
+    <style name="AppTheme.GenderChip" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/alata</item>
+    </style>
+
     <style name="divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

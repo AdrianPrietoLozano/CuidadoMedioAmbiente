@@ -85,12 +85,13 @@ public interface APIInterface {
             @Field("id_evento") int id_evento
     );
 
-    @FormUrlEncoded
+    @Multipart
     @POST("insertar_limpieza.php")
     Call<JsonObject> doAgregarLimpieza(
-            @Field("reporte_id") int id_reporte,
-            @Field("ambientalista_id") int id_ambientalista,
-            @Field("descripcion") String descripcion
+            @Part("reporte_id") RequestBody id_reporte,
+            @Part("ambientalista_id") RequestBody id_ambientalista,
+            @Part("descripcion") RequestBody descripcion,
+            @Part MultipartBody.Part imagen
     );
 
     @FormUrlEncoded

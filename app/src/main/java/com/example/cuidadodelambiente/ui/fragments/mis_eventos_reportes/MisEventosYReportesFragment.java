@@ -99,10 +99,8 @@ public class MisEventosYReportesFragment extends Fragment {
 
     private void actualizarUI() {
         if (currentFragment == fragmentEventos) {
-            chipReportes.setChecked(false);
             textTitulo.setText("Mis Eventos");
         } else {
-            chipEventos.setChecked(false);
             textTitulo.setText("Mis Reportes");
         }
     }

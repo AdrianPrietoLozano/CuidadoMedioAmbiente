@@ -64,8 +64,7 @@
         android:textColor="@android:color/white"
         android:padding="2dp"
         android:enabled="false"
-        android:textSize="12sp"
-        android:fontFamily="@font/arvo_bold"
+        android:textAppearance="@style/AppTheme.GenderChip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/fechaHoraEvento" />
 

@@ -16,7 +16,11 @@
     <string name="boton_cancelar">Cancelar</string>
     <string name="boton_aceptar">Aceptar</string>
     <string name="limpiar">Limpiar</string>
+    <string name="limpieza">Limpieza</string>
     <string name="volver_intentar">Volver a intentarlo</string>
+
+    <string name="foto_opcional">Fotografía (opcional)</string>
+    <string name="descripcion_opcional">Descripcion (opcional)</string>
 
     <string name="nuevo_reporte">Nuevo reporte ecológico</string>
     <string name="fecha_hora">Fecha y hora</string>

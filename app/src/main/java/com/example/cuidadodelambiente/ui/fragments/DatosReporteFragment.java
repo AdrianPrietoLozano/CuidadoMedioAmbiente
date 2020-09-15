@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
@@ -38,12 +39,15 @@ import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
+import java.util.Observable;
+import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DatosReporteFragment extends BottomSheetDialogFragment {
+public class DatosReporteFragment extends BottomSheetDialogFragment
+    implements Observer {
 
     private BottomSheetBehavior mBehavior;
     private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte, mensajeProblema;
@@ -176,44 +180,21 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         callDatosReporte.cancel();
     }
 
-    // NO ESTA COMPLETO AÚN
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        LimpiezaFragment.getObservable().deleteObserver(this);
+    }
+
     private void iniciarCrearLimpieza() {
-        final ProgressDialog progresoCrearReporte = new ProgressDialog(getContext());
-        progresoCrearReporte.setTitle("Creando reporte");
-        progresoCrearReporte.setMessage("Cargando");
-        progresoCrearReporte.setCancelable(false);
-        progresoCrearReporte.show();
+        // se suscribe al observable de LimpiezaFragment
+        // de este modo podremos saber cuando se cree una nueva limpieza
+        LimpiezaFragment.getObservable().addObserver(this);
 
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doAgregarLimpieza(this.reporteId, idUsuario, "descripcion");
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                progresoCrearReporte.dismiss();
-                if (response.isSuccessful()) {
-                    JsonObject json = response.body();
-                    String mensaje = json.get("mensaje").getAsString();
-                    int resultado = json.get("resultado").getAsInt();
-
-                    if (resultado == 1) {
-                        botonCrearEvento.setEnabled(false);
-                        botonLimpiar.setEnabled(false);
-                        Toast.makeText(getContext(), "EXITO", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getContext(), "No successful", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                progresoCrearReporte.dismiss();
-            }
-        });
+        BottomSheetDialogFragment fragmentLimpieza = LimpiezaFragment.newInstance(reporteId);
+        fragmentLimpieza.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+        fragmentLimpieza.show(getFragmentManager(), fragmentLimpieza.getTag());
     }
 
 
@@ -302,5 +283,12 @@ public class DatosReporteFragment extends BottomSheetDialogFragment {
         layoutNoConexion.setVisibility(View.VISIBLE);
         barraCarga.setVisibility(View.GONE);
         contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    // se ejecuta cuando se crea una limpieza
+    @Override
+    public void update(Observable o, Object arg) {
+        botonLimpiar.setEnabled(false);
+        botonCrearEvento.setEnabled(false);
     }
 }
