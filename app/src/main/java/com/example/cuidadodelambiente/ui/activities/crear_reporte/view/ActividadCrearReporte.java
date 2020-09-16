@@ -1,13 +1,8 @@
 package com.example.cuidadodelambiente.ui.activities.crear_reporte.view;
 
-import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -29,13 +24,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.loader.content.CursorLoader;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
@@ -43,30 +35,12 @@ import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
-import com.example.cuidadodelambiente.data.models.UserLocalStore;
-import com.example.cuidadodelambiente.data.network.APIInterface;
-import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
+import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelper;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.CrearReportePresenter;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.ICrearReportePresenter;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,16 +48,9 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActividadCrearReporte extends AppCompatActivity implements
-    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        LocationListener, ICrearReporteView {
+    ActualizacionesUbicacionHelper.OnActualizacionUbicacion, ICrearReporteView {
 
     private final int REQUEST_CODE_ELEGIR_FOTO = 10;
-    private final int PERMISSION_ID = 40;
-    private final int REQUEST_CHECK_SETTINGS = 50;
-    private final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
-    private final int UPDATE_INTERVAL_MILLISECONDS = 20000; // 20 segundos
-    private final int FASTEST_UPDATE_INTERVAL_MILLISECONDS =
-            UPDATE_INTERVAL_MILLISECONDS / 2;
     private final String TAG = ActividadCrearReporte.class.getSimpleName();
     private final String OPCION_POR_DEFECTO_VOLUMEN = "Selecciona una opción";
 
@@ -107,11 +74,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private Button botonCancelar;
     private LinearLayout layoutCheckBox;
 
-    private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private Location mLastLocationAux;
-    private LocationRequest mLocationRequest;
-    private LocationSettingsRequest mLocationSettingRequest;
 
     private AddressResultReceiver resultReceiver; // para obtener la dirección
     private String addressOutput;
@@ -119,6 +83,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private ReporteContaminacion reporteContaminacion = new ReporteContaminacion();
 
     private Uri uriImagen;
+    private ActualizacionesUbicacionHelper actualizacionesUbiacion;
 
     private boolean ubicacionObtenida;
     private boolean direccionObtenida;
@@ -186,21 +151,38 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         Log.e(TAG, volumenResiduoMenu.getText().toString());
 
-
-        buildGoogleApiClient();
-        createLocationRequest();
-        buildLocationSettingRequest();
-
         mostrarFechaHora();
         resultReceiver = new AddressResultReceiver(new Handler());
         solicitandoDireccion = true;
         ubicacionObtenida = false;
         direccionObtenida = false;
 
-        iniciarRequestUbicacion();
-
+        actualizacionesUbiacion = new ActualizacionesUbicacionHelper(this, this);
+        actualizacionesUbiacion.iniciarObtenerUbicacion();
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocationAux = location;
+        startIntentService();
+    }
+
+    @Override
+    public void onConnectionFailed() {
+        Toast.makeText(getApplicationContext(), "ConnectionFailed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPermissionError(String error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    @Override
+    public void onError(String error) {
+        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        finish();
+    }
 
 
     // Para obtener la dirección dado una latitud y longitud
@@ -285,236 +267,41 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     }
 
 
-    private void iniciarRequestUbicacion() {
-        if (checkPermissions()) {
-            intentarConectar();
-            if (isLocationEnabled()) {
-                if (checkGooglePlayServices()) {
-
-                    // preparar solicitud de conexión
-                    mGoogleApiClient.connect();
-                }
-            }
-            else {
-                checkLocationSettings();
-            }
-        } else {
-            solicitarPermisoUbicacion();
-        }
-    }
-
-    private boolean checkGooglePlayServices() {
-        int checkGooglePlayServices = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-        if(checkGooglePlayServices != ConnectionResult.SUCCESS) {
-            /*
-
-            google play services is missing or update is required
-            return code could be:
-            SUCCESS,
-            SERVICE_MISSING, SERVICE_VERSION_UPDATE_REQUIRED,
-            SERVICE_DISABLED, SERVICE_INVALID
-             */
-            GooglePlayServicesUtil.getErrorDialog(checkGooglePlayServices,
-                    this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
-
-            return false;
-        }
-
-        return true;
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-    }
-
-    protected void createLocationRequest() {
-        mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MILLISECONDS);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-
-    protected void buildLocationSettingRequest() {
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(mLocationRequest);
-        builder.setAlwaysShow(true);
-
-        mLocationSettingRequest = builder.build();
-
-    }
-
-    protected void checkLocationSettings() {
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(
-                        mGoogleApiClient,
-                        mLocationSettingRequest
-                );
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
-                final Status status = locationSettingsResult.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        // todos los permisos son satisfechos
-                        Log.e("SUCCESS", "Todos los permisos satisfechos");
-                        startLocationUpdates();
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.e("RESOLUTION", "MOSTRAR_DIALOGO");
-                        try {
-                            status.startResolutionForResult(ActividadCrearReporte.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.e("CATCH", "No se pudo crear el dialogo");
-                        }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.e("UNAVAILABLE", "Inaccesibles");
-                        finish();
-                        break;
-                }
-            }
-        });
-    }
-
-    protected void startLocationUpdates() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient,
-                mLocationRequest,
-                this
-        ).setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(@NonNull Status status) {
-                // puede servir de algo
-            }
-        });
-    }
-
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        mLastLocationAux = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-
-        if(mLastLocationAux != null) {
-            startIntentService(); // intentar obtener la dirección del usuario
-        }
-
-        startLocationUpdates();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(getApplicationContext(), "onConnectionSuespended", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Toast.makeText(getApplicationContext(), "OnConnectionFailed", Toast.LENGTH_SHORT).show();
-    }
-
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocationAux = location;
-
-        // intentar obtener la dirección del usuario
-        startIntentService();
-    }
-
-    protected void stopLocationUpdates() {
-        if (mGoogleApiClient != null && mGoogleApiClient.isConnected()) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-    }
-
     @Override
     protected void onPause() {
         super.onPause();
-        if (mGoogleApiClient.isConnected()) {
-            stopLocationUpdates();
-        }
+
+        actualizacionesUbiacion.detenerActualizacionesUbicacion();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.disconnect();
-        }
+        actualizacionesUbiacion.desconectar();
     }
 
     @Override
     public void onResume(){
         super.onResume();
 
-        if(mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
+        actualizacionesUbiacion.iniciarActualizacionesUbicacion();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if(checkPermissions()) {
-            intentarConectar();
-        }
+        actualizacionesUbiacion.conectar();
     }
 
-    private void intentarConectar(){
-        if (mGoogleApiClient != null) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-
-    // revisa si se tienen los permisos para acceder a la ubicación del usuario
-    private boolean checkPermissions(){
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSION_ID) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                // ver si esto es necesario
-                //intentarConectar();
-
-                iniciarRequestUbicacion();
-            } else {
-                finish();
-            }
-        }
+        actualizacionesUbiacion.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-
-    // pide permisos al usuario para acceder a su ubicación
-    private void solicitarPermisoUbicacion(){
-        ActivityCompat.requestPermissions(
-                this,
-                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                PERMISSION_ID
-        );
-    }
-
-    // revisa si la ubicación esta activada
-    private boolean isLocationEnabled(){
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
-                LocationManager.NETWORK_PROVIDER
-        );
-    }
 
     private void mostrarFechaHora() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, dd MMM yyyy",
@@ -538,42 +325,16 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_CODE_ELEGIR_FOTO:
-                if (resultCode == RESULT_OK) {
-                    uriImagen = data.getData();
-                    fotoReporte.setImageURI(uriImagen);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Error al cargar foto", Toast.LENGTH_SHORT).show();
-                }
-
-                break;
-
-
-            case REQUEST_CHECK_SETTINGS:
-                if (resultCode == RESULT_OK) {
-                    //iniciarRequestUbicacion();
-                    startLocationUpdates();
-                }
-                else if (resultCode == RESULT_CANCELED) {
-                    Toast.makeText(getApplicationContext(), "Permiso necesario", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-
-                break;
-
-
-            case REQUEST_CODE_RECOVER_PLAY_SERVICES:
-                if (resultCode == RESULT_OK) {
-                    if (!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()) {
-                        mGoogleApiClient.connect();
-                    }
-                } else if (requestCode == RESULT_CANCELED) {
-                    Toast.makeText(getApplicationContext(), "Google Play Services es necesario", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-                break;
-        }
+       if ( requestCode == REQUEST_CODE_ELEGIR_FOTO ) {
+           if (resultCode == RESULT_OK) {
+               uriImagen = data.getData();
+               fotoReporte.setImageURI(uriImagen);
+           } else {
+               Toast.makeText(getApplicationContext(), "Error al cargar foto", Toast.LENGTH_SHORT).show();
+           }
+       } else {
+           actualizacionesUbiacion.onActivityResult(requestCode, resultCode, data);
+       }
     }
 
     private void cancelar() {
@@ -667,7 +428,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     public void onReporteCreadoError(String error) {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 
-        startLocationUpdates();
+        actualizacionesUbiacion.iniciarActualizacionesUbicacion();
     }
 
     @Override
