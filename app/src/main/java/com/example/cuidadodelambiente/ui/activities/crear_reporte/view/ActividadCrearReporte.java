@@ -87,7 +87,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private final String TAG = ActividadCrearReporte.class.getSimpleName();
     private final String OPCION_POR_DEFECTO_VOLUMEN = "Selecciona una opción";
 
-    String[] VOLUMENES_RESIDUO = new String[] {"Cabe en una mano",
+    private String[] VOLUMENES_RESIDUO = new String[] {"Cabe en una mano",
                                             "Cabe en una mochila",
                                             "Cabe en un automóvil",
                                             "Cabe en un contenedor",
