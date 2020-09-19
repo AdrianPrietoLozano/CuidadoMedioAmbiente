@@ -11,11 +11,13 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.loader.content.CursorLoader;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +55,7 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
     private final int REQUEST_CODE_ELEGIR_FOTO = 10;
     private BottomSheetBehavior mBehavior;
     private ImageView fotoEvidencia;
+    private ImageView iconElegirFoto;
     private int reporteId;
     private Uri uriImagen;
     private Button btnLimpiar;
@@ -83,8 +86,8 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         mBehavior = BottomSheetBehavior.from((View) v.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
 
-        fotoEvidencia = v.findViewById(R.id.fotoEvidencia);
-        fotoEvidencia.setOnClickListener(new View.OnClickListener() {
+        CardView cardFoto = v.findViewById(R.id.cardFoto);
+        cardFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -93,6 +96,9 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
                         REQUEST_CODE_ELEGIR_FOTO);
             }
         });
+
+        fotoEvidencia = v.findViewById(R.id.fotoEvidencia);
+        iconElegirFoto = v.findViewById(R.id.iconElegirFoto);
 
         textDescripcion = v.findViewById(R.id.editTextDescripcion);
 
@@ -129,7 +135,9 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
 
         if (requestCode == REQUEST_CODE_ELEGIR_FOTO && resultCode == Activity.RESULT_OK) {
             uriImagen = data.getData();
+            iconElegirFoto.setVisibility(View.GONE);
             fotoEvidencia.setImageURI(uriImagen);
+            fotoEvidencia.setVisibility(View.VISIBLE);
         }
     }
 

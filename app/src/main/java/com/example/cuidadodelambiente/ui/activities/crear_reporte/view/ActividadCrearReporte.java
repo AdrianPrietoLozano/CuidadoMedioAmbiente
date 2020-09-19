@@ -27,6 +27,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.example.cuidadodelambiente.Constants;
@@ -64,7 +65,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private TextInputEditText textDescripcion;
     private AutoCompleteTextView volumenResiduoMenu;
     private ImageView fotoReporte;
-    private MaterialButton botonElegirFoto;
+    private ImageView iconElegirFoto;
     private TextView textErrorContaminante;
     private TextView fechaReporte;
     private TextView txtDireccionReporte; // direccion completa
@@ -103,15 +104,16 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actividad_crear_reporte);
 
-
         // Cambia el color del status bar a verde
         Utilidades.cambiarColorStatusBar(getWindow(),
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
+        CardView cardFoto = findViewById(R.id.cardFoto);
+        cardFoto.setOnClickListener(listenerElegirFoto);
+
         fotoReporte = findViewById(R.id.fotoReporte);
-        fotoReporte.setOnClickListener(listenerElegirFoto);
-        botonElegirFoto = findViewById(R.id.btnElegirFoto);
-        botonElegirFoto.setOnClickListener(listenerElegirFoto);
+        iconElegirFoto = findViewById(R.id.iconElegirFoto);
+
         botonCrearReporte = findViewById(R.id.botonAceptar);
         botonCrearReporte.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -328,7 +330,9 @@ public class ActividadCrearReporte extends AppCompatActivity implements
        if ( requestCode == REQUEST_CODE_ELEGIR_FOTO ) {
            if (resultCode == RESULT_OK) {
                uriImagen = data.getData();
+               iconElegirFoto.setVisibility(View.GONE);
                fotoReporte.setImageURI(uriImagen);
+               fotoReporte.setVisibility(View.VISIBLE);
            } else {
                Toast.makeText(getApplicationContext(), "Error al cargar foto", Toast.LENGTH_SHORT).show();
            }
