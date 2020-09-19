@@ -40,6 +40,8 @@ import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelpe
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.CrearReportePresenter;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.ICrearReportePresenter;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
@@ -74,6 +76,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private Button botonCrearReporte;
     private Button botonCancelar;
     private LinearLayout layoutCheckBox;
+    private ChipGroup chipGroupContaminantes;
 
     private Location mLastLocation;
     private Location mLastLocationAux;
@@ -136,6 +139,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         fechaReporte = findViewById(R.id.textViewFecha);
         layoutCheckBox = findViewById(R.id.layoutCheckBox);
 
+        chipGroupContaminantes = findViewById(R.id.chipGroupContaminantes);
+
         textDescripcion = findViewById(R.id.editTextDescripcion);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),
@@ -151,16 +156,17 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             }
         });
 
-        Log.e(TAG, volumenResiduoMenu.getText().toString());
 
         mostrarFechaHora();
         resultReceiver = new AddressResultReceiver(new Handler());
+
+        // iniciando acceder a la ubicación del usuario
+        actualizacionesUbiacion = new ActualizacionesUbicacionHelper(this, this);
+        actualizacionesUbiacion.iniciarObtenerUbicacion();
+
         solicitandoDireccion = true;
         ubicacionObtenida = false;
         direccionObtenida = false;
-
-        actualizacionesUbiacion = new ActualizacionesUbicacionHelper(this, this);
-        actualizacionesUbiacion.iniciarObtenerUbicacion();
     }
 
     @Override
@@ -357,6 +363,12 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         reporteContaminacion.setHora(hora);
         Log.e(TAG, reporteContaminacion.getFecha() + ", " + reporteContaminacion.getHora());
 
+        // foto
+        if (uriImagen == null) {
+            Toast.makeText(getApplicationContext(), "Debes elegir una imagen", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // ubicación
         if (ubicacionObtenida) {
             reporteContaminacion.setLatitud(mLastLocation.getLatitude());
@@ -364,6 +376,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
             Log.e(TAG, reporteContaminacion.getLatitud() + ", " + reporteContaminacion.getLongitud());
         } else {
             Log.e(TAG, "Aún no se obtiene la ubicación");
+            return;
         }
 
         // volumen
@@ -376,6 +389,16 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         Log.e(TAG, reporteContaminacion.getVolumenResiduo());
 
         // contaminantes o residuos
+        /*
+        List<String> contaminantes = obtenerContaminantes();
+        if (contaminantes.isEmpty()) {
+            textErrorContaminante.setVisibility(View.VISIBLE);
+            return;
+        }
+        reporteContaminacion.setResiduos(contaminantes);
+        Log.e(TAG, reporteContaminacion.getResiduos().toString());
+         */
+
         List<String> contaminantes = obtenerContaminantes();
         if (contaminantes.isEmpty()) {
             textErrorContaminante.setVisibility(View.VISIBLE);
@@ -400,6 +423,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     // retorna una lista con los contaminantes que el usuario seleccionó
     private List<String> obtenerContaminantes() {
+        /*
         List<String> contaminantes = new ArrayList<>();
         for(int i = 0; i < layoutCheckBox.getChildCount(); i++) {
             if (layoutCheckBox.getChildAt(i) instanceof  LinearLayout) {
@@ -416,13 +440,24 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         }
 
         return contaminantes;
+        */
+
+        List<String> contaminantes = new ArrayList<>();
+        List<Integer> ids = chipGroupContaminantes.getCheckedChipIds();
+        for (Integer id : ids) {
+            Chip chip = chipGroupContaminantes.findViewById(id);
+            contaminantes.add(chip.getText().toString());
+        }
+
+        return contaminantes;
+
     }
 
     @Override
     public void onReporteCreadoExitosamente(ReporteContaminacion reporte) {
         Log.e(TAG, "onReporteCreadoExitosamente");
 
-        Toast.makeText(getApplicationContext(), "Evento creado exitosamente.", Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Reporte creado exitosamente.", Toast.LENGTH_LONG).show();
 
         getObservable().notificar(reporte);
         finish();

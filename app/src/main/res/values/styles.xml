@@ -14,6 +14,13 @@
         <item name="android:fontFamily">@font/alata</item>
     </style>
 
+    <style name="customStyleChipContaminante" parent="@style/Widget.MaterialComponents.Chip.Choice">
+        <item name="chipIconEnabled">true</item>
+        <item name="android:textAppearance">@style/AppTheme.GenderChip</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="divider">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>

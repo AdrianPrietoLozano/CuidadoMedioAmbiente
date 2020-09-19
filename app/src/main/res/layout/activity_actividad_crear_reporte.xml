@@ -261,12 +261,14 @@
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
+
             <LinearLayout
                 android:id="@+id/layoutCheckBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
+                android:visibility="gone"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -359,6 +361,147 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupContaminantes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipCarton"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/carton"
+                    app:chipIconEnabled="true"
+                    android:text="Cartón"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEnvases"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/envases"
+                    app:chipIconEnabled="true"
+                    android:text="Envases"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipBolsas"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/bolsas"
+                    app:chipIconEnabled="true"
+                    android:text="Bolsas"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipElectricos"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/electronics"
+                    app:chipIconEnabled="true"
+                    android:text="Eléctricos y electrónicos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipPilas"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/pilas"
+                    app:chipIconEnabled="true"
+                    android:text="Pilas y baterías"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipNeumaticos"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/neumaticos"
+                    app:chipIconEnabled="true"
+                    android:text="Neumáticos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMedicamentos"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/medicamentos"
+                    app:chipIconEnabled="true"
+                    android:text="Medicamentos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipEscombros"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/escombros"
+                    app:chipIconEnabled="true"
+                    android:text="Escombros"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipVarios"
+                    style="@style/customStyleChipContaminante"
+                    app:chipIcon="@drawable/dump"
+                    app:chipIconEnabled="true"
+                    android:text="Varios"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+
+
+            <!--
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupContaminantes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                >
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Envases"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Cartón"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Bolsas"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Eléctricos y electrónicos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Pilas y baterías"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Neumáticos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Medicamentos"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Escombros"/>
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:text="Varios"/>
+
+        </com.google.android.material.chip.ChipGroup>
+            -->
 
             <View
                 android:layout_margin="20dp"
