@@ -19,6 +19,16 @@ public class EventoItem {
     @SerializedName("foto")
     private String foto;
 
+    public boolean getChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
+
+    private boolean checked;
+
     public Integer getId() {
         return id;
     }

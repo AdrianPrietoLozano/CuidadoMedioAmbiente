@@ -10,6 +10,7 @@ import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.Actividad
 import com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes.MisEventosYReportesFragment;
 import com.example.cuidadodelambiente.ui.fragments.PerfilUsuarioFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
+import com.example.cuidadodelambiente.ui.fragments.multiselection.MultiSelectionFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.view.ParticipaEventosFragment;
 import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionEventosFragment;
@@ -29,6 +30,7 @@ public class DeclaracionFragments {
     public static CrearEventoFragment crearEventoFragment = new CrearEventoFragment();
     public static final Activity crearReporteActivity = new ActividadCrearReporte();
     public static final ActividadCrearEvento crearEventoActivity = new ActividadCrearEvento();
+    public static final Fragment multiselection = new MultiSelectionFragment();
 
     public static Fragment getParticipaEventosFragment()
     {

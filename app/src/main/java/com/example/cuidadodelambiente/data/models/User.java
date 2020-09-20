@@ -27,6 +27,8 @@ public class User {
 
     private int tipoUsuario;
 
+    private boolean isChecked;
+
     public User(Integer id, String nombre, String email, Integer puntos, int tipo) {
         this.id = id;
         this.nombre = nombre;
@@ -89,5 +91,13 @@ public class User {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public boolean getChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
     }
 }

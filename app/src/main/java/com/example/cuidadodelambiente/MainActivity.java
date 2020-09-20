@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 return true;
 
             case R.id.eventosRecomendados:
-                cambiarFragment(DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
+                cambiarFragment(DeclaracionFragments.multiselection, "REEVENTO");
                 return true;
 
             case R.id.reportes:
