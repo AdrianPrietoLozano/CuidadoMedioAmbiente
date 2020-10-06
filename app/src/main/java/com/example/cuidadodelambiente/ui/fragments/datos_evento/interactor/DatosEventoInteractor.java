@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.ui.fragments.datos_evento.interactor;
 
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -8,6 +9,8 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
+import com.example.cuidadodelambiente.data.responses.StatusResponse;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
@@ -18,7 +21,7 @@ import retrofit2.Callback;
 public class DatosEventoInteractor implements IDatosEventoInteractor {
 
     private IDatosEventoPresenter presenter;
-    private Call<EventoLimpieza> callDatosEvento;
+    private Call<EventoLimpiezaResponse> callDatosEvento;
 
     public DatosEventoInteractor(IDatosEventoPresenter presenter) {
         this.presenter = presenter;
@@ -29,25 +32,25 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         callDatosEvento = service.doGetEventoLimpieza(idEvento, idUsuario);
-        callDatosEvento.enqueue(new Callback<EventoLimpieza>() {
+        callDatosEvento.enqueue(new Callback<EventoLimpiezaResponse>() {
             @Override
-            public void onResponse(Call<EventoLimpieza> call, retrofit2.Response<EventoLimpieza> response) {
+            public void onResponse(Call<EventoLimpiezaResponse> call, retrofit2.Response<EventoLimpiezaResponse> response) {
 
                 if (!response.isSuccessful()) {
                     presenter.onCargarDatosEventoError("Ocurrió un error");
                     return;
                 }
 
-                EventoLimpieza eventoLimpieza = response.body();
-                if (eventoLimpieza.getResultado() == 1) {
-                    presenter.onCargarDatosEventoExito(eventoLimpieza);
+                StatusResponse status = response.body().getStatus();
+                if (status.getResultado() == 1) {
+                    presenter.onCargarDatosEventoExito(response.body().getEvento());
                 } else {
-                    presenter.onCargarDatosEventoError(eventoLimpieza.getMensaje());
+                    presenter.onCargarDatosEventoError(status.getMensaje());
                 }
             }
 
             @Override
-            public void onFailure(Call<EventoLimpieza> call, Throwable throwable) {
+            public void onFailure(Call<EventoLimpiezaResponse> call, Throwable throwable) {
                 presenter.onCargarDatosEventoError(throwable.getMessage());
             }
         });

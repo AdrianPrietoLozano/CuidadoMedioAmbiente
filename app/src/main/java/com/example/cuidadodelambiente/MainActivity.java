@@ -1,31 +1,22 @@
 package com.example.cuidadodelambiente;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
-        CrearEventoFragment.OnEventoCreado {
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener
+{
 
     //public final ParticipaEventosFragment participaEventos = new ParticipaEventosFragment();
 
@@ -207,16 +198,5 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public void cambiarVisibilidadBottomNavigation(int visibility) {
         bottomNavigationView.setVisibility(visibility);
-    }
-
-    @Override
-    public void onEventoCreado(LatLng ubicacion) {
-        Utilidades.iniciarFragment(getSupportFragmentManager().beginTransaction(),
-                DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTO");
-
-        EventosLimpiezaFragment eventosLimpiezaFragment = (EventosLimpiezaFragment) getSupportFragmentManager().findFragmentByTag("EVENTO");
-        eventosLimpiezaFragment.recargar();
-        eventosLimpiezaFragment.moverMapa(ubicacion);
-
     }
 }

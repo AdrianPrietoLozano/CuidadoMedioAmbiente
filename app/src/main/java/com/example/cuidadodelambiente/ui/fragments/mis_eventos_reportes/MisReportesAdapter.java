@@ -76,7 +76,7 @@ public class MisReportesAdapter extends RecyclerView.Adapter<MisReportesAdapter.
                 .load(urlFoto)
                 .fit()
                 .transform(new RoundedTransformationBuilder()
-                        .borderColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                        .borderColor(ContextCompat.getColor(context, R.color.rojo))
                         .borderWidth(7)
                         .cornerRadiusDp(35)
                         .build()

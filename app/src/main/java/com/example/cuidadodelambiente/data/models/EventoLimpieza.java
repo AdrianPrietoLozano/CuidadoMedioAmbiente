@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.data.models;
 
+import com.example.cuidadodelambiente.data.responses.StatusResponse;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
@@ -16,7 +17,7 @@ public class EventoLimpieza {
     private LatLng ubicacion;
 
     @SerializedName("creador")
-    private String ambientalista;
+    private User creador;
 
     @SerializedName("titulo")
     private String titulo;
@@ -41,14 +42,6 @@ public class EventoLimpieza {
 
     @SerializedName("usuario_participa")
     private boolean usuarioParticipa;
-
-    // nada que ver con un evento
-    @SerializedName("resultado")
-    private int resultado;
-
-    // nada que ver con un evento
-    @SerializedName("mensaje")
-    private String mensaje;
 
 
     public List<String> getResiduos() {
@@ -83,12 +76,12 @@ public class EventoLimpieza {
         this.idEvento = idEvento;
     }
 
-    public String getAmbientalista() {
-        return ambientalista;
+    public User getCreador() {
+        return creador;
     }
 
-    public void setAmbientalista(String ambientalista) {
-        this.ambientalista = ambientalista;
+    public void setCreador(User creador) {
+        this.creador = creador;
     }
 
     public String getTitulo() {
@@ -143,23 +136,4 @@ public class EventoLimpieza {
         return usuarioParticipa;
     }
 
-    public void setUsuarioParticipa(boolean usuarioParticipa) {
-        this.usuarioParticipa = usuarioParticipa;
-    }
-
-    public int getResultado() {
-        return resultado;
-    }
-
-    public void setResultado(int resultado) {
-        this.resultado = resultado;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
 }

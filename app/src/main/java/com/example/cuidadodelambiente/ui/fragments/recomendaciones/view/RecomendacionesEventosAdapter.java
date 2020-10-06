@@ -1,8 +1,6 @@
 package com.example.cuidadodelambiente.ui.fragments.recomendaciones.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.models.EventoItem;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -22,11 +20,11 @@ import java.util.List;
 
 public class RecomendacionesEventosAdapter extends RecyclerView.Adapter<RecomendacionesEventosAdapter.EventoViewHolder>
 {
-    private List<EventoItem> listaEventos;
+    private List<EventoLimpieza> listaEventos;
     private Context context;
     private OnItemClickListener onItemClickListener;
 
-    public RecomendacionesEventosAdapter(Context context, List<EventoItem> listaEventos,
+    public RecomendacionesEventosAdapter(Context context, List<EventoLimpieza> listaEventos,
                                   @NonNull OnItemClickListener onItemClickListener)
     {
         this.context = context;
@@ -62,7 +60,7 @@ public class RecomendacionesEventosAdapter extends RecyclerView.Adapter<Recomend
                 listaEventos.get(position).getHora()));
 
         String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
-                listaEventos.get(position).getFoto();
+                listaEventos.get(position).getRutaFotografia();
 
         // foto del evento
         Picasso.with(context)

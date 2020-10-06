@@ -48,7 +48,7 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
         holder.fechaHoraEvento.setText(String.format("%s, %s",
                 listaEventos.get(position).getFecha(),
                 listaEventos.get(position).getHora()));
-        holder.creador.setText("Creador: " + listaEventos.get(position).getAmbientalista());
+        holder.creador.setText("Creador: " + listaEventos.get(position).getCreador().getNombre());
         //holder.tipoResiduo.setText(listaEventos.get(position).getTipoResiduo());
         holder.descripcion.setText(listaEventos.get(position).getDescripcion());
 

@@ -49,6 +49,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private LinearLayout layoutDatosReporte;
     private Button botonParticipar;
+    private Button botonAdministrarEvento;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private ProgressBar barraCarga;
@@ -132,6 +133,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
         imagenEvento = v.findViewById(R.id.imagenEvento);
         botonParticipar = v.findViewById(R.id.botonParticipar);
+        botonAdministrarEvento = v.findViewById(R.id.btnAdministrarEvento);
 
         contenidoPrincipal = v.findViewById(R.id.contenidoPrincipal);
         contenidoPrincipal.setVisibility(View.INVISIBLE);
@@ -279,7 +281,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         nombreEvento.setText(eventoLimpieza.getTitulo());
         fechaHora.setText(String.format("%s, %s", eventoLimpieza.getFecha(),
                 eventoLimpieza.getHora()));
-        creador.setText(eventoLimpieza.getAmbientalista());
+        creador.setText(eventoLimpieza.getCreador().getNombre());
         tipoResiduo.setText(eventoLimpieza.getResiduos().toString());
         descripcion.setText(eventoLimpieza.getDescripcion());
         numPersonasUnidas.setText(String.format("%s %s",
@@ -293,6 +295,13 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             configurarBotonDejarParticipar();
         } else {
             configurarBotonQuieroParticipar();
+        }
+
+        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+        if (eventoLimpieza.getCreador().getId() == idUsuario) {
+            botonAdministrarEvento.setVisibility(View.VISIBLE);
+        } else {
+            botonAdministrarEvento.setVisibility(View.GONE);
         }
 
         mostrarContenidoPrincipal();

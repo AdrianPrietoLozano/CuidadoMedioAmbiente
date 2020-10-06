@@ -1,6 +1,6 @@
 package com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter;
 
-import com.example.cuidadodelambiente.data.models.EventoItem;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.interactor.IRecomendacionesEventosInteractor;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.interactor.RecomendacionesEventosInteractor;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.IRecomendacionesEventosView;
@@ -23,7 +23,7 @@ public class RecomendacionesEventosPresenter implements IRecomendacionesEventosP
     }
 
     @Override
-    public void onConexionExitosa(List<EventoItem> eventos) {
+    public void onConexionExitosa(List<EventoLimpieza> eventos) {
         view.onEventosCargadosExitosamente(eventos);
     }
 

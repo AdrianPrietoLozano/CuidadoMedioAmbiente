@@ -1,14 +1,18 @@
-package com.example.cuidadodelambiente.data.models;
+package com.example.cuidadodelambiente.data.responses;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ResultadoJsonAgregarEvento {
+public class StatusResponse {
     @SerializedName("resultado")
     private Integer resultado;
+
     @SerializedName("mensaje")
     private String mensaje;
-    @SerializedName("id_evento")
-    private Integer idEvento;
+
+    public StatusResponse(Integer resultado, String mensaje) {
+        this.resultado = resultado;
+        this.mensaje = mensaje;
+    }
 
     public Integer getResultado() {
         return resultado;
@@ -24,13 +28,5 @@ public class ResultadoJsonAgregarEvento {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
-    }
-
-    public Integer getIdEvento() {
-        return idEvento;
-    }
-
-    public void setIdEvento(Integer id_evento) {
-        this.idEvento = id_evento;
     }
 }

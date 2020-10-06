@@ -54,7 +54,6 @@
             android:layout_below="@id/tituloEvento"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
             style="@style/datosEtiqueta"
             android:text="12/12/2019, 23:43"/>
 

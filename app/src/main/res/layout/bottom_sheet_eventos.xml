@@ -155,6 +155,12 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnAdministrarEvento"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Creador"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

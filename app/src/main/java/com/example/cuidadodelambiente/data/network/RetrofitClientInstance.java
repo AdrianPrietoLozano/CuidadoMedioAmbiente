@@ -18,7 +18,7 @@ public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
     //private static final String BASE_URL = "https://eventoslimpieza.000webhostapp.com/EventosLimpieza/";
-    private static final String BASE_URL = "http://10.0.0.7/EventosLimpieza/";
+    private static final String BASE_URL = "http://10.0.0.9/EventosLimpieza/";
 
     public static Retrofit getRetrofitInstance() {
 

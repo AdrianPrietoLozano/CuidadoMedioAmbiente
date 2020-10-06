@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes.MisEventosYReportesFragment;
@@ -26,7 +25,6 @@ public class DeclaracionFragments {
     public static final Fragment participaEventos = new ParticipaEventosFragment();
     public static final Fragment perfilUsuario = new PerfilUsuarioFragment();
     public static final Fragment misEventosYReportes = new MisEventosYReportesFragment();
-    public static CrearEventoFragment crearEventoFragment = new CrearEventoFragment();
     public static final Activity crearReporteActivity = new ActividadCrearReporte();
     public static final ActividadCrearEvento crearEventoActivity = new ActividadCrearEvento();
 

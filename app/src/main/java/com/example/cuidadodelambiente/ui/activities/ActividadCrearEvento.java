@@ -6,19 +6,15 @@ import androidx.core.content.ContextCompat;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.os.ResultReceiver;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -27,22 +23,19 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.StringRequest;
 import com.example.cuidadodelambiente.Constants;
-import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
-import com.example.cuidadodelambiente.data.models.ResultadoJsonAgregarEvento;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
-import java.util.Observable;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -76,7 +69,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
     private TextView txtLatitudLongitud;
 
 
-    private Call<ResultadoJsonAgregarEvento> callAgregarEvento;
+    private Call<CrearEventoResponse> callAgregarEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -329,35 +322,30 @@ public class ActividadCrearEvento extends AppCompatActivity {
         callAgregarEvento = service.doAgregarEvento(idUsuario, evento.getIdReporte(), evento.getTitulo(),
                 evento.getFecha(), evento.getHora(), evento.getDescripcion());
 
-        callAgregarEvento.enqueue(new Callback<ResultadoJsonAgregarEvento>() {
+        callAgregarEvento.enqueue(new Callback<CrearEventoResponse>() {
             @Override
-            public void onResponse(Call<ResultadoJsonAgregarEvento> call, Response<ResultadoJsonAgregarEvento> response) {
+            public void onResponse(Call<CrearEventoResponse> call, Response<CrearEventoResponse> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
                     progresoCrearEvento.dismiss();
                 }
 
-                ResultadoJsonAgregarEvento json = response.body();
-                evento.setIdEvento(json.getIdEvento());
-
-                Log.e("RESULTADO", String.valueOf(json.getResultado()));
-                Log.e("MENSAJE", json.getMensaje());
-                Log.e("ID_EVENTO", String.valueOf(json.getIdEvento()));
-
-                if (json.getResultado() == 1) {
-                    Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
+                if (response.body().getStatus().getResultado() == 1) {
+                    evento.setIdEvento(response.body().getIdEvento());
+                    Toast.makeText(getApplicationContext(), "Evento creado con éxito", Toast.LENGTH_SHORT).show();
                     getObservable().notificar(evento);
                     //((MainActivity) getActivity())
                             //.cambiarFragment(DeclaracionFragments.eventosLimpiezaFragmentFragement, "EVENTOS");
                 } else {
-                    Toast.makeText(getApplicationContext(), json.getMensaje(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            response.body().getStatus().getMensaje(), Toast.LENGTH_SHORT).show();
                 }
 
                 progresoCrearEvento.dismiss();
             }
 
             @Override
-            public void onFailure(Call<ResultadoJsonAgregarEvento> call, Throwable t) {
+            public void onFailure(Call<CrearEventoResponse> call, Throwable t) {
                 if (call.isCanceled()) {
                     Log.e(TAG, "SE canceló la creación del evento");
                 }

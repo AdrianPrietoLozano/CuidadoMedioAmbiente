@@ -138,39 +138,6 @@ public class ParticipaEventosFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
     }
 
-    /*
-    private void iniciarPeticionBD() {
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<List<ParticipaEventoItem>> call = service.doGetEventosParticipa(DeclaracionFragments.actualAmbientalista);
-        call.enqueue(new Callback<List<ParticipaEventoItem>>() {
-            @Override
-            public void onResponse(Call<List<ParticipaEventoItem>> call, final retrofit2.Response<List<ParticipaEventoItem>> response) {
-
-                if(response.body().size() == 0) {
-                    mensajeProblema.setText("No participas en ningún evento");
-                    layoutSinConexion.setVisibility(View.VISIBLE);
-
-                } else {
-                    recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), response.body()));
-                }
-
-                cargandoCircular.ocultarCargaMostrarContenido();
-                swipeRefreshLayout.setRefreshing(false);
-
-            }
-
-            @Override
-            public void onFailure(Call<List<ParticipaEventoItem>> call, Throwable throwable) {
-                call.cancel();
-                swipeRefreshLayout.setRefreshing(false);
-                mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-                layoutSinConexion.setVisibility(View.VISIBLE);
-                cargandoCircular.ocultarCargaMostrarContenido();
-            }
-        });
-    }
-     */
-
 
     @Override
     public void onEventosCargadosExitosamente(List<EventoLimpieza> eventos) {

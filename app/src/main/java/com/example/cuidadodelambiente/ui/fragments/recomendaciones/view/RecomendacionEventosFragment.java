@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
-import com.example.cuidadodelambiente.data.models.EventoItem;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
@@ -126,11 +125,11 @@ public class RecomendacionEventosFragment extends Fragment
 
 
     @Override
-    public void onEventosCargadosExitosamente(final List<EventoItem> eventos) {
+    public void onEventosCargadosExitosamente(final List<EventoLimpieza> eventos) {
         recyclerEventos.setAdapter(new RecomendacionesEventosAdapter(getContext(), eventos, new RecomendacionesEventosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                int idEvento = eventos.get(position).getId();
+                int idEvento = eventos.get(position).getIdEvento();
                 BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(idEvento);
                 fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                 fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());

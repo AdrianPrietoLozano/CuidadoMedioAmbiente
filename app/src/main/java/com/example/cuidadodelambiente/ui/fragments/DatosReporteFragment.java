@@ -1,7 +1,6 @@
 package com.example.cuidadodelambiente.ui.fragments;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,30 +20,22 @@ import androidx.fragment.app.DialogFragment;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
-import com.example.cuidadodelambiente.Fragments.CrearEventoFragment;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
-import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
-import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
+import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
-import java.util.Collections;
 import java.util.Observable;
 import java.util.Observer;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class DatosReporteFragment extends BottomSheetDialogFragment
     implements Observer {
@@ -62,7 +53,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     private Button botonVolverIntentar;
     private LinearLayout contenidoPrincipal;
 
-    private Call<ReporteContaminacion> callDatosReporte;
+    private Call<ReporteContaminacionResponse> callDatosReporte;
 
     public static DatosReporteFragment newInstance(int idReporte) {
 
@@ -140,14 +131,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
         botonCrearEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
-                CrearEventoFragment crearEventoFragment = CrearEventoFragment.newInstance(
-                        reporteContaminacion.getId(), reporteContaminacion.getLatitud(),
-                        reporteContaminacion.getLongitud());
 
-                ((MainActivity)getActivity())
-                        .cambiarFragment(crearEventoFragment, "CREAR");
-                */
                 Intent intent = new Intent(getContext(), DeclaracionFragments.crearEventoActivity.getClass());
                 intent.putExtra("ID_REPORTE", reporteContaminacion.getId());
                 intent.putExtra("LATITUD", reporteContaminacion.getLatitud());
@@ -221,17 +205,18 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         callDatosReporte = service.doGetReporteContaminacion(this.reporteId);
-        callDatosReporte.enqueue(new Callback<ReporteContaminacion>() {
+        callDatosReporte.enqueue(new Callback<ReporteContaminacionResponse>() {
             @Override
-            public void onResponse(Call<ReporteContaminacion> call, retrofit2.Response<ReporteContaminacion> response) {
+            public void onResponse(Call<ReporteContaminacionResponse> call, retrofit2.Response<ReporteContaminacionResponse> response) {
 
                 if (!response.isSuccessful()) {
                     Toast.makeText(getContext(), "!isSuccessful", Toast.LENGTH_SHORT);
                     return;
                 }
 
-                reporteContaminacion = response.body();
-                if (reporteContaminacion.getResultado() == 1) {
+                if (response.body().getStatus().getResultado() == 1) {
+                    reporteContaminacion = response.body().getReporte();
+
                     fechaHora.setText(reporteContaminacion.getFecha() + ", " +
                             reporteContaminacion.getHora());
                     tipoResiduo.setText(reporteContaminacion.getResiduos().toString());
@@ -254,12 +239,14 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
                     Picasso.with(getContext()).load(urlFoto).into(imagenReporte);
 
                 } else {
-                    Toast.makeText(getContext(), reporteContaminacion.getMensaje(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),
+                            response.body().getStatus().getMensaje(), Toast.LENGTH_SHORT).show();
+                    mostrarLayoutError();
                 }
             }
 
             @Override
-            public void onFailure(Call<ReporteContaminacion> call, Throwable throwable) {
+            public void onFailure(Call<ReporteContaminacionResponse> call, Throwable throwable) {
                 Log.e("ERROR", throwable.getMessage());
                 mostrarLayoutError();
 

@@ -43,14 +43,6 @@ public class ReporteContaminacion {
     @SerializedName("tiene_limpieza")
     private boolean tieneLimpieza;
 
-    // nada que ver con un reporte
-    @SerializedName("resultado")
-    private int resultado;
-
-    // nada que ver con un reporte
-    @SerializedName("mensaje")
-    private String mensaje;
-
 
     public Integer getId() {
         return id;
@@ -140,19 +132,4 @@ public class ReporteContaminacion {
         return tieneLimpieza;
     }
 
-    public int getResultado() {
-        return resultado;
-    }
-
-    public void setResultado(int resultado) {
-        this.resultado = resultado;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
 }
