@@ -18,17 +18,12 @@
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
-            android:padding="15dp"
             android:text="Estos reportes necesitan de tu ayuda"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"/>
+            style="@style/titulo_fragment"
+            />
 
         <!-- pantalla de carga -->
         <RelativeLayout

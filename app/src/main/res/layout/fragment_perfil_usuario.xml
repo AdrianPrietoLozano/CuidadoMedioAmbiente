@@ -23,14 +23,8 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Mi perfil"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="20sp"
-                android:layout_margin="10dp"
-                android:textStyle="bold" />
+                style="@style/titulo_fragment"
+                android:text="Mi perfil"/>
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"

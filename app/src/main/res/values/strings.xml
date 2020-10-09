@@ -2,8 +2,8 @@
     <string name="app_name">Eventos de limpieza</string>
     <string name="eventos_para_ti">Recomendaciones</string>
     <string name="descripcion_eventos_para_ti">Eventos en los que puedes participar según tu actividad y gustos</string>
-    <string name="title_recomendacion_crear_evento">Recomendaciones para que inicies un evento</string>
-    <string name="descripcion_recomendacion_crear_evento">Nuestra recomendación de puntos de contaminación para que crees un evento</string>
+    <string name="title_recomendacion_crear_evento">Reportes de contaminación</string>
+    <string name="descripcion_recomendacion_crear_evento">Puntos de contaminación que necesitan de tu ayuda</string>
     <string name="titulo_participa_eventos">Eventos donde participas</string>
 
     <string name="datos_evento">Datos del evento</string>
@@ -66,6 +66,8 @@
     <string name="mis_eventos_reportes">Mis eventos y reportes</string>
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="ver_reporte">Ver reporte</string>
+
+    <string name="admin_evento">Selecciona los participantes</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

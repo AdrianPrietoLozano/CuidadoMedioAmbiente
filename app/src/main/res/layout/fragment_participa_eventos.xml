@@ -10,24 +10,17 @@
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:text="@string/titulo_participa_eventos"
-            android:textAlignment="center"
             android:textColor="@android:color/white"
-            android:textSize="23sp"
-            android:textStyle="bold"
-            android:paddingEnd="5dp"
-            android:paddingStart="5dp"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:background="@color/verde3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/titulo_fragment"
+            android:background="@color/verde3"
+            />
 
 
         <!-- pantalla de carga -->

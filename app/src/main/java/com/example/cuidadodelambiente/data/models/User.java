@@ -25,7 +25,12 @@ public class User {
     @SerializedName("mensaje")
     private String mensaje;
 
+    @SerializedName("foto")
+    private String foto;
+
     private int tipoUsuario;
+
+    private boolean checked;
 
     public User(Integer id, String nombre, String email, Integer puntos, int tipo) {
         this.id = id;
@@ -33,6 +38,14 @@ public class User {
         this.email = email;
         this.puntos = puntos;
         this.tipoUsuario = tipo;
+    }
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
     }
 
     public int getTipoUsuario() {
@@ -89,5 +102,13 @@ public class User {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
     }
 }
