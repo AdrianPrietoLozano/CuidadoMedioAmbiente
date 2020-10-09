@@ -90,7 +90,9 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
 
     @Override
     public void cancelarCargarDatosEvento() {
-        callDatosEvento.cancel();
+        if (callDatosEvento != null) {
+            callDatosEvento.cancel();
+        }
     }
 
     @Override

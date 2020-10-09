@@ -161,7 +161,9 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
 
-        callDatosReporte.cancel();
+        if (callDatosReporte != null) {
+            callDatosReporte.cancel();
+        }
     }
 
     @Override
