@@ -4,6 +4,7 @@ package com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -26,10 +28,11 @@ public class MisEventosYReportesFragment extends Fragment {
     private Chip chipEventos;
     private Chip chipReportes;
     private ChipGroup chipGroup;
-    private TextView textTitulo;
     private Fragment fragmentEventos = new MisEventosFragment();
     private Fragment fragmentReportes = new MisReportesFragment();
     private Fragment currentFragment;
+    private MaterialToolbar toolbar;
+    private TextView toolbarTitle;
 
     public MisEventosYReportesFragment() {
         // Required empty public constructor
@@ -42,7 +45,16 @@ public class MisEventosYReportesFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.fragment_mis_eventos_yreportes, container, false);
 
-        textTitulo = v.findViewById(R.id.titulo);
+        toolbar = v.findViewById(R.id.toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        toolbarTitle = v.findViewById(R.id.toolbar_title);
 
         chipEventos = v.findViewById(R.id.chipEventos);
         chipEventos.setChecked(true);
@@ -100,9 +112,9 @@ public class MisEventosYReportesFragment extends Fragment {
 
     private void actualizarUI() {
         if (currentFragment == fragmentEventos) {
-            textTitulo.setText("Mis Eventos");
+            toolbarTitle.setText("Mis eventos");
         } else {
-            textTitulo.setText("Mis Reportes");
+            toolbarTitle.setText("Mis reportes");
         }
     }
 

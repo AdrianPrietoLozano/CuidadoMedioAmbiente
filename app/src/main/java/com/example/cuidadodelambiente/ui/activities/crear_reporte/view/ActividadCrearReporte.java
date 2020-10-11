@@ -3,6 +3,7 @@ package com.example.cuidadodelambiente.ui.activities.crear_reporte.view;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -39,6 +40,7 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelper;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.CrearReportePresenter;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.ICrearReportePresenter;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
@@ -77,6 +79,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private Button botonCancelar;
     private LinearLayout layoutCheckBox;
     private ChipGroup chipGroupContaminantes;
+    private MaterialToolbar toolbar;
+    private TextView toolbarTitle;
 
     private Location mLastLocation;
     private Location mLastLocationAux;
@@ -110,6 +114,21 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         // Cambia el color del status bar a verde
         Utilidades.cambiarColorStatusBar(getWindow(),
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getColor(R.color.colorPrimary));
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("Nuevo reporte ecológico");
+        toolbarTitle.setTextColor(Color.WHITE);
 
         CardView cardFoto = findViewById(R.id.cardFoto);
         cardFoto.setOnClickListener(listenerElegirFoto);
@@ -303,6 +322,11 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         actualizacionesUbiacion.conectar();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return super.onSupportNavigateUp();
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {

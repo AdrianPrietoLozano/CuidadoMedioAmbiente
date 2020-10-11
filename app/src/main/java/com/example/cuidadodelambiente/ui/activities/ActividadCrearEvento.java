@@ -33,6 +33,7 @@ import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
@@ -67,6 +68,8 @@ public class ActividadCrearEvento extends AppCompatActivity {
     private static ParaObservar observable = new ParaObservar();
     private TextView txtObtenerDireccion;
     private TextView txtLatitudLongitud;
+    private MaterialToolbar toolbar;
+    private TextView toolbarTitle;
 
 
     private Call<CrearEventoResponse> callAgregarEvento;
@@ -81,6 +84,18 @@ public class ActividadCrearEvento extends AppCompatActivity {
         Utilidades.cambiarColorStatusBar(getWindow(),
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("Nuevo evento");
 
         tituloEvento = findViewById(R.id.editTextTitulo);
         txtDireccionEvento = findViewById(R.id.textViewDireccion);

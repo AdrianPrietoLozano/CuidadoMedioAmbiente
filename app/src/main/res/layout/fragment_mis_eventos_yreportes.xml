@@ -7,66 +7,58 @@
     android:background="@color/colorPrimary"
     tools:context=".ui.fragments.mis_eventos_reportes.MisEventosYReportesFragment">
 
+    <include layout="@layout/layout_toolbar"/>
+
     <LinearLayout
-        android:id="@+id/contenedorPrincipal"
+        android:id="@+id/layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/frameLayout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@android:color/white"
+        >
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipEventos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/AppTheme.GenderChip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Eventos"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipReportes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/AppTheme.GenderChip"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Reportes"/>
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="vertical"
-        android:background="@drawable/redondeado"
-        >
-
-        <TextView
-            android:id="@+id/titulo"
-            style="@style/titulo_fragment"
-            android:text="Mis Eventos"/>
-
-        <LinearLayout
-            android:id="@+id/layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroup"
-                android:layout_margin="10dp"
-                android:layout_width="match_parent"
-                app:singleSelection="true"
-                app:selectionRequired="true"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipEventos"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/AppTheme.GenderChip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:text="Eventos"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipReportes"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/AppTheme.GenderChip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:text="Reportes"/>
-
-            </com.google.android.material.chip.ChipGroup>
-
-
-        </LinearLayout>
-
-
-        <FrameLayout
-            android:id="@+id/frameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@id/layout"
+        android:background="@android:color/white"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

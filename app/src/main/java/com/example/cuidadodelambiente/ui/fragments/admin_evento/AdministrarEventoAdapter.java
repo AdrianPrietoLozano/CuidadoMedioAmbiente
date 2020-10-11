@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.ui.fragments.admin_evento;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,9 +54,11 @@ public class AdministrarEventoAdapter extends RecyclerView.Adapter<AdministrarEv
                 if (user.isChecked()) {
                     eventoViewHolder.imageCheck.setVisibility(View.GONE);
                     itemsSelectedCount--;
+                    eventoViewHolder.itemView.setBackgroundColor(Color.TRANSPARENT);
                 } else {
                     eventoViewHolder.imageCheck.setVisibility(View.VISIBLE);
                     itemsSelectedCount++;
+                    eventoViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.verdeClaro));
                 }
 
                 user.setChecked(!user.isChecked());
@@ -106,8 +109,10 @@ public class AdministrarEventoAdapter extends RecyclerView.Adapter<AdministrarEv
 
         if (listaUsuarios.get(position).isChecked()) {
             holder.imageCheck.setVisibility(View.VISIBLE);
+            holder.itemView.setBackgroundColor(context.getResources().getColor(R.color.verdeClaro));
         } else {
             holder.imageCheck.setVisibility(View.GONE);
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT);
         }
 
         // foto del evento

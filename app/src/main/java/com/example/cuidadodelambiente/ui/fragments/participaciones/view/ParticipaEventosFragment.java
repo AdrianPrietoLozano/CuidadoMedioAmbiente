@@ -1,6 +1,7 @@
 package com.example.cuidadodelambiente.ui.fragments.participaciones.view;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.ParticipacionesEventosPresenter;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,8 @@ public class ParticipaEventosFragment extends Fragment
     private CargandoCircular cargandoCircular;
     private SwipeRefreshLayout swipeRefreshLayout;
     private IParticipacionesEventosPresenter presenter;
+    private MaterialToolbar toolbar;
+    private TextView toolbarTitle;
 
     public ParticipaEventosFragment() {
         this.presenter = new ParticipacionesEventosPresenter(this);
@@ -63,7 +67,20 @@ public class ParticipaEventosFragment extends Fragment
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_participa_eventos, container, false);
-        // Inflate the layout for this fragment
+
+        toolbar = v.findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        toolbarTitle = v.findViewById(R.id.toolbar_title);
+        toolbarTitle.setText("Eventos donde participas");
+        toolbarTitle.setTextColor(Color.WHITE);
 
         DatosEventoFragment.getObservable().addObserver(this);
 

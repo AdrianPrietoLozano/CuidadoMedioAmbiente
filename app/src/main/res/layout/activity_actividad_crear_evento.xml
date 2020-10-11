@@ -7,28 +7,7 @@
     android:background="@color/colorPrimary"
     tools:context=".ui.activities.ActividadCrearEvento">
 
-    <LinearLayout
-        android:id="@+id/layout_titulo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/redondeado"
-        app:layout_constraintBottom_toTopOf="@id/layout_contenido"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Datos del evento"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="26.5sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
+    <include layout="@layout/layout_toolbar"/>
 
     <LinearLayout
         android:id="@+id/layout_contenido"
@@ -39,7 +18,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_titulo">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <View style="@style/divider" />
 

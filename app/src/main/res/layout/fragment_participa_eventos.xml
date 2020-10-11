@@ -8,19 +8,8 @@
         tools:context=".ui.fragments.participaciones.view.ParticipaEventosFragment"
         android:background="@android:color/white">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:text="@string/titulo_participa_eventos"
-            android:textColor="@android:color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            style="@style/titulo_fragment"
-            android:background="@color/verde3"
-            />
+    <include
+        layout="@layout/layout_toolbar" />
 
 
         <!-- pantalla de carga -->
@@ -53,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
             >
 
             <androidx.recyclerview.widget.RecyclerView
