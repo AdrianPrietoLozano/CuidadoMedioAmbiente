@@ -21,17 +21,30 @@ import android.widget.Toast;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.IDatosEventoView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PerfilUsuarioFragment extends Fragment implements Observer {
 
@@ -165,6 +178,7 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         } else {
             textPuntosUsuario.setText(String.valueOf(usuario.getPuntos()));
         }
+        
     }
 
 
@@ -182,5 +196,19 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
     public void onDestroy() {
         super.onDestroy();
         UserLocalStore.getInstance(getContext()).deleteObserver(this);
+
     }
+
+    /*
+    private void funcion() {
+        Random rand = new Random();
+        for (int i = 1; i <= 1000; i++) {
+            int num = (int) (Math.random() * (30 - 20 + 1) + 20);
+            for (int j = 0; j < num; j++) {
+                int eventoId = rand.nextInt(1000) + 1;
+                Log.e("P",String.valueOf(i) + " -> " + String.valueOf(eventoId));
+                presenter.participarEnEvento(eventoId, i);
+            }
+        }
+    }*/
 }

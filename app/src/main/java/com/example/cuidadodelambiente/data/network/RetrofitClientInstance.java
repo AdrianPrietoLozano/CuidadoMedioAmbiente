@@ -18,17 +18,18 @@ public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
     //private static final String BASE_URL = "https://eventoslimpieza.000webhostapp.com/EventosLimpieza/";
-    private static final String BASE_URL = "http://10.0.0.9/EventosLimpieza/";
+    private static final String BASE_URL = "http://10.0.0.7/EventosLimpieza/";
 
     public static Retrofit getRetrofitInstance() {
 
-
+        /*
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
                 .connectTimeout(300, TimeUnit.SECONDS)
                 .readTimeout(300, TimeUnit.SECONDS).build();
+        */
 
 
 
@@ -37,7 +38,7 @@ public class RetrofitClientInstance {
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
+                    //.client(client)
                     .build();
         }
 
