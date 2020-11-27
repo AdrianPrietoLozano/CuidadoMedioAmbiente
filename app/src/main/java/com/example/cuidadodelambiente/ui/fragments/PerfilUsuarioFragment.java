@@ -46,6 +46,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static edu.rice.pcdp.PCDP.async;
+import static edu.rice.pcdp.PCDP.finish;
+
 public class PerfilUsuarioFragment extends Fragment implements Observer {
 
     private static final String TAG = PerfilUsuarioFragment.class.getSimpleName();
@@ -189,6 +192,7 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
             mostrarDatosUsuario((User) arg);
             progressBar.setVisibility(View.GONE);
         }
+
     }
 
 

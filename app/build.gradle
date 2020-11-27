@@ -23,7 +23,10 @@ android {
     }
 }
 
+
 dependencies {
+    implementation 'com.github.habanero-rice:PCDP:master-SNAPSHOT'
+
     implementation 'com.alespero:expandable-cardview:0.8'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
