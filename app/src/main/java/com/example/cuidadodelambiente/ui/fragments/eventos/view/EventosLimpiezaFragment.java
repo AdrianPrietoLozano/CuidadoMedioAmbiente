@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente.ui.fragments.eventos.view;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
@@ -12,11 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.BuscarEventosActivity;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.DeclaracionFragments;
@@ -90,6 +93,17 @@ public class EventosLimpiezaFragment extends Fragment
             mMapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
+
+        ImageView iconoBuscar = v.findViewById(R.id.iconoBuscar);
+        iconoBuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), BuscarEventosActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
         // para la carga circular
         cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenido),
                 v.findViewById(R.id.pantallaCarga));
@@ -148,6 +162,7 @@ public class EventosLimpiezaFragment extends Fragment
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         intentarPeticionBD();
+
         return v;
     }
 

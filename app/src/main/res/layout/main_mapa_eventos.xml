@@ -8,21 +8,44 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         >
 
-        <TextView
-            android:id="@+id/tituloFragementEventos"
+
+        <RelativeLayout
+            android:id="@+id/layoutTop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/verde3"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingTop="15dp"
+            android:gravity="center_vertical"
+            android:paddingBottom="15dp"
+            android:background="@color/verde3"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tituloFragementEventos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                />
+
+            <ImageView
+                android:id="@+id/iconoBuscar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_search_white_24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:paddingEnd="15dp"
+                />
+
+        </RelativeLayout>
+
+
 
         <!-- pantalla de carga -->
         <RelativeLayout
@@ -48,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tituloFragementEventos">
+            app:layout_constraintTop_toBottomOf="@+id/layoutTop">
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/mapaEventos"

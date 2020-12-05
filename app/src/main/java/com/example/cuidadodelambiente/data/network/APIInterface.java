@@ -25,6 +25,9 @@ import retrofit2.http.Query;
 
 public interface APIInterface {
 
+    @GET("eliminar_tablas.php")
+    Call<JsonObject> doEliminarTablas();
+
     @GET("ubicaciones_eventos.php")
     Call<List<UbicacionEvento>> doGetEventos();
 
