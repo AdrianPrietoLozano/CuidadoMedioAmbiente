@@ -27,6 +27,8 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
+import com.example.cuidadodelambiente.prueba.Programa;
+import com.example.cuidadodelambiente.prueba.UsuarioPrueba;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
@@ -62,6 +64,11 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
     private ImageView imgEditarPerfil;
     private CardView cardEventosReportes;
     private CardView cardEventosParticipa;
+    private int total = 0;
+    private int numUsuarios = 50;
+    private long tInicio;
+    private int errores = 0;
+    private int bien = 0;
 
     private GoogleSignInClient mGoogleSignInClient;
 
@@ -118,6 +125,8 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
                 } else {
                     mostrarActividadLogIn();
                 }
+
+                 //funcion();
             }
         });
 
@@ -203,16 +212,9 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
 
     }
 
-    /*
+
     private void funcion() {
-        Random rand = new Random();
-        for (int i = 1; i <= 1000; i++) {
-            int num = (int) (Math.random() * (30 - 20 + 1) + 20);
-            for (int j = 0; j < num; j++) {
-                int eventoId = rand.nextInt(1000) + 1;
-                Log.e("P",String.valueOf(i) + " -> " + String.valueOf(eventoId));
-                presenter.participarEnEvento(eventoId, i);
-            }
-        }
-    }*/
+        Programa p = new Programa();
+        p.iniciar();
+    }
 }
