@@ -99,7 +99,6 @@ public class EventosLimpiezaFragment extends Fragment
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), BuscarEventosActivity.class);
-
                 startActivity(intent);
             }
         });

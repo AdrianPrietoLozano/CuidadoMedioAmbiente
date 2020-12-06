@@ -3,6 +3,7 @@ package com.example.cuidadodelambiente.ui.fragments.datos_evento.view;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,8 +21,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Constants;
-import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
@@ -29,8 +28,8 @@ import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.activities.amin_evento.AdministrarEventoActivity;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
-import com.example.cuidadodelambiente.ui.fragments.admin_evento.AdministrarEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -141,7 +140,10 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             @Override
             public void onClick(View v) {
                 dismiss();
-                ((MainActivity) getActivity()).cambiarFragment(new AdministrarEventoFragment(), "GGG");
+                //((MainActivity) getActivity()).cambiarFragment(new AdministrarEventoFragment(), "GGG");
+                Intent intent = new Intent(getContext(), AdministrarEventoActivity.class);
+                startActivity(intent);
+
             }
         });
 

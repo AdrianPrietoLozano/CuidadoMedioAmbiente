@@ -18,18 +18,19 @@ public class RetrofitClientInstance {
 
     private static Retrofit retrofit;
     //private static final String BASE_URL = "https://eventoslimpieza.000webhostapp.com/EventosLimpieza/";
-    private static final String BASE_URL = "http://10.0.0.6/EventosLimpieza/";
+    //private static final String BASE_URL = "http://10.0.0.6/EventosLimpieza/";
+    private static final String BASE_URL = "http://10.0.0.7/EventosAPI/public/";
 
     public static Retrofit getRetrofitInstance() {
 
 
 
-        //HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        //logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
-                //.addInterceptor(logging)
-                .connectTimeout(2, TimeUnit.SECONDS)
-                .readTimeout(2, TimeUnit.SECONDS).build();
+                .addInterceptor(logging)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS).build();
 
 
 

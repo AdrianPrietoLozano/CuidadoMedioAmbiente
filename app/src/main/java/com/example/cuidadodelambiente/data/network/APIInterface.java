@@ -21,6 +21,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIInterface {
@@ -28,14 +29,14 @@ public interface APIInterface {
     @GET("eliminar_tablas.php")
     Call<JsonObject> doEliminarTablas();
 
-    @GET("ubicaciones_eventos.php")
+    @GET("eventos")
     Call<List<UbicacionEvento>> doGetEventos();
 
-    @GET("ubicaciones_reportes.php")
+    @GET("reportes")
     Call<List<UbicacionReporte>> doGetReportes();
 
-    @GET("recomendaciones_eventos.php")
-    Call<List<EventoLimpieza>> doGetEventosRecomendados(@Query("id_ambientalista") Integer ambientalista);
+    @GET("recomendaciones/usuario/{idUsuario}")
+    Call<List<EventoLimpieza>> doGetEventosRecomendados(@Path("idUsuario") Integer ambientalista);
 
     @GET("datos_participacion_evento.php")
     Call<List<EventoLimpieza>> doGetEventosParticipa(@Query("id_ambientalista") Integer ambientalista);
@@ -46,12 +47,12 @@ public interface APIInterface {
     @GET("reportes_usuario.php")
     Call<List<ReporteContaminacion>> doGetReportesUsuario(@Query("id_ambientalista") Integer ambientalista);
 
-    @GET("datos_reporte.php")
-    Call<ReporteContaminacionResponse> doGetReporteContaminacion(@Query("reporte_id") Integer reporte);
+    @GET("reportes/{idReporte}")
+    Call<ReporteContaminacionResponse> doGetReporteContaminacion(@Path("idReporte") Integer reporte);
 
-    @GET("datos_evento.php")
+    @GET("eventos/{idEvento}")
     Call<EventoLimpiezaResponse> doGetEventoLimpieza(
-            @Query("evento_id") Integer evento,
+            @Path("idEvento") Integer evento,
             @Query("ambientalista_id") Integer ambientalista_id
     );
 
@@ -140,6 +141,12 @@ public interface APIInterface {
     @POST("image.php")
     Call<JsonObject> uploadImage(@Part MultipartBody.Part file,
                                     @Part("file") RequestBody name);
+
+
+    //////////////////////////////////////////////////////////////////
+
+    @GET("busqueda/eventos/{query}")
+    Call<List<EventoLimpieza>> doBusquedaEventos(@Path("query") String query);
 
 }
 

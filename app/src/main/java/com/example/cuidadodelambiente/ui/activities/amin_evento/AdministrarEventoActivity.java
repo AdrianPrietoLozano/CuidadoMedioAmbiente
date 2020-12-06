@@ -1,28 +1,22 @@
-package com.example.cuidadodelambiente.ui.fragments.admin_evento;
-
-import android.graphics.Color;
-import android.os.Bundle;
+package com.example.cuidadodelambiente.ui.activities.amin_evento;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
-import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.models.EventoLimpieza;
+import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.User;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
@@ -30,8 +24,7 @@ import com.google.android.material.chip.Chip;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class AdministrarEventoFragment extends Fragment {
+public class AdministrarEventoActivity extends AppCompatActivity {
 
     private RecyclerView recyclerUsuarios;
     private AdministrarEventoAdapter adapter;
@@ -42,46 +35,33 @@ public class AdministrarEventoFragment extends Fragment {
     private MaterialToolbar toolbar;
     private TextView toolbarTitle;
 
-    public AdministrarEventoFragment() {
-        // Required empty public constructor
-    }
-
-    // TODO: Rename and change types and number of parameters
-    public static AdministrarEventoFragment newInstance() {
-        AdministrarEventoFragment fragment = new AdministrarEventoFragment();
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-    }
+        setContentView(R.layout.activity_administrar_evento);
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_admin_evento, container, false);
+        // Cambia el color del status bar a verde
+        Utilidades.cambiarColorStatusBar(getWindow(),
+                ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
-        toolbar = v.findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                onBackPressed();
             }
         });
 
-        toolbarTitle = v.findViewById(R.id.toolbar_title);
+        toolbarTitle = findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Selecciona los participantes");
         toolbarTitle.setTextColor(Color.WHITE);
 
 
-        textSeleccionados = v.findViewById(R.id.textSeleccionados);
-        chipSeleccionarTodo = v.findViewById(R.id.chipSeleccionarTodo);
+        textSeleccionados = findViewById(R.id.textSeleccionados);
+        chipSeleccionarTodo = findViewById(R.id.chipSeleccionarTodo);
         chipSeleccionarTodo.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -93,7 +73,7 @@ public class AdministrarEventoFragment extends Fragment {
             }
         });
 
-        botonAceptar = v.findViewById(R.id.btnCompletado);
+        botonAceptar = findViewById(R.id.btnCompletado);
         botonAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,22 +84,17 @@ public class AdministrarEventoFragment extends Fragment {
             }
         });
 
-        recyclerUsuarios = v.findViewById(R.id.recyclerUsuarios);
+        recyclerUsuarios = findViewById(R.id.recyclerUsuarios);
         recyclerUsuarios.setHasFixedSize(true);
 
         // Usar un administrador para Recycler
-        recyclerUsuarios.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerUsuarios.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(recyclerUsuarios.getContext(), DividerItemDecoration.HORIZONTAL);
         recyclerUsuarios.addItemDecoration(itemDecoration);
 
-        ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
-
         intentarPeticionBD();
-
-        return v;
     }
-
 
     private void intentarPeticionBD() {
         List<User> usuarios = new ArrayList<>();
@@ -141,7 +116,7 @@ public class AdministrarEventoFragment extends Fragment {
         for (User user : usuarios)
             user.setFoto("imagenes/imagen1.jpg");
 
-        adapter = new AdministrarEventoAdapter(getContext(), usuarios, new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
+        adapter = new AdministrarEventoAdapter(getApplicationContext(), usuarios, new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
             @Override
             public void onItemSelectedCountChange(int count) {
                 if (count == 1) {
@@ -183,15 +158,5 @@ public class AdministrarEventoFragment extends Fragment {
             }
         });
          */
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden) {
-            ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.VISIBLE);
-        } else {
-            ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
-        }
     }
 }
