@@ -132,7 +132,8 @@ public class MisReportesFragment extends Fragment implements Observer {
                         listaReportes, new MisReportesAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        int idReporte = listaReportes.get(position).getId();
+                        Integer idReporte = listaReportes.get(position).getId();
+                        if (idReporte == null) idReporte = -1;
                         BottomSheetDialogFragment fragmentReporte = DatosReporteFragment.newInstance(idReporte);
                         fragmentReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                         fragmentReporte.show(getFragmentManager(), fragmentReporte.getTag());

@@ -35,7 +35,7 @@ public class Utilidades {
 
 
     // agrega un marcador al mapa, se le puede indicar el color del marcador
-    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, int tag, float color)
+    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, Integer tag, float color)
     {
         map.addMarker(new MarkerOptions()
                 .position(posicion)
@@ -43,7 +43,7 @@ public class Utilidades {
     }
 
     // agrega un marcador al mapa, el color del marcador es el por defecto
-    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, int tag)
+    public static void agregarMarcadorMapa(GoogleMap map, LatLng posicion, Integer tag)
     {
         map.addMarker(new MarkerOptions().position(posicion)).setTag(tag);
     }

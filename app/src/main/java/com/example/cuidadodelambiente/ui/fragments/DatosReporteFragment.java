@@ -43,7 +43,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     private BottomSheetBehavior mBehavior;
     private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte, mensajeProblema;
     private ImageView imagenReporte;
-    private int reporteId;
+    private Integer reporteId;
     private Button botonCrearEvento;
     private Button botonLimpiar;
     private ProgressBar barraCarga;
@@ -55,9 +55,11 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
 
     private Call<ReporteContaminacionResponse> callDatosReporte;
 
-    public static DatosReporteFragment newInstance(int idReporte) {
+    public static DatosReporteFragment newInstance(Integer idReporte) {
 
         Bundle args = new Bundle();
+
+        if (idReporte == null) idReporte = -1; // para que no truene en caso de un error
         args.putInt(Constants.REPORTE_ID, idReporte);
 
         DatosReporteFragment fragment = new DatosReporteFragment();
@@ -131,6 +133,8 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
         botonCrearEvento.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Log.e("REPORTE", String.valueOf(reporteContaminacion.getId()));
 
                 Intent intent = new Intent(getContext(), DeclaracionFragments.crearEventoActivity.getClass());
                 intent.putExtra("ID_REPORTE", reporteContaminacion.getId());
@@ -212,7 +216,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
             public void onResponse(Call<ReporteContaminacionResponse> call, retrofit2.Response<ReporteContaminacionResponse> response) {
 
                 if (!response.isSuccessful()) {
-                    Toast.makeText(getContext(), "!isSuccessful", Toast.LENGTH_SHORT);
+                    mostrarLayoutError();
                     return;
                 }
 

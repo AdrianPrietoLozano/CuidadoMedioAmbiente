@@ -24,6 +24,7 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
+import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -132,7 +133,7 @@ public class MisEventosFragment extends Fragment implements Observer {
                         listaEventos, new MisEventosAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        int idEvento = listaEventos.get(position).getIdEvento();
+                        Integer idEvento = listaEventos.get(position).getIdEvento();
                         BottomSheetDialogFragment fragmentEvento = DatosEventoFragment.newInstance(idEvento);
                         fragmentEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                         fragmentEvento.show(getFragmentManager(), fragmentEvento.getTag());

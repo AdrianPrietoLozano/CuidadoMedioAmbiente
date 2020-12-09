@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.cuidadodelambiente.BuscarEventosActivity;
+import com.example.cuidadodelambiente.ui.activities.BuscarEventosActivity;
 import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.DeclaracionFragments;
@@ -274,7 +274,7 @@ public class EventosLimpiezaFragment extends Fragment
 
         Toast.makeText(getContext(), marker.getTag().toString(), Toast.LENGTH_SHORT).show();
 
-        BottomSheetDialogFragment fragmentDatosReporte = DatosEventoFragment.newInstance((int) marker.getTag());
+        BottomSheetDialogFragment fragmentDatosReporte = DatosEventoFragment.newInstance((Integer) marker.getTag());
         fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
 

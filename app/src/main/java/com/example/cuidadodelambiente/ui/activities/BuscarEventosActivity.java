@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente;
+package com.example.cuidadodelambiente.ui.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,11 +11,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
@@ -34,6 +40,9 @@ public class BuscarEventosActivity extends AppCompatActivity {
 
     private RecyclerView recyclerEventos;
     private RecyclerView.LayoutManager lManager;
+    private LinearLayout layoutMensaje;
+    private TextView txtMensaje;
+    private ProgressBar barraCarga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,23 +62,27 @@ public class BuscarEventosActivity extends AppCompatActivity {
             }
         });
 
+        layoutMensaje = findViewById(R.id.layoutMensaje);
+        txtMensaje = findViewById(R.id.txtMensaje);
+        barraCarga = findViewById(R.id.barraCargando);
+
+        recyclerEventos = findViewById(R.id.recyclerEventos);
+        lManager = new LinearLayoutManager(getApplicationContext());
+        recyclerEventos.setLayoutManager(lManager);
+
+        mostrarMensaje("Comienza a buscar", false);
+
         SearchView searchView = findViewById(R.id.barraBusqueda);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (query.equals("")) {
-                    Log.e("D", "LIMPIO");
-                } else
-                    fetchEventos(query);
+                fetchEventos(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.equals("")) {
-                    Log.e("D", "LIMPIO");
-                } else
-                    fetchEventos(newText);
+                fetchEventos(newText);
                 return false;
             }
         });
@@ -77,39 +90,62 @@ public class BuscarEventosActivity extends AppCompatActivity {
         searchView.setQueryHint("Buscar eventos");
         searchView.onActionViewExpanded();
 
-        recyclerEventos = findViewById(R.id.recyclerEventos);
-        lManager = new LinearLayoutManager(getApplicationContext());
-        recyclerEventos.setLayoutManager(lManager);
-
     }
 
     private void fetchEventos(String query) {
+        if (query.equals("")) {
+            mostrarMensaje("Comienza a buscar", false);
+            return;
+        }
+
+        mostrarMensaje("Buscando...", true);
+
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         service.doBusquedaEventos(query).enqueue(new Callback<List<EventoLimpieza>>() {
             @Override
             public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {
                 if (response.isSuccessful()) {
                     List<EventoLimpieza> eventos = response.body();
+                    if (eventos.isEmpty()) {
+                        mostrarMensaje("Sin resultados", false);
+                        return;
+                    }
+
                     recyclerEventos.setAdapter(new RecomendacionesEventosAdapter(getApplicationContext(), eventos, new RecomendacionesEventosAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(View view, int position) {
-                            int idEvento = eventos.get(position).getIdEvento();
+                            Integer idEvento = eventos.get(position).getIdEvento();
                             BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(idEvento);
                             fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                             fragmentDatosEvento.show(getSupportFragmentManager(), fragmentDatosEvento.getTag());
                         }
                     }));
+
+                    mostrarResultados();
+
                 } else {
                     Toast.makeText(getApplicationContext(), "no successfully", Toast.LENGTH_SHORT).show();
+                    mostrarMensaje("Inténtalo de nuevo", false);
                 }
             }
 
             @Override
             public void onFailure(Call<List<EventoLimpieza>> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
+                mostrarMensaje("Inténtalo de nuevo", false);
             }
         });
+    }
 
+    private void mostrarMensaje(String msg, boolean mostrarCarga) {
+        barraCarga.setVisibility(mostrarCarga ? View.VISIBLE : View.GONE);
+        recyclerEventos.setVisibility(View.GONE);
+        txtMensaje.setText(msg);
+        layoutMensaje.setVisibility(View.VISIBLE);
+    }
 
+    private void mostrarResultados() {
+        layoutMensaje.setVisibility(View.GONE);
+        recyclerEventos.setVisibility(View.VISIBLE);
     }
 }

@@ -106,7 +106,8 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         btnLimpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iniciarLimpieza();
+                //iniciarLimpieza();
+                Toast.makeText(getContext(), "Falta por hacer", Toast.LENGTH_SHORT).show();
             }
         });
 

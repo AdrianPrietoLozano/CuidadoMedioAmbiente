@@ -151,6 +151,8 @@ public class ActividadCrearEvento extends AppCompatActivity {
                     .concat(String.valueOf(ubicacionReporte.longitude)));
         }
 
+        Log.e("EVENTO", String.valueOf(idReporte));
+
         inicializarProgressDialog();
 
         resultReceiver = new AddressResultReceiver(new Handler());
@@ -334,7 +336,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
         Log.e(TAG, "Usuario: " + String.valueOf(idUsuario));
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callAgregarEvento = service.doAgregarEvento(idUsuario, evento.getIdReporte(), evento.getTitulo(),
+        callAgregarEvento = service.doAgregarEvento(idUsuario, this.idReporte, evento.getTitulo(),
                 evento.getFecha(), evento.getHora(), evento.getDescripcion());
 
         callAgregarEvento.enqueue(new Callback<CrearEventoResponse>() {

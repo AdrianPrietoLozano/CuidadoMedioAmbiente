@@ -168,7 +168,8 @@ public class LogInFragment extends Fragment {
                                 mostrarErrorEmailNoRegistrado();
                                 break;
                             case 3:
-                                mostrarErrorContrasenia();
+                                //mostrarErrorContrasenia();
+                                mostrarError(json.get("mensaje").getAsString());
                                 break;
 
                             default:

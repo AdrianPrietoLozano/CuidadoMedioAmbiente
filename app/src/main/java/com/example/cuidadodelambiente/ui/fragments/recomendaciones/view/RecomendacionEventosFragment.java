@@ -129,7 +129,7 @@ public class RecomendacionEventosFragment extends Fragment
         recyclerEventos.setAdapter(new RecomendacionesEventosAdapter(getContext(), eventos, new RecomendacionesEventosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                int idEvento = eventos.get(position).getIdEvento();
+                Integer idEvento = eventos.get(position).getIdEvento();
                 BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(idEvento);
                 fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
                 fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());

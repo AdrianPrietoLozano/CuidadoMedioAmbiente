@@ -15,6 +15,7 @@ import java.util.List;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -26,29 +27,38 @@ import retrofit2.http.Query;
 
 public interface APIInterface {
 
-    @GET("eliminar_tablas.php")
-    Call<JsonObject> doEliminarTablas();
+    /* LOGIN */
+    @GET("usuario/{idUsuario}")
+    Call<JsonObject> doCargarDatosUsuario(
+            @Path("idUsuario") int id
+    );
+
+    @FormUrlEncoded
+    @POST("usuario/login")
+    Call<JsonObject> doLogIn(
+            @Field("email") String email,
+            @Field("contrasenia") String contrasenia
+    );
+
+    @FormUrlEncoded
+    @POST("usuario/google/login")
+    Call<JsonObject> doVerificarGoogleUser(
+            @Field("id_token") String id_token
+    );
+
+    @FormUrlEncoded
+    @POST("usuario/registrar")
+    Call<JsonObject> doSignUp(
+            @Field("email") String email,
+            @Field("nombre") String nombre,
+            @Field("contrasenia") String contrasenia
+    );
+
+
+    /* EVENTOS */
 
     @GET("eventos")
     Call<List<UbicacionEvento>> doGetEventos();
-
-    @GET("reportes")
-    Call<List<UbicacionReporte>> doGetReportes();
-
-    @GET("recomendaciones/usuario/{idUsuario}")
-    Call<List<EventoLimpieza>> doGetEventosRecomendados(@Path("idUsuario") Integer ambientalista);
-
-    @GET("datos_participacion_evento.php")
-    Call<List<EventoLimpieza>> doGetEventosParticipa(@Query("id_ambientalista") Integer ambientalista);
-
-    @GET("eventos_usuario.php")
-    Call<List<EventoLimpieza>> doGetEventosUsuario(@Query("id_ambientalista") Integer ambientalista);
-
-    @GET("reportes_usuario.php")
-    Call<List<ReporteContaminacion>> doGetReportesUsuario(@Query("id_ambientalista") Integer ambientalista);
-
-    @GET("reportes/{idReporte}")
-    Call<ReporteContaminacionResponse> doGetReporteContaminacion(@Path("idReporte") Integer reporte);
 
     @GET("eventos/{idEvento}")
     Call<EventoLimpiezaResponse> doGetEventoLimpieza(
@@ -57,18 +67,39 @@ public interface APIInterface {
     );
 
     @FormUrlEncoded
-    @POST("insertar_evento.php")
+    @POST("eventos")
     Call<CrearEventoResponse> doAgregarEvento(
-            @Field("ambientalista_id") int id_ambientalista,
-            @Field("reporte_id") int id_reporte,
+            @Field("ambientalista_id") Integer id_ambientalista,
+            @Field("reporte_id") Integer id_reporte,
             @Field("titulo") String titulo,
             @Field("fecha") String fecha,
             @Field("hora") String hora,
             @Field("descripcion") String descripcion
     );
 
+    @GET("eventos/usuario/{idUsuario}")
+    Call<List<EventoLimpieza>> doGetEventosUsuario(
+            @Path("idUsuario") Integer ambientalista
+    );
+
+
+    /*---------------------- REPORTES -----------------------*/
+
+    @GET("reportes")
+    Call<List<UbicacionReporte>> doGetReportes();
+
+    @GET("reportes/{idReporte}")
+    Call<ReporteContaminacionResponse> doGetReporteContaminacion(
+            @Path("idReporte") Integer reporte
+    );
+
+    @GET("reportes/usuario/{idUsuario}")
+    Call<List<ReporteContaminacion>> doGetReportesUsuario(
+            @Path("idUsuario") Integer ambientalista
+    );
+
     @Multipart
-    @POST("insertar_reporte.php")
+    @POST("reportes")
     Call<JsonObject> doAgregarReporte(
             @Part("latitud") RequestBody latitud,
             @Part("longitud") RequestBody longitud,
@@ -79,12 +110,54 @@ public interface APIInterface {
             @Part MultipartBody.Part file
     );
 
-    @FormUrlEncoded
-    @POST("insertar_unirse_evento.php")
-    Call<JsonObject> doUnirseEvento(
-            @Field("id_ambientalista") int id_ambientalista,
-            @Field("id_evento") int id_evento
+
+
+
+
+    /*------------ PARTICIPACIONES ----------------*/
+
+    @GET("participaciones/usuario/{idUsuario}")
+    Call<List<EventoLimpieza>> doGetEventosParticipa(
+            @Path("idUsuario") Integer ambientalista
     );
+
+    @FormUrlEncoded
+    @POST("participaciones/usuario")
+    Call<JsonObject> doUnirseEvento(
+            @Field("idUsuario") Integer id_ambientalista,
+            @Field("idEvento") Integer id_evento
+    );
+
+    @DELETE("participaciones/usuario/{idUsuario}/{idEvento}")
+    Call<JsonObject> doDejarParticiparEvento(
+            @Path("idUsuario") Integer id_ambientalista,
+            @Path("idEvento") Integer id_evento
+    );
+
+
+
+
+
+    /* RECOMENDACIONES */
+
+    @GET("recomendaciones/usuario/{idUsuario}")
+    Call<List<EventoLimpieza>> doGetEventosRecomendados(@Path("idUsuario") Integer ambientalista);
+
+
+
+    /* PRUEBAS DEL SERVICIO SOCIAL */
+
+    @GET("eliminar_tablas.php")
+    Call<JsonObject> doEliminarTablas();
+
+
+    /* BÚSQUEDAS */
+
+    @GET("busqueda/eventos/{query}")
+    Call<List<EventoLimpieza>> doBusquedaEventos(@Path("query") String query);
+
+
+    /* LIMPIEZAS */
 
     @Multipart
     @POST("insertar_limpieza.php")
@@ -95,40 +168,30 @@ public interface APIInterface {
             @Part MultipartBody.Part imagen
     );
 
-    @FormUrlEncoded
-    @POST("dejar_participar_evento.php")
-    Call<JsonObject> doDejarParticiparEvento(
-            @Field("id_ambientalista") int id_ambientalista,
-            @Field("id_evento") int id_evento
-    );
 
 
-    @FormUrlEncoded
-    @POST("datos_usuario.php")
-    Call<JsonObject> doCargarDatosUsuario(
-            @Field("id_usuario") int id
-    );
 
-    @FormUrlEncoded
-    @POST("login.php")
-    Call<JsonObject> doLogIn(
-            @Field("email") String email,
-            @Field("contrasenia") String contrasenia
-    );
 
-    @FormUrlEncoded
-    @POST("login_google.php")
-    Call<JsonObject> doVerificarGoogleUser(
-            @Field("id_token") String id_token
-    );
 
-    @FormUrlEncoded
-    @POST("signup.php")
-    Call<JsonObject> doSignUp(
-            @Field("email") String email,
-            @Field("nombre") String nombre,
-            @Field("contrasenia") String contrasenia
-    );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
     @Multipart
@@ -145,8 +208,7 @@ public interface APIInterface {
 
     //////////////////////////////////////////////////////////////////
 
-    @GET("busqueda/eventos/{query}")
-    Call<List<EventoLimpieza>> doBusquedaEventos(@Path("query") String query);
+
 
 }
 

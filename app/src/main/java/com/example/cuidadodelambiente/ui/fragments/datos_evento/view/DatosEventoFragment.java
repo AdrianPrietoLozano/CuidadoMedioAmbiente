@@ -45,8 +45,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     private final String TAG = DatosEventoFragment.class.getSimpleName();
 
     private BottomSheetBehavior mBehavior;
-    private int eventoId; // id del evento en la base de datos
-    private int idUsuario;
+    private Integer eventoId; // id del evento en la base de datos
+    private Integer idUsuario;
     private TextView nombreEvento, fechaHora, creador, descripcion;
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private LinearLayout layoutDatosReporte;
@@ -201,11 +201,12 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         presenter.cargarDatosEvento(this.eventoId, idUsuario);
     }
 
-    public static DatosEventoFragment newInstance(int eventoId) {
+    public static DatosEventoFragment newInstance(Integer eventoId) {
         DatosEventoFragment f = new DatosEventoFragment();
 
         // Supply num input as an argument.
         Bundle args = new Bundle();
+        if (eventoId == null) eventoId = -1; // para que no truene en caso de un error
         args.putInt(Constants.EVENTO_ID, eventoId);
         f.setArguments(args);
 

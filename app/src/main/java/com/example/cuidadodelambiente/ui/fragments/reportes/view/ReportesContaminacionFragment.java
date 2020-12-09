@@ -228,7 +228,7 @@ public class ReportesContaminacionFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        BottomSheetDialogFragment fragmentDatosReporte = DatosReporteFragment.newInstance((int) marker.getTag());
+        BottomSheetDialogFragment fragmentDatosReporte = DatosReporteFragment.newInstance((Integer) marker.getTag());
         fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
 
