@@ -116,7 +116,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setBackgroundColor(getColor(R.color.colorPrimary));
+        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.colorPrimary));
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {

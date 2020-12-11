@@ -4,6 +4,7 @@ package com.example.cuidadodelambiente.ui.activities.LogIn.view;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -23,6 +24,10 @@ import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.JsonObject;
 
 import retrofit2.Call;
@@ -41,6 +46,7 @@ public class LogInFragment extends Fragment {
     private EditText contraseniaEditText;
     private boolean iniciandoSesion;
     private ProgressBar progressBar;
+    private String fcmToken;
 
     public LogInFragment() {
         // Required empty public constructor
@@ -72,6 +78,20 @@ public class LogInFragment extends Fragment {
                 ((ActividadLogIn) getActivity()).cambiarASignUpFragment();
             }
         });
+
+        // obtenemos el FCM token
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("TOKEN-FAILED", task.getException().toString());
+                            return;
+                        }
+
+                        fcmToken = task.getResult().getToken();
+                    }
+                });
 
         iniciandoSesion = false;
         actualizarUI();
@@ -151,7 +171,7 @@ public class LogInFragment extends Fragment {
             actualizarUI();
 
             APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-            Call<JsonObject> call = service.doLogIn(email, contrasenia);
+            Call<JsonObject> call = service.doLogIn(email, contrasenia, fcmToken);
 
             call.enqueue(new Callback<JsonObject>() {
                 @Override

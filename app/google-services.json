@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "192312538883",
+    "project_id": "cuidadomedioambiente",
+    "storage_bucket": "cuidadomedioambiente.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192312538883:android:9689f8a96fd131a04edb36",
+        "android_client_info": {
+          "package_name": "com.example.cuidadodelambiente"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "192312538883-opoq8nmkcbqmqoc317qogk30r7qurk65.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cuidadodelambiente",
+            "certificate_hash": "e8e80c2aac1f6fa5e27f78a24e1ce30d8ef54347"
+          }
+        },
+        {
+          "client_id": "192312538883-jv25kjc0fooar3pf77prcdu6qr1en0af.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSmfHH6fiX-oqRsW_svj1ilb3K0aRT2t8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "192312538883-jv25kjc0fooar3pf77prcdu6qr1en0af.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

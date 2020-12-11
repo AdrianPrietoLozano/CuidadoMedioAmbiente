@@ -37,7 +37,8 @@ public interface APIInterface {
     @POST("usuario/login")
     Call<JsonObject> doLogIn(
             @Field("email") String email,
-            @Field("contrasenia") String contrasenia
+            @Field("contrasenia") String contrasenia,
+            @Field("fcm_token") String fcmToken
     );
 
     @FormUrlEncoded
@@ -51,7 +52,8 @@ public interface APIInterface {
     Call<JsonObject> doSignUp(
             @Field("email") String email,
             @Field("nombre") String nombre,
-            @Field("contrasenia") String contrasenia
+            @Field("contrasenia") String contrasenia,
+            @Field("fcm_token") String fcmToken
     );
 
 
