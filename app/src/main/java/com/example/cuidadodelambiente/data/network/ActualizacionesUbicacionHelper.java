@@ -35,9 +35,8 @@ public class ActualizacionesUbicacionHelper implements
     private final int PERMISSION_LOCATION_ID = 40;
     private final int REQUEST_CHECK_SETTINGS = 50;
     private final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 200;
-    private final int UPDATE_INTERVAL_MILLISECONDS = 20000; // 20 segundos
-    private final int FASTEST_UPDATE_INTERVAL_MILLISECONDS =
-            UPDATE_INTERVAL_MILLISECONDS / 2;
+    private int updateIntervalMilliseconds;
+    private int fastestUpdateIntervalMilliseconds;
 
     private Activity activity;
     private OnActualizacionUbicacion listener;
@@ -52,9 +51,12 @@ public class ActualizacionesUbicacionHelper implements
         void onError(String error);
     }
 
-    public ActualizacionesUbicacionHelper(Activity activity, OnActualizacionUbicacion listener) {
+    public ActualizacionesUbicacionHelper(Activity activity, OnActualizacionUbicacion listener,
+                                          int updateIntervalMilliseconds) {
         this.activity = activity;
         this.listener = listener;
+        this.updateIntervalMilliseconds = updateIntervalMilliseconds;
+        this.fastestUpdateIntervalMilliseconds = this.updateIntervalMilliseconds / 2;
 
         buildGoogleApiClient();
         createLocationRequest();
@@ -72,8 +74,8 @@ public class ActualizacionesUbicacionHelper implements
 
     protected void createLocationRequest() {
         mLocationRequest = LocationRequest.create();
-        mLocationRequest.setInterval(UPDATE_INTERVAL_MILLISECONDS);
-        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_MILLISECONDS);
+        mLocationRequest.setInterval(this.updateIntervalMilliseconds);
+        mLocationRequest.setFastestInterval(this.fastestUpdateIntervalMilliseconds);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -216,12 +218,13 @@ public class ActualizacionesUbicacionHelper implements
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+            /*
         Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 
         if(location != null) {
             //startIntentService(); // intentar obtener la dirección del usuario
             listener.onLocationChanged(location);
-        }
+        }*/
 
         iniciarActualizacionesUbicacion();
     }

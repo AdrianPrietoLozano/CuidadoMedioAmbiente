@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.ui.activities.crear_reporte.view;
 
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,6 +41,7 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelper;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.CrearReportePresenter;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.presenter.ICrearReportePresenter;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
@@ -53,7 +55,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class ActividadCrearReporte extends AppCompatActivity implements
-    ActualizacionesUbicacionHelper.OnActualizacionUbicacion, ICrearReporteView {
+    ActualizacionesUbicacionHelper.OnActualizacionUbicacion, ICrearReporteView,
+        ElegirUbicacionDialogFragment.UbicacionElegidaListener {
 
     private final int REQUEST_CODE_ELEGIR_FOTO = 10;
     private final String TAG = ActividadCrearReporte.class.getSimpleName();
@@ -83,7 +86,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     private TextView toolbarTitle;
 
     private Location mLastLocation;
-    private Location mLastLocationAux;
 
     private AddressResultReceiver resultReceiver; // para obtener la dirección
     private String addressOutput;
@@ -95,6 +97,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
     private boolean ubicacionObtenida;
     private boolean direccionObtenida;
+    private boolean ubicacionObtenidaDesdeDialog = false;
 
     private ProgressDialog progresoCrearReporte;
     private ICrearReportePresenter presenter;
@@ -176,22 +179,47 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         });
 
 
+        TextView txtElegirUbicacion = findViewById(R.id.txtElegirUbicacion);
+        txtElegirUbicacion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                double latitud = 0.0;
+                double longitud = 0.0;
+                if (ubicacionObtenida) {
+                    latitud = mLastLocation.getLatitude();
+                    longitud = mLastLocation.getLongitude();
+                }
+
+                Fragment prev = getFragmentManager().findFragmentByTag(ElegirUbicacionDialogFragment.TAG);
+                if (null == prev) { // si el fragment no esta visible
+                    ElegirUbicacionDialogFragment.newInstance(latitud, longitud).show(getSupportFragmentManager(),
+                            ElegirUbicacionDialogFragment.TAG);
+                    actualizacionesUbiacion.detenerActualizacionesUbicacion();
+                }
+            }
+        });
+
+
         mostrarFechaHora();
         resultReceiver = new AddressResultReceiver(new Handler());
 
         // iniciando acceder a la ubicación del usuario
-        actualizacionesUbiacion = new ActualizacionesUbicacionHelper(this, this);
+        actualizacionesUbiacion = new ActualizacionesUbicacionHelper(this, this, 60 * (60 * 1000));
         actualizacionesUbiacion.iniciarObtenerUbicacion();
 
         solicitandoDireccion = true;
         ubicacionObtenida = false;
         direccionObtenida = false;
+        ubicacionObtenidaDesdeDialog = false;
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        mLastLocationAux = location;
+        mLastLocation = location;
+        ubicacionObtenida = true;
+        mostrarUbicacionEnTextView();
         startIntentService();
+        actualizacionesUbiacion.detenerActualizacionesUbicacion();
     }
 
     @Override
@@ -211,6 +239,21 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         finish();
     }
 
+    @Override
+    public void onUbicacionElegida(LatLng ubicacion) {
+        Location location = new Location(LocationManager.GPS_PROVIDER);
+        location.setLatitude(ubicacion.latitude);
+        location.setLongitude(ubicacion.longitude);
+
+        mLastLocation = location;
+        ubicacionObtenida = true;
+        mostrarUbicacionEnTextView();
+        startIntentService();
+
+        ubicacionObtenidaDesdeDialog = true;
+
+    }
+
 
     // Para obtener la dirección dado una latitud y longitud
     class AddressResultReceiver extends ResultReceiver {
@@ -221,12 +264,6 @@ public class ActividadCrearReporte extends AppCompatActivity implements
 
         @Override
         protected void onReceiveResult(int resultCode, Bundle resultData) {
-
-            // mostrar ubicación (latitud y longitud)
-            mLastLocation = mLastLocationAux;
-            mostrarUbicacionEnTextView();
-            ubicacionObtenida = true;
-
 
             if (null == resultData || resultCode == Constants.FAILURE_RESULT ||
                     null == resultData.getString(Constants.RESULT_DATA_KEY)) {
@@ -275,8 +312,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         Intent intent = new Intent(this, FetchAddressIntentService.class);
         intent.putExtra(Constants.RECEIVER, resultReceiver);
         Location location = new Location(LocationManager.GPS_PROVIDER);
-        location.setLatitude(mLastLocationAux.getLatitude());
-        location.setLongitude(mLastLocationAux.getLongitude());
+        location.setLatitude(mLastLocation.getLatitude());
+        location.setLongitude(mLastLocation.getLongitude());
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
         startService(intent);
     }
@@ -285,9 +322,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
         if (solicitandoDireccion) {
             Log.e(TAG, "progress bar visible");
             progressBarDireccion.setVisibility(View.VISIBLE);
-
-            if (!ubicacionObtenida)
-                txtDireccionReporte.setText("Obteniendo dirección ...");
+            txtDireccionReporte.setText("Obteniendo dirección ...");
         } else {
             progressBarDireccion.setVisibility(View.INVISIBLE);
         }
@@ -312,14 +347,16 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     public void onResume(){
         super.onResume();
 
-        actualizacionesUbiacion.iniciarActualizacionesUbicacion();
+        if (!ubicacionObtenidaDesdeDialog)
+            actualizacionesUbiacion.iniciarActualizacionesUbicacion();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        actualizacionesUbiacion.conectar();
+        if (!ubicacionObtenidaDesdeDialog)
+            actualizacionesUbiacion.conectar();
     }
 
     @Override
@@ -491,7 +528,8 @@ public class ActividadCrearReporte extends AppCompatActivity implements
     public void onReporteCreadoError(String error) {
         Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 
-        actualizacionesUbiacion.iniciarActualizacionesUbicacion();
+        if (!ubicacionObtenidaDesdeDialog)
+            actualizacionesUbiacion.iniciarActualizacionesUbicacion();
     }
 
     @Override

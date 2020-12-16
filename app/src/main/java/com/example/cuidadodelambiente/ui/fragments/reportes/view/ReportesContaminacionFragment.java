@@ -140,19 +140,21 @@ public class ReportesContaminacionFragment extends Fragment
     public void onMapReady(GoogleMap map) {
         try {
             mMap = map;
-            map.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            UiSettings uiSettings = map.getUiSettings();
+            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            mMap.setOnMarkerClickListener(this);
+
+            /*
+            UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
             uiSettings.setScrollGesturesEnabled(true);
             uiSettings.setMapToolbarEnabled(true);
             uiSettings.setCompassEnabled(true);
             uiSettings.setMyLocationButtonEnabled(true);
-            uiSettings.setTiltGesturesEnabled(true);
+            uiSettings.setTiltGesturesEnabled(true);*/
 
-            map.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
+            mMap.setMyLocationEnabled(true);
             // agregar el evento clic marker al mapa
-            map.setOnMarkerClickListener(this);
         }catch(Exception e)
         {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();

@@ -28,9 +28,11 @@ public class Utilidades {
 
     /* MAPAS */
 
+    public static final LatLng DEFAULT_POSITION_MAP = new LatLng(20.6741519,-103.3526335);
+
     // defina ubicación del centro de Guadalajara
     public static final CameraPosition GDL = new CameraPosition.Builder()
-            .target(new LatLng(20.6741519,-103.3526335))
+            .target(DEFAULT_POSITION_MAP)
             .zoom(15.5f).bearing(0).tilt(25).build();
 
 

@@ -205,7 +205,8 @@ public class EventosLimpiezaFragment extends Fragment
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            mMap.setOnMarkerClickListener(this);
             /*
             UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
@@ -217,7 +218,7 @@ public class EventosLimpiezaFragment extends Fragment
              */
 
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-            mMap.setOnMarkerClickListener(this);
+            mMap.setMyLocationEnabled(true);
 
         } catch (Exception e) {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
