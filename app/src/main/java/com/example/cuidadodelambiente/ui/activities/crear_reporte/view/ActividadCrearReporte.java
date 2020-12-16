@@ -1,6 +1,5 @@
 package com.example.cuidadodelambiente.ui.activities.crear_reporte.view;
 
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,6 +30,8 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.FetchAddressIntentService;
@@ -190,7 +191,7 @@ public class ActividadCrearReporte extends AppCompatActivity implements
                     longitud = mLastLocation.getLongitude();
                 }
 
-                Fragment prev = getFragmentManager().findFragmentByTag(ElegirUbicacionDialogFragment.TAG);
+                Fragment prev = getSupportFragmentManager().findFragmentByTag(ElegirUbicacionDialogFragment.TAG);
                 if (null == prev) { // si el fragment no esta visible
                     ElegirUbicacionDialogFragment.newInstance(latitud, longitud).show(getSupportFragmentManager(),
                             ElegirUbicacionDialogFragment.TAG);

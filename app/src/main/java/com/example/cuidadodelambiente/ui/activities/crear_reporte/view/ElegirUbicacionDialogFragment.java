@@ -7,8 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,10 +20,8 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -142,7 +138,7 @@ public class ElegirUbicacionDialogFragment extends DialogFragment
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         try {
-            map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             map.addMarker(markerOptions);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(markerOptions.getPosition(), 15));
 
