@@ -33,7 +33,7 @@
                 android:textAlignment="center"
                 android:textColor="@android:color/black"
                 android:textSize="22sp"
-                android:textStyle="bold" />
+                style="@style/tituloFragment" />
 
         </androidx.appcompat.widget.Toolbar>
 

@@ -23,7 +23,7 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/titulo_fragment"
+                style="@style/tituloFragment"
                 android:text="Mi perfil"/>
 
             <androidx.cardview.widget.CardView

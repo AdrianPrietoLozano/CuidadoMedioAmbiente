@@ -44,7 +44,8 @@ public interface APIInterface {
     @FormUrlEncoded
     @POST("usuario/google/login")
     Call<JsonObject> doVerificarGoogleUser(
-            @Field("id_token") String id_token
+            @Field("id_token") String id_token,
+            @Field("fcm_token") String fcmToken
     );
 
     @FormUrlEncoded

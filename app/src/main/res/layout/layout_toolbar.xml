@@ -14,12 +14,9 @@
 
         <TextView
             android:id="@+id/toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/tituloVentana"
             android:gravity="center"
             android:layout_marginEnd="?android:attr/actionBarSize"
-            android:textAppearance="@style/titulo_fragment"
-            android:textColor="@android:color/black"
             />
 
 </com.google.android.material.appbar.MaterialToolbar>

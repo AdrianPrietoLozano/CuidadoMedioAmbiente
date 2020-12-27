@@ -37,6 +37,8 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 
 public class ActividadLogIn extends AppCompatActivity implements ILogInView {
@@ -50,6 +52,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     private ILogInPresenter presenter;
     private TextView txtTitulo;
     private ProgressDialog progressLogIn;
+    private String fcmToken;
 
     public ActividadLogIn() {
         presenter = new LogInPresenter(this);
@@ -77,6 +80,21 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.e("TOKEN-FAILED", task.getException().toString());
+                            return;
+                        }
+
+                        fcmToken = task.getResult().getToken();
+                    }
+                });
+
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.server_client_id))
@@ -150,7 +168,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                                     GoogleSignInAccount account = task.getResult(ApiException.class);
                                     if (account != null){
                                         // obtener los datos del usuario desde el servidor
-                                        presenter.autentificarUsuarioGoogle(account.getIdToken());
+                                        presenter.autentificarUsuarioGoogle(account.getIdToken(), fcmToken);
                                         Log.e(TAG, "MainActivity desde silentSignIn");
                                     }
                                     else {
@@ -190,7 +208,7 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            presenter.autentificarUsuarioGoogle(account.getIdToken());
+            presenter.autentificarUsuarioGoogle(account.getIdToken(), fcmToken);
 
         } catch (ApiException e) {
             Log.e(TAG, "signInResult:failed code=" + e.getStatusCode());

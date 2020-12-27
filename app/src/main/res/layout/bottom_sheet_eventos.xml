@@ -10,7 +10,7 @@
         android:background="@drawable/redondeado_verde"
         android:text="@string/datos_evento"
         android:textColor="@android:color/white"
-        style="@style/titulo_fragment"
+        style="@style/tituloFragment"
         android:padding="10dp"
         />
 

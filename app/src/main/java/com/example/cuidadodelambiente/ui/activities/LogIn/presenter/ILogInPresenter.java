@@ -7,7 +7,7 @@ public interface ILogInPresenter {
     public void cargarDatosUsuarioNormalError(String error);
     public void cargarDatosUsuarioNormalExito(User user);
 
-    public void autentificarUsuarioGoogle(String idToken);
+    public void autentificarUsuarioGoogle(String idToken, String fcmToken);
     public void autentificarUsuarioGoogleError(String error);
     public void autentificarUsuarioGoogleExito(User user);
 }

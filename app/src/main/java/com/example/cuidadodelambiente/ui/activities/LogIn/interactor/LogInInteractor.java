@@ -55,9 +55,9 @@ public class LogInInteractor implements ILogInInteractor {
     }
 
     @Override
-    public void autentificarUsuarioGoogle(String idToken) {
+    public void autentificarUsuarioGoogle(String idToken, String fcmToken) {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doVerificarGoogleUser(idToken);
+        Call<JsonObject> call = service.doVerificarGoogleUser(idToken, fcmToken);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override

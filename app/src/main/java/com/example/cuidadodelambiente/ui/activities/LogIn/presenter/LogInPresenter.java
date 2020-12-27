@@ -31,8 +31,8 @@ public class LogInPresenter implements ILogInPresenter {
     }
 
     @Override
-    public void autentificarUsuarioGoogle(String idToken) {
-        interactor.autentificarUsuarioGoogle(idToken);
+    public void autentificarUsuarioGoogle(String idToken, String fcmToken) {
+        interactor.autentificarUsuarioGoogle(idToken, fcmToken);
     }
 
     @Override

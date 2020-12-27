@@ -22,7 +22,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:text="Estos reportes necesitan de tu ayuda"
-            style="@style/titulo_fragment"
+            style="@style/tituloFragment"
             />
 
         <!-- pantalla de carga -->
