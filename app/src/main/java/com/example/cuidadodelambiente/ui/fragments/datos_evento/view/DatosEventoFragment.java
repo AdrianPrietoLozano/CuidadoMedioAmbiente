@@ -23,7 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.ParaObservar;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
@@ -57,7 +57,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     private ProgressBar barraCarga;
     private JsonObjectRequest jsonObjectRequest;
     private EventoLimpieza eventoLimpieza; // evento mostrado actualmente
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private LinearLayout layoutNoConexion;
     private LinearLayout contenidoPrincipal;
     private Button botonVolverIntentar;

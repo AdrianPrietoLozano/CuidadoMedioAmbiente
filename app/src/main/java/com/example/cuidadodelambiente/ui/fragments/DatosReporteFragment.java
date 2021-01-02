@@ -19,7 +19,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.DeclaracionFragments;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
@@ -48,7 +48,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     private Button botonLimpiar;
     private ProgressBar barraCarga;
     private ReporteContaminacion reporteContaminacion;
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private LinearLayout layoutNoConexion;
     private Button botonVolverIntentar;
     private LinearLayout contenidoPrincipal;
@@ -198,8 +198,8 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
         }
         else { // no hay conexión a internet
             mostrarLayoutError();
-            //cargandoCircular.ocultarPantallaCarga();
-            //cargandoCircular.ocultarContenidoPrincipal();
+            //helperCargaError.ocultarPantallaCarga();
+            //helperCargaError.ocultarContenidoPrincipal();
             //Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
             //layoutSinConexion.setVisibility(View.VISIBLE);
         }

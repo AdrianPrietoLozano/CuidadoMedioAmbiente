@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -20,8 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.ui.activities.BuscarEventosActivity;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
@@ -40,13 +39,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.List;
 import java.util.Observable;
@@ -68,11 +63,11 @@ public class EventosLimpiezaFragment extends Fragment
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
-    private LinearLayout layoutSinConexion;
+    //private LinearLayout layoutSinConexion;
     private FloatingActionButton botonRecargar;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
     private IEventosPresenter presenter;
@@ -109,12 +104,13 @@ public class EventosLimpiezaFragment extends Fragment
         });
 
         // para la carga circular
-        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenido),
-                v.findViewById(R.id.pantallaCarga));
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError = new HelperCargaError(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        //helperCargaError.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
-        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
-        layoutSinConexion.setVisibility(View.INVISIBLE);
+        //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        //layoutSinConexion.setVisibility(View.INVISIBLE);
 
         mMapView = v.findViewById(R.id.mapaEventos);
         mMapView.onCreate(mMapViewBundle);
@@ -175,19 +171,20 @@ public class EventosLimpiezaFragment extends Fragment
     }
 
     private void intentarPeticionBD() {
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
         // si hay conexión a internet
         if (Utilidades.hayConexionInternet(getContext())) {
-            layoutSinConexion.setVisibility(View.INVISIBLE);
+            //layoutSinConexion.setVisibility(View.INVISIBLE);
             botonRecargar.show();
-            //iniciarPeticionBD();
             presenter.cargarEventos();
+
         } else { // no hay conexión a internet
-            cargandoCircular.ocultarCargaMostrarContenido();
+            //helperCargaError.ocultarCargaMostrarContenido();
+            helperCargaError.mostrarPantallaError();
             botonRecargar.hide();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            layoutSinConexion.setVisibility(View.VISIBLE);
+            //layoutSinConexion.setVisibility(View.VISIBLE);
         }
     }
 
@@ -302,17 +299,17 @@ public class EventosLimpiezaFragment extends Fragment
                     new LatLng(evento.getLatitud(), evento.getLongitud()),
                     evento.getId());
         }
-        cargandoCircular.ocultarCargaMostrarContenido();
+        helperCargaError.mostrarContenidoPrincipal();
     }
 
     @Override
     public void onEventosCargadosError(Throwable t) {
         //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
 
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //helperCargaError.ocultarCargaMostrarContenido();
         botonRecargar.hide();
         mensajeProblema.setText(R.string.estamos_teniendo_problemas);
-        layoutSinConexion.setVisibility(View.VISIBLE);
+        helperCargaError.mostrarPantallaError();
     }
 
     // se ejecuta cuando se crea un evento de limpieza

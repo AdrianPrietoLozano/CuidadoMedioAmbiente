@@ -13,10 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
@@ -47,8 +48,9 @@ public class MisReportesFragment extends Fragment implements Observer {
     private RecyclerView.LayoutManager lManager;
     private List<ReporteContaminacion> listaReportes;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private LinearLayout layoutError;
-    private TextView textReintentar;
+    private HelperCargaError helperCargaError;
+    private Button botonVolverIntentar;
+    private TextView mensajeProblema;
 
     public MisReportesFragment(){
     }
@@ -63,15 +65,6 @@ public class MisReportesFragment extends Fragment implements Observer {
         // suscribirse al observable de ActividadCrearReporte
         ActividadCrearReporte.getObservable().addObserver(this);
 
-        layoutError = v.findViewById(R.id.layoutError);
-        textReintentar = v.findViewById(R.id.textReintentar);
-        textReintentar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intentarPeticionBD();
-            }
-        });
-
         swipeRefreshLayout = v.findViewById(R.id.swipeRefresh);
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -83,6 +76,21 @@ public class MisReportesFragment extends Fragment implements Observer {
                     }
                 }
         );
+
+        helperCargaError = new HelperCargaError(swipeRefreshLayout,
+                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        helperCargaError.mostrarPantallaCarga();
+
+        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+
+        // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
+        botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
+        botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
 
         recyclerReportes = v.findViewById(R.id.recyclerMisReportes);
         recyclerReportes.setHasFixedSize(true);
@@ -100,7 +108,8 @@ public class MisReportesFragment extends Fragment implements Observer {
     private void intentarPeticionBD()
     {
         swipeRefreshLayout.setRefreshing(true);
-        layoutError.setVisibility(View.GONE);
+        //layoutError.setVisibility(View.GONE);
+        helperCargaError.mostrarPantallaCarga();
 
         // si hay internet
         if(Utilidades.hayConexionInternet(getContext())) {
@@ -108,7 +117,8 @@ public class MisReportesFragment extends Fragment implements Observer {
         }
         else { // no hay internet
             swipeRefreshLayout.setRefreshing(false);
-            layoutError.setVisibility(View.VISIBLE);
+            //layoutError.setVisibility(View.VISIBLE);
+            helperCargaError.mostrarPantallaError();
         }
     }
 
@@ -122,7 +132,8 @@ public class MisReportesFragment extends Fragment implements Observer {
                 if (!response.isSuccessful()) {
                     Toast.makeText(getContext(), "No successful", Toast.LENGTH_LONG).show();
                     swipeRefreshLayout.setRefreshing(false);
-                    layoutError.setVisibility(View.VISIBLE);
+                    mensajeProblema.setText("Ocurrió un error");
+                    helperCargaError.mostrarPantallaError();
                     return;
                 }
 
@@ -143,14 +154,15 @@ public class MisReportesFragment extends Fragment implements Observer {
                 recyclerReportes.setAdapter(adapter);
 
                 swipeRefreshLayout.setRefreshing(false);
-                layoutError.setVisibility(View.GONE);
+                helperCargaError.mostrarContenidoPrincipal();
             }
 
             @Override
             public void onFailure(Call<List<ReporteContaminacion>> call, Throwable t) {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
-                layoutError.setVisibility(View.VISIBLE);
+                mensajeProblema.setText("Ocurrió un error");
+                helperCargaError.mostrarPantallaError();
             }
         });
     }

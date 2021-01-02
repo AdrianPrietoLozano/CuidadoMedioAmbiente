@@ -15,12 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
@@ -46,12 +45,12 @@ public class ParticipaEventosFragment extends Fragment
     private JsonObjectRequest jsonObjectRequest;
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
-    private LinearLayout layoutSinConexion;
+    //private RelativeLayout layoutSinConexion;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private SwipeRefreshLayout swipeRefreshLayout;
     private IParticipacionesEventosPresenter presenter;
     private MaterialToolbar toolbar;
@@ -95,17 +94,18 @@ public class ParticipaEventosFragment extends Fragment
                 }
         );
 
-        cargandoCircular = new CargandoCircular(swipeRefreshLayout,
-                v.findViewById(R.id.pantallaCarga));
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError = new HelperCargaError(swipeRefreshLayout,
+                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        //helperCargaError.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
 
         recyclerEventos = v.findViewById(R.id.recyclerParticipaEventos);
         recyclerEventos.setHasFixedSize(true);
 
         // layout sin conexion
-        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
-        layoutSinConexion.setVisibility(View.INVISIBLE);
+        //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        //layoutSinConexion.setVisibility(View.INVISIBLE);
 
         // mensaje de error que se muestra cuando ocurre algun error
         mensajeProblema = v.findViewById(R.id.mensajeProblema);
@@ -134,18 +134,19 @@ public class ParticipaEventosFragment extends Fragment
     }
 
     public void intentarPeticionBD() {
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
         // si hay internet
         if(Utilidades.hayConexionInternet(getContext())) {
-            layoutSinConexion.setVisibility(View.INVISIBLE);
+            //layoutSinConexion.setVisibility(View.INVISIBLE);
             int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
             this.presenter.cargarParticipacionesEventos(idUsuario);
         }
         else { // no hay internet
-            cargandoCircular.ocultarCargaMostrarContenido();
+            //helperCargaError.ocultarCargaMostrarContenido();
+            helperCargaError.mostrarPantallaError();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            layoutSinConexion.setVisibility(View.VISIBLE);
+            //layoutSinConexion.setVisibility(View.VISIBLE);
             swipeRefreshLayout.setRefreshing(false);
         }
     }
@@ -160,12 +161,14 @@ public class ParticipaEventosFragment extends Fragment
     public void onEventosCargadosExitosamente(List<EventoLimpieza> eventos) {
         if(eventos.size() == 0) {
             mensajeProblema.setText("No participas en ningún evento");
-            cargandoCircular.ocultarPantallaCarga();
-            layoutSinConexion.setVisibility(View.VISIBLE);
+            //helperCargaError.ocultarPantallaCarga();
+            //layoutSinConexion.setVisibility(View.VISIBLE);
+            helperCargaError.mostrarPantallaError();
 
         } else {
             recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), eventos));
-            cargandoCircular.ocultarCargaMostrarContenido();
+            //helperCargaError.ocultarCargaMostrarContenido();
+            helperCargaError.mostrarContenidoPrincipal();
         }
 
         swipeRefreshLayout.setRefreshing(false);
@@ -175,8 +178,9 @@ public class ParticipaEventosFragment extends Fragment
     public void onEventosCargadosError(Throwable t) {
         swipeRefreshLayout.setRefreshing(false);
         mensajeProblema.setText(R.string.estamos_teniendo_problemas);
-        layoutSinConexion.setVisibility(View.VISIBLE);
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //layoutSinConexion.setVisibility(View.VISIBLE);
+        //helperCargaError.ocultarCargaMostrarContenido();
+        helperCargaError.mostrarPantallaError();
     }
 
     @Override

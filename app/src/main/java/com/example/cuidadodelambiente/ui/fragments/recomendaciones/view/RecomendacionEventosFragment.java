@@ -13,11 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
@@ -39,12 +38,12 @@ public class RecomendacionEventosFragment extends Fragment
 
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
-    private LinearLayout layoutSinConexion;
+    //private LinearLayout layoutSinConexion;
     private Button botonVolverIntentar;
     private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private SwipeRefreshLayout swipeRefreshLayout;
     private IRecomendacionesEventosPresenter presenter;
 
@@ -71,16 +70,16 @@ public class RecomendacionEventosFragment extends Fragment
                 }
         );
 
-        cargandoCircular = new CargandoCircular(swipeRefreshLayout,
-                v.findViewById(R.id.pantallaCarga));
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError = new HelperCargaError(swipeRefreshLayout,
+                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        helperCargaError.mostrarPantallaCarga();
 
         recyclerEventos = v.findViewById(R.id.recyclerEventos);
         recyclerEventos.setHasFixedSize(true);
 
         // layout sin conexion
-        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
-        layoutSinConexion.setVisibility(View.INVISIBLE);
+        //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        //layoutSinConexion.setVisibility(View.INVISIBLE);
 
         // mensaje de error que se muestra cuando ocurre algun error
         mensajeProblema = v.findViewById(R.id.mensajeProblema);
@@ -107,19 +106,20 @@ public class RecomendacionEventosFragment extends Fragment
 
     private void intentarPeticionBD()
     {
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
         // si hay internet
         if(Utilidades.hayConexionInternet(getContext())) {
-            layoutSinConexion.setVisibility(View.INVISIBLE);
+            //layoutSinConexion.setVisibility(View.INVISIBLE);
             //iniciarPeticionBD();
             int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
             presenter.cargarRecomendacionesEventos(idUsuario);
         }
         else { // no hay internet
-            cargandoCircular.ocultarCargaMostrarContenido();
+            //helperCargaError.ocultarCargaMostrarContenido();
+            helperCargaError.mostrarPantallaError();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            layoutSinConexion.setVisibility(View.VISIBLE);
+            //layoutSinConexion.setVisibility(View.VISIBLE);
         }
     }
 
@@ -136,7 +136,8 @@ public class RecomendacionEventosFragment extends Fragment
             }
         }));
 
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //helperCargaError.ocultarCargaMostrarContenido();
+        helperCargaError.mostrarContenidoPrincipal();
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -147,7 +148,8 @@ public class RecomendacionEventosFragment extends Fragment
         //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
         mensajeProblema.setText(R.string.estamos_teniendo_problemas);
         swipeRefreshLayout.setRefreshing(false);
-        layoutSinConexion.setVisibility(View.VISIBLE);
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //layoutSinConexion.setVisibility(View.VISIBLE);
+        helperCargaError.mostrarPantallaError();
+        //helperCargaError.ocultarCargaMostrarContenido();
     }
 }

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragments.mis_eventos_reportes.MisEventosFragment">
 
-
+    <!--
     <LinearLayout
         android:id="@+id/layoutError"
         android:layout_width="match_parent"
@@ -39,6 +39,11 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+    -->
+
+    <include layout="@layout/layout_error" />
+
+    <include layout="@layout/loading" />
 
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -47,7 +52,7 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layoutError"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView

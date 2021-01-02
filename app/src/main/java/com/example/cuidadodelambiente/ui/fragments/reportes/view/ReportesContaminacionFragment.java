@@ -12,12 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.cuidadodelambiente.Fragments.CargandoCircular;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.R;
@@ -30,7 +29,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -52,14 +50,14 @@ public class ReportesContaminacionFragment extends Fragment
 
     private MapView mMapView;
     private GoogleMap mMap;
-    private LinearLayout layoutSinConexion;
+    //private RelativeLayout layoutSinConexion;
     private TextView mensajeProblema, totalReportes;
     private Button botonVolverIntentar;
     private FloatingActionButton botonRecargar;
     private FloatingActionButton botonNuevoReporte;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private JsonObjectRequest jsonObjectRequest;
-    private CargandoCircular cargandoCircular;
+    private HelperCargaError helperCargaError;
     private IReportesPresenter reportesPresenter;
 
 
@@ -78,13 +76,13 @@ public class ReportesContaminacionFragment extends Fragment
         ActividadCrearReporte.getObservable().addObserver(this);
 
         // para la carga circular
-        cargandoCircular = new CargandoCircular(v.findViewById(R.id.contenidoPrincipal),
-                v.findViewById(R.id.pantallaCarga));
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError = new HelperCargaError(v.findViewById(R.id.contenidoPrincipal),
+                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        helperCargaError.mostrarPantallaCarga();
 
         // layout sin conexion
-        layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
-        layoutSinConexion.setVisibility(View.INVISIBLE);
+        //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
+        //layoutSinConexion.setVisibility(View.INVISIBLE);
 
         // mensaje de error que se muestra cuando ocurre algun error
         mensajeProblema = v.findViewById(R.id.mensajeProblema);
@@ -163,17 +161,17 @@ public class ReportesContaminacionFragment extends Fragment
 
     private void intentarPeticionBD()
     {
-        cargandoCircular.ocultarContenidoMostrarCarga();
+        helperCargaError.mostrarPantallaCarga();
 
         if(Utilidades.hayConexionInternet(getContext())) {
-            layoutSinConexion.setVisibility(View.INVISIBLE);
-
+            //layoutSinConexion.setVisibility(View.INVISIBLE);
             reportesPresenter.cargarReportes();
         }
         else {
-            cargandoCircular.ocultarCargaMostrarContenido();
+            //helperCargaError.ocultarCargaMostrarContenido();
+            helperCargaError.mostrarPantallaError();
             Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            layoutSinConexion.setVisibility(View.VISIBLE);
+            //layoutSinConexion.setVisibility(View.VISIBLE);
         }
     }
 
@@ -250,14 +248,16 @@ public class ReportesContaminacionFragment extends Fragment
                     new LatLng(reporte.getLatitud(), reporte.getLongitud()),
                     reporte.getId());
         }
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //helperCargaError.ocultarCargaMostrarContenido();
+        helperCargaError.mostrarContenidoPrincipal();
     }
 
     @Override
     public void onReportesRecibidosError(Throwable t) {
-        cargandoCircular.ocultarCargaMostrarContenido();
+        //helperCargaError.ocultarContenidoPrincipal();
         mensajeProblema.setText(getString(R.string.estamos_teniendo_problemas));
-        layoutSinConexion.setVisibility(View.VISIBLE);
+        //layoutSinConexion.setVisibility(View.VISIBLE);
+        helperCargaError.mostrarPantallaError();
     }
 
     @Override
