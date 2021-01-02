@@ -37,6 +37,12 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class DatosEventoFragment extends BottomSheetDialogFragment
@@ -73,12 +79,26 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         return observable;
     }
 
+    public static DatosEventoFragment newInstance(Integer eventoId) {
+        DatosEventoFragment f = new DatosEventoFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        if (eventoId == null) eventoId = -1; // para que no truene en caso de un error
+        args.putInt(Constants.EVENTO_ID, eventoId);
+        f.setArguments(args);
+
+        return f;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
             eventoId = getArguments().getInt(Constants.EVENTO_ID);
+        } else {
+            eventoId = -1;
         }
 
         idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
@@ -142,8 +162,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
                 dismiss();
                 //((MainActivity) getActivity()).cambiarFragment(new AdministrarEventoFragment(), "GGG");
                 Intent intent = new Intent(getContext(), AdministrarEventoActivity.class);
+                intent.putExtra(Constants.EVENTO_ID, eventoId);
                 startActivity(intent);
-
             }
         });
 
@@ -201,20 +221,11 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         presenter.cargarDatosEvento(this.eventoId, idUsuario);
     }
 
-    public static DatosEventoFragment newInstance(Integer eventoId) {
-        DatosEventoFragment f = new DatosEventoFragment();
 
-        // Supply num input as an argument.
-        Bundle args = new Bundle();
-        if (eventoId == null) eventoId = -1; // para que no truene en caso de un error
-        args.putInt(Constants.EVENTO_ID, eventoId);
-        f.setArguments(args);
-
-        return f;
-    }
 
     private void configurarBotonQuieroParticipar() {
-        botonParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        if (botonParticipar.isEnabled())
+            botonParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
         botonParticipar.setText("Quiero participar");
         botonParticipar.setTextColor(Color.WHITE);
         botonParticipar.setOnClickListener(new View.OnClickListener() {
@@ -226,7 +237,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     }
 
     private void configurarBotonDejarParticipar() {
-        botonParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
+        if (botonParticipar.isEnabled())
+            botonParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
         botonParticipar.setText("Dejar de participar");
         botonParticipar.setTextColor(Color.BLACK);
         botonParticipar.setOnClickListener(new View.OnClickListener() {
@@ -303,15 +315,35 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             layoutDatosReporte.setVisibility(View.VISIBLE);
         }
 
-        // verifiar si el usuario ya participa en este evento
+        // verificar si la fecha del evento aún está vigente
+        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Constants.LOCALE_MX);
+        boolean isFechaEventoVigente = true;
+        try {
+            Date dateEvento = parser.parse(eventoLimpieza.getFecha() + " " + eventoLimpieza.getHora());
+            Date now = new Date();
+            if (dateEvento.before(now)) {
+                botonParticipar.setEnabled(false);
+                isFechaEventoVigente = false; // la fecha del evento ya pasó
+                //Log.e("FECHA", "entro");
+            }
+        } catch (Exception e) {
+            Log.e("FECHA", e.toString());
+            botonParticipar.setEnabled(true);
+            isFechaEventoVigente = true;
+        }
+
+
+        // verificar si el usuario ya participa en este evento
         if (eventoLimpieza.getUsuarioParticipa()) {
             configurarBotonDejarParticipar();
         } else {
             configurarBotonQuieroParticipar();
         }
 
+
         int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        if (eventoLimpieza.getCreador().getId() == idUsuario) {
+        // si el usuario es el creador y la fecha del evento ya pasó se activa el boton para admin. el evento
+        if (eventoLimpieza.getCreador().getId() == idUsuario && !isFechaEventoVigente ) {
             botonAdministrarEvento.setVisibility(View.VISIBLE);
         } else {
             botonAdministrarEvento.setVisibility(View.GONE);

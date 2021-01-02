@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.data.models.User;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;

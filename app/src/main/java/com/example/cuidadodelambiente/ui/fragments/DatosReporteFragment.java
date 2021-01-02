@@ -70,7 +70,12 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        reporteId = getArguments().getInt(Constants.REPORTE_ID);
+
+        if (getArguments() != null) {
+            reporteId = getArguments().getInt(Constants.REPORTE_ID);
+        } else {
+            reporteId = -1; // para que no truene
+        }
 
         Log.e("ID", String.valueOf(reporteId));
     }

@@ -14,15 +14,25 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.User;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.helpers.HelperCargaError;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AdministrarEventoActivity extends AppCompatActivity {
 
@@ -34,6 +44,10 @@ public class AdministrarEventoActivity extends AppCompatActivity {
     private Chip chipSeleccionarTodo;
     private MaterialToolbar toolbar;
     private TextView toolbarTitle;
+    private HelperCargaError helperCargaError;
+    private Button btnVolverIntentar;
+    private TextView mensajeProblema;
+    private Integer idEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +70,30 @@ public class AdministrarEventoActivity extends AppCompatActivity {
         });
 
         toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Selecciona los participantes");
+        toolbarTitle.setText("Elige los participantes");
         toolbarTitle.setTextColor(Color.WHITE);
 
+        Bundle extras = getIntent().getExtras();
+
+        if(extras == null) {
+            Toast.makeText(this, "extras == null", Toast.LENGTH_SHORT).show();
+            finish();
+        } else {
+            idEvento = extras.getInt(Constants.EVENTO_ID);
+        }
+
+        helperCargaError = new HelperCargaError(findViewById(R.id.contenidoPrincipal),
+                findViewById(R.id.pantallaCarga), findViewById(R.id.layoutSinConexion));
+        helperCargaError.mostrarContenidoPrincipal();
+
+        mensajeProblema = findViewById(R.id.mensajeProblema);
+        btnVolverIntentar = findViewById(R.id.volverAIntentarlo);
+        btnVolverIntentar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                intentarPeticionBD();
+            }
+        });
 
         textSeleccionados = findViewById(R.id.textSeleccionados);
         chipSeleccionarTodo = findViewById(R.id.chipSeleccionarTodo);
@@ -97,6 +132,15 @@ public class AdministrarEventoActivity extends AppCompatActivity {
     }
 
     private void intentarPeticionBD() {
+        helperCargaError.mostrarPantallaCarga();
+
+        if (Utilidades.hayConexionInternet(getApplicationContext())) {
+            iniciarPeticionBD();
+        } else {
+            helperCargaError.mostrarPantallaError();
+        }
+
+        /*
         List<User> usuarios = new ArrayList<>();
         usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
         usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
@@ -133,30 +177,45 @@ public class AdministrarEventoActivity extends AppCompatActivity {
         });
 
         recyclerUsuarios.setAdapter(adapter);
+        */
+    }
 
-        /*
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
+    public void iniciarPeticionBD() {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        service.doGetEventosRecomendados(idUsuario).enqueue(new Callback<List<User>>() {
+        service.doGetParticipacionesEvento(idEvento).enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (response.isSuccessful()) {
-                    final List<User> eventos = response.body();
-                    adapter = new AdministrarEventoAdapter(getContext(), eventos, new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
-                        @Override
-                        public void onItemSelectedCountChange(int count) {
-                            Log.e("TAD", String.valueOf(count));
-                        }
-                    });
-                    recyclerEventos.setAdapter(adapter);
+                if (!response.isSuccessful()) {
+                    mensajeProblema.setText("Ocurrió un error");
+                    helperCargaError.mostrarPantallaError();
+                    return;
                 }
+
+                adapter = new AdministrarEventoAdapter(getApplicationContext(), response.body(), new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
+                    @Override
+                    public void onItemSelectedCountChange(int count) {
+                        if (count == 1) {
+                            textSeleccionados.setText("1 seleccionado");
+                        } else {
+                            textSeleccionados.setText(String.valueOf(count) + " seleccionados");
+                        }
+                        if (count > 0) {
+                            botonAceptar.setEnabled(true);
+                        } else {
+                            botonAceptar.setEnabled(false);
+                        }
+                    }
+                });
+
+                recyclerUsuarios.setAdapter(adapter);
+                helperCargaError.mostrarContenidoPrincipal();
             }
 
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-
+                mensajeProblema.setText("Ocurrió un error");
+                helperCargaError.mostrarPantallaError();
             }
         });
-         */
     }
 }

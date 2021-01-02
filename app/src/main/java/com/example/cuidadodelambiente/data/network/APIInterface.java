@@ -5,6 +5,7 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
+import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
@@ -134,6 +135,11 @@ public interface APIInterface {
     @DELETE("participaciones/usuario/{idUsuario}/{idEvento}")
     Call<JsonObject> doDejarParticiparEvento(
             @Path("idUsuario") Integer id_ambientalista,
+            @Path("idEvento") Integer id_evento
+    );
+
+    @GET("participaciones/evento/{idEvento}")
+    Call<List<User>> doGetParticipacionesEvento(
             @Path("idEvento") Integer id_evento
     );
 
