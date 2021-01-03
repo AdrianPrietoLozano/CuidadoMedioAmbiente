@@ -27,6 +27,7 @@ public class AdministrarEventoAdapter extends RecyclerView.Adapter<AdministrarEv
     private Context context;
     private OnItemsSelectedCountListener onItemsSelectedCountListener;
     private int itemsSelectedCount = 0;
+    private boolean isClickable = true;
 
     public AdministrarEventoAdapter(Context context, List<User> listaUsuarios,
                                          @NonNull OnItemsSelectedCountListener listener)
@@ -49,6 +50,9 @@ public class AdministrarEventoAdapter extends RecyclerView.Adapter<AdministrarEv
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isClickable)
+                    return;
+
                 User user = listaUsuarios.get(eventoViewHolder.getAdapterPosition());
                 //eventoViewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.amarillo1));
                 if (user.isChecked()) {
@@ -97,6 +101,10 @@ public class AdministrarEventoAdapter extends RecyclerView.Adapter<AdministrarEv
 
         notifyDataSetChanged();
         onItemsSelectedCountListener.onItemSelectedCountChange(itemsSelectedCount);
+    }
+
+    public void setClickable(boolean clickable) {
+        this.isClickable = clickable;
     }
 
     @Override

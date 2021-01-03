@@ -20,14 +20,18 @@ import com.example.cuidadodelambiente.Constants;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.User;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.helpers.HelperCargaError;
+import com.google.android.gms.common.util.NumberUtils;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.chip.Chip;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -48,6 +52,8 @@ public class AdministrarEventoActivity extends AppCompatActivity {
     private Button btnVolverIntentar;
     private TextView mensajeProblema;
     private Integer idEvento;
+    private Integer idUsuario;
+    private boolean usuarioParticipaEnEvento;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +88,8 @@ public class AdministrarEventoActivity extends AppCompatActivity {
             idEvento = extras.getInt(Constants.EVENTO_ID);
         }
 
+        idUsuario = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado().getId();
+
         helperCargaError = new HelperCargaError(findViewById(R.id.contenidoPrincipal),
                 findViewById(R.id.pantallaCarga), findViewById(R.id.layoutSinConexion));
         helperCargaError.mostrarContenidoPrincipal();
@@ -108,16 +116,6 @@ public class AdministrarEventoActivity extends AppCompatActivity {
             }
         });
 
-        botonAceptar = findViewById(R.id.btnCompletado);
-        botonAceptar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                for (User user : adapter.getItemsSelected()) {
-                    Log.e("DAFSD", String.valueOf(user.getId()));
-                    Log.e("DAFSD", user.getNombre());
-                }
-            }
-        });
 
         recyclerUsuarios = findViewById(R.id.recyclerUsuarios);
         recyclerUsuarios.setHasFixedSize(true);
@@ -127,6 +125,17 @@ public class AdministrarEventoActivity extends AppCompatActivity {
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(recyclerUsuarios.getContext(), DividerItemDecoration.HORIZONTAL);
         recyclerUsuarios.addItemDecoration(itemDecoration);
+
+        botonAceptar = findViewById(R.id.btnCompletado);
+        botonAceptar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                botonAceptar.setEnabled(false);
+                botonAceptar.setText("Cargando...");
+                adapter.setClickable(false);
+                enviarIdsUsuarios();
+            }
+        });
 
         intentarPeticionBD();
     }
@@ -139,45 +148,6 @@ public class AdministrarEventoActivity extends AppCompatActivity {
         } else {
             helperCargaError.mostrarPantallaError();
         }
-
-        /*
-        List<User> usuarios = new ArrayList<>();
-        usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "hector", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "hector", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "hector", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "hector", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1, "adrian", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "luis", "correo@gmai.com", 1, 1));
-        usuarios.add(new User(1,  "hector", "correo@gmai.com", 1, 1));
-        for (User user : usuarios)
-            user.setFoto("imagenes/imagen1.jpg");
-
-        adapter = new AdministrarEventoAdapter(getApplicationContext(), usuarios, new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
-            @Override
-            public void onItemSelectedCountChange(int count) {
-                if (count == 1) {
-                    textSeleccionados.setText("1 seleccionado");
-                } else {
-                    textSeleccionados.setText(String.valueOf(count) + " seleccionados");
-                }
-                if (count > 0) {
-                    botonAceptar.setEnabled(true);
-                } else {
-                    botonAceptar.setEnabled(false);
-                }
-            }
-        });
-
-        recyclerUsuarios.setAdapter(adapter);
-        */
     }
 
     public void iniciarPeticionBD() {
@@ -190,6 +160,8 @@ public class AdministrarEventoActivity extends AppCompatActivity {
                     helperCargaError.mostrarPantallaError();
                     return;
                 }
+
+                usuarioParticipaEnEvento = eliminarIdUsuario(response.body());
 
                 adapter = new AdministrarEventoAdapter(getApplicationContext(), response.body(), new AdministrarEventoAdapter.OnItemsSelectedCountListener() {
                     @Override
@@ -217,5 +189,80 @@ public class AdministrarEventoActivity extends AppCompatActivity {
                 helperCargaError.mostrarPantallaError();
             }
         });
+    }
+
+    private boolean eliminarIdUsuario(List<User> usuarios) {
+        Iterator itr = usuarios.iterator();
+        while (itr.hasNext()) {
+            User user = (User) itr.next();
+            if (user.getId().equals(idUsuario)) {
+                itr.remove();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private List<Integer> idsParticipantes() {
+        List<Integer> idsUsuarios = new ArrayList<>();
+        for (User user : adapter.getItemsSelected()) {
+            idsUsuarios.add(user.getId());
+        }
+
+        if (usuarioParticipaEnEvento)
+            idsUsuarios.add(idUsuario);
+
+        return idsUsuarios;
+    }
+
+    private void enviarIdsUsuarios() {
+        List<Integer> idsUsuarios = idsParticipantes();
+
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        service.doEnviarIdsParticipantes(idEvento, idUsuario, idsUsuarios).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "no successful", Toast.LENGTH_SHORT).show();
+                    restablecerBotonAceptar();
+                    return;
+                }
+
+                JsonObject res = response.body();
+                if (res.get("resultado").getAsString().equals("0")) {
+                    Toast.makeText(getApplicationContext(), res.get("mensaje").getAsString(), Toast.LENGTH_SHORT).show();
+                    restablecerBotonAceptar();
+                    return;
+                }
+
+                try {
+                    Integer puntos = res.get("puntos").getAsInt();
+
+                    User user = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado();
+                    user.setPuntos(user.getPuntos() + puntos);
+                    Log.e("PUNTOS", user.getPuntos().toString());
+                    UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
+                    Toast.makeText(getApplicationContext(), "Operación éxitosa. Agregados " + puntos + " puntos.", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Toast.makeText(getApplicationContext(), "Problemas al agregar los puntos", Toast.LENGTH_SHORT).show();
+                } finally {
+                    finish();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                restablecerBotonAceptar();
+            }
+        });
+    }
+
+    private void restablecerBotonAceptar() {
+        botonAceptar.setEnabled(true);
+        botonAceptar.setText("Completado");
+        adapter.setClickable(true);
     }
 }

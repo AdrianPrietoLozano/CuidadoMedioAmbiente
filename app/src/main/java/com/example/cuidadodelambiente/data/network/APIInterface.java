@@ -143,6 +143,14 @@ public interface APIInterface {
             @Path("idEvento") Integer id_evento
     );
 
+    @FormUrlEncoded
+    @POST("participaciones/evento/{idEvento}")
+    Call<JsonObject> doEnviarIdsParticipantes(
+            @Path("idEvento") Integer id_evento,
+            @Field("idUsuario") Integer id_usuario,
+            @Field("idsParticipantes[]") List<Integer> idsParticipantes
+    );
+
 
 
 

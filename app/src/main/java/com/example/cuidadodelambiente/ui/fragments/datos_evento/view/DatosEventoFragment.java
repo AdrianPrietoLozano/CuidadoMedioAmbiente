@@ -324,7 +324,6 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             if (dateEvento.before(now)) {
                 botonParticipar.setEnabled(false);
                 isFechaEventoVigente = false; // la fecha del evento ya pasó
-                //Log.e("FECHA", "entro");
             }
         } catch (Exception e) {
             Log.e("FECHA", e.toString());
@@ -342,8 +341,10 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
 
         int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        // si el usuario es el creador y la fecha del evento ya pasó se activa el boton para admin. el evento
-        if (eventoLimpieza.getCreador().getId() == idUsuario && !isFechaEventoVigente ) {
+        // si el usuario es el creador, la fecha del evento ya pasó y el evento aún no ha sido administrado
+        // se activa el boton para admin. el evento
+        if (eventoLimpieza.getCreador().getId() == idUsuario && eventoLimpieza.getAdministrado().equals("0")
+                && !isFechaEventoVigente ) {
             botonAdministrarEvento.setVisibility(View.VISIBLE);
         } else {
             botonAdministrarEvento.setVisibility(View.GONE);

@@ -31,6 +31,12 @@ public class EventoLimpieza {
     @SerializedName("descripcion")
     private String descripcion;
 
+    // "0" si no ha sido administrado
+    // "1" si ha sido administrado
+    @SerializedName("administrado")
+    private String administrado;
+
+
     @SerializedName("foto")
     private String rutaFotografia;
 
@@ -122,6 +128,10 @@ public class EventoLimpieza {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getAdministrado() {
+        return administrado;
     }
 
     public LatLng getUbicacion() {
