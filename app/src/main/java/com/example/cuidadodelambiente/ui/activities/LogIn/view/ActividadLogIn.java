@@ -173,12 +173,13 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
                                     }
                                     else {
                                         Toast.makeText(ActividadLogIn.this,
-                                                "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                                                "Ocurrió un error 1", Toast.LENGTH_SHORT).show();
                                     }
 
                                 } catch (ApiException e) {
+                                    Log.e("LOGIN", e.toString());
                                     Toast.makeText(ActividadLogIn.this,
-                                            "Ocurrió un error", Toast.LENGTH_SHORT).show();
+                                            "Ocurrió un error 2", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

@@ -66,7 +66,6 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
         public TextView fechaHoraEvento;
         public TextView creador;
         public TextView descripcion;
-        public TextView tipoResiduo;
 
         public ParticipaEventoViewHolder(View v)
         {
@@ -76,7 +75,6 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
             creador = v.findViewById(R.id.creador);
             fechaHoraEvento = v.findViewById(R.id.fecha_hora);
             descripcion = v.findViewById(R.id.descripcion);
-            tipoResiduo = v.findViewById(R.id.tipo_residuo);
 
         }
     }
