@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.MyClusterItem;
+import com.example.cuidadodelambiente.MyCustomRenderer;
 import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
@@ -29,26 +32,44 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
+import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm;
+import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
+import com.google.maps.android.clustering.algo.ScreenBasedAlgorithm;
+import com.google.maps.android.clustering.algo.ScreenBasedAlgorithmAdapter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ReportesContaminacionFragment extends Fragment
-        implements IReportesView, OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
+        implements IReportesView, OnMapReadyCallback,
         Observer
 {
 
     private MapView mMapView;
+    private ClusterManager<MyClusterItem> clusterManager;
+    private MyCustomRenderer renderer;
     private GoogleMap mMap;
     //private RelativeLayout layoutSinConexion;
     private TextView mensajeProblema, totalReportes;
@@ -59,6 +80,7 @@ public class ReportesContaminacionFragment extends Fragment
     private JsonObjectRequest jsonObjectRequest;
     private HelperCargaError helperCargaError;
     private IReportesPresenter reportesPresenter;
+    private List<UbicacionReporte> reportes;
 
 
     public ReportesContaminacionFragment() {
@@ -128,34 +150,29 @@ public class ReportesContaminacionFragment extends Fragment
 
         mMapView = v.findViewById(R.id.mapaRecomendacionEventos);
         mMapView.onCreate(mapViewBundle);
-        mMapView.getMapAsync(this);
+        mMapView.getMapAsync(this); //getMapAsync(this);
 
         intentarPeticionBD();
         return v;
     }
 
-    @Override
-    public void onMapReady(GoogleMap map) {
-        try {
-            mMap = map;
-            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
-            mMap.setOnMarkerClickListener(this);
+    private void setOnCluster() {
+        Vector<MyClusterItem> nuevosItems = new Vector<>();
 
-            /*
-            UiSettings uiSettings = mMap.getUiSettings();
-            uiSettings.setAllGesturesEnabled(true);
-            uiSettings.setScrollGesturesEnabled(true);
-            uiSettings.setMapToolbarEnabled(true);
-            uiSettings.setCompassEnabled(true);
-            uiSettings.setMyLocationButtonEnabled(true);
-            uiSettings.setTiltGesturesEnabled(true);*/
+        if(mMap != null) {
+            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            for (UbicacionReporte ubicacion : reportes) {
+                LatLng p = new LatLng(ubicacion.getLatitud(), ubicacion.getLongitud());
+                if (bounds.contains(p)) {
+                    MyClusterItem offsetItem = new MyClusterItem(p, ubicacion.getId());
+                    nuevosItems.add(offsetItem);
+                }
+            }
 
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-            mMap.setMyLocationEnabled(true);
-            // agregar el evento clic marker al mapa
-        }catch(Exception e)
-        {
-            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
+            clusterManager.clearItems();
+            clusterManager.addItems(nuevosItems);
+            clusterManager.cluster();
+
         }
     }
 
@@ -227,29 +244,13 @@ public class ReportesContaminacionFragment extends Fragment
     }
 
     @Override
-    public boolean onMarkerClick(final Marker marker) {
-        BottomSheetDialogFragment fragmentDatosReporte = DatosReporteFragment.newInstance((Integer) marker.getTag());
-        fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-        fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
-
-        return true;
-    }
-
-    @Override
-    public void onReportesRecibidosCorrectamente(List<UbicacionReporte> reportes) {
-        Log.e("TOTAL", String.valueOf(reportes.size()));
-        mMap.clear();
-
+    public void onReportesRecibidosCorrectamente(List<UbicacionReporte> reportesServer) {
+        this.reportes = reportesServer;
         totalReportes.setText(reportes.size() + " reportes en total");
 
-        for (UbicacionReporte reporte : reportes) {
-
-            Utilidades.agregarMarcadorMapa(mMap,
-                    new LatLng(reporte.getLatitud(), reporte.getLongitud()),
-                    reporte.getId());
-        }
-        //helperCargaError.ocultarCargaMostrarContenido();
+        //setOnCluster();
         helperCargaError.mostrarContenidoPrincipal();
+
     }
 
     @Override
@@ -276,6 +277,57 @@ public class ReportesContaminacionFragment extends Fragment
                     new CameraPosition.Builder()
                             .target(ubicacion)
                             .zoom(16.5f).bearing(0).tilt(25).build()));
+        }
+    }
+
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        try {
+            mMap = googleMap;
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
+            mMap.setMyLocationEnabled(true);
+            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+            clusterManager = new ClusterManager<>(getActivity(), mMap);
+            renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
+            clusterManager.setRenderer(renderer);
+            clusterManager.setAnimation(false);
+
+            mMap.setOnCameraIdleListener(clusterManager);
+            mMap.setOnMarkerClickListener(clusterManager);
+
+
+            mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    setOnCluster();
+                }
+            });
+
+            clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyClusterItem>() {
+                @Override
+                public boolean onClusterItemClick(MyClusterItem item) {
+                    BottomSheetDialogFragment fragmentDatosReporte = DatosReporteFragment.newInstance(item.getId());
+                    fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                    fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
+
+                    return true;
+                }
+            });
+
+            clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyClusterItem>() {
+                @Override
+                public boolean onClusterClick(Cluster<MyClusterItem> cluster) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            cluster.getPosition(), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), 300, null
+                    );
+                    return true;
+                }
+            });
+
+
+        } catch(Exception e) {
+            Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
         }
     }
 }

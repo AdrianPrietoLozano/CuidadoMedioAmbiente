@@ -67,7 +67,8 @@ public class Programa implements UsuarioPrueba.ClaseObservadora {
 
         System.out.println("Inicio");
 
-        iniciarCrearEventos();
+        //iniciarCrearEventos();
+        iniciarRecomendaciones();
         //eliminarTablas();
 
     }
@@ -104,6 +105,7 @@ public class Programa implements UsuarioPrueba.ClaseObservadora {
 
     private void iniciarRecomendaciones() {
         inicializarDatos();
+        System.out.println("Recomendaciones");
         this.tInicio = System.nanoTime();
 
         for (UsuarioPrueba u : usuarios)
@@ -162,7 +164,7 @@ public class Programa implements UsuarioPrueba.ClaseObservadora {
                 this.tFin = System.nanoTime();
                 imprimirResultados(this.numRecomendaciones, "RECOMENDACIONES");
                 flag3 = true;
-                eliminarTablas();
+                //eliminarTablas();
             }
         }
 

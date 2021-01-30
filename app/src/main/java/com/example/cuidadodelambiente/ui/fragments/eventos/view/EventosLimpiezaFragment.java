@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.cuidadodelambiente.MyClusterItem;
+import com.example.cuidadodelambiente.MyCustomRenderer;
 import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.ui.activities.BuscarEventosActivity;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
@@ -28,24 +30,28 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
+import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Vector;
 
 
 /**
@@ -54,12 +60,15 @@ import java.util.Observer;
 
 
 public class EventosLimpiezaFragment extends Fragment
-        implements IEventosView, Observer, OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        implements IEventosView, Observer, OnMapReadyCallback {
 
     private final String TAG = EventosLimpiezaFragment.class.getSimpleName();
 
     private MapView mMapView;
     private GoogleMap mMap;
+    private ClusterManager<MyClusterItem> clusterManager;
+    private MyCustomRenderer renderer;
+    private List<UbicacionEvento> eventos;
     private static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
     private ProgressDialog progreso;
     private JsonObjectRequest jsonObjectRequest;
@@ -162,9 +171,6 @@ public class EventosLimpiezaFragment extends Fragment
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
 
-
-
-
         intentarPeticionBD();
 
         return v;
@@ -178,6 +184,7 @@ public class EventosLimpiezaFragment extends Fragment
             //layoutSinConexion.setVisibility(View.INVISIBLE);
             botonRecargar.show();
             presenter.cargarEventos();
+            //pruebaFuncion();
 
         } else { // no hay conexión a internet
             //helperCargaError.ocultarCargaMostrarContenido();
@@ -188,13 +195,65 @@ public class EventosLimpiezaFragment extends Fragment
         }
     }
 
-    public void recargar() {
-        intentarPeticionBD();
-    }
+    /*
+    PARA PRUEBAS DE CON ELSA
+    private void pruebaFuncion() {
+        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
+        service.doGetCercaMedioLejos(UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId()).enqueue(new Callback<CercaMedioLejos>() {
+            @Override
+            public void onResponse(Call<CercaMedioLejos> call, Response<CercaMedioLejos> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(getContext(), "no successful", Toast.LENGTH_SHORT).show();
+                    helperCargaError.mostrarPantallaError();
+                    return;
+                }
 
-    public void moverMapa(LatLng ubicacion) {
-        CameraUpdate current = CameraUpdateFactory.newLatLngZoom(ubicacion, 15);
-        mMap.moveCamera(current);
+                mMap.clear();
+
+                for (UbicacionEvento u : response.body().getCerca()) {
+                    Utilidades.agregarMarcadorMapa(mMap, new LatLng(u.getLatitud(), u.getLongitud()), u.getId(), BitmapDescriptorFactory.HUE_GREEN);
+                }
+
+                for (UbicacionEvento u : response.body().getMedio()) {
+                    Utilidades.agregarMarcadorMapa(mMap, new LatLng(u.getLatitud(), u.getLongitud()), u.getId(), BitmapDescriptorFactory.HUE_YELLOW);
+                }
+
+                for (UbicacionEvento u : response.body().getLejos()) {
+                    Utilidades.agregarMarcadorMapa(mMap, new LatLng(u.getLatitud(), u.getLongitud()), u.getId(), BitmapDescriptorFactory.HUE_RED);
+                }
+
+                helperCargaError.mostrarContenidoPrincipal();
+
+            }
+
+            @Override
+            public void onFailure(Call<CercaMedioLejos> call, Throwable t) {
+                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+                helperCargaError.mostrarPantallaError();
+            }
+        });
+    }
+     */
+
+
+    private void iniciarClusteres() {
+        Vector<MyClusterItem> nuevosItems = new Vector<>();
+
+        if(mMap != null) {
+            LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+            for (UbicacionEvento ubicacion : eventos) {
+                LatLng p = new LatLng(ubicacion.getLatitud(), ubicacion.getLongitud());
+                if (bounds.contains(p)) {
+                    MyClusterItem offsetItem = new MyClusterItem(p, ubicacion.getId());
+                    nuevosItems.add(offsetItem);
+                }
+            }
+
+            clusterManager.clearItems();
+            clusterManager.addItems(nuevosItems);
+            clusterManager.cluster();
+
+        }
     }
 
 
@@ -203,7 +262,8 @@ public class EventosLimpiezaFragment extends Fragment
         mMap = googleMap;
         try {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mMap.setOnMarkerClickListener(this);
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
+            mMap.setMyLocationEnabled(true);
             /*
             UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
@@ -214,8 +274,42 @@ public class EventosLimpiezaFragment extends Fragment
             uiSettings.setTiltGesturesEnabled(true);
              */
 
-            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-            mMap.setMyLocationEnabled(true);
+            clusterManager = new ClusterManager<>(getActivity(), mMap);
+            renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
+            clusterManager.setRenderer(renderer);
+            clusterManager.setAnimation(false);
+
+            mMap.setOnCameraIdleListener(clusterManager);
+            mMap.setOnMarkerClickListener(clusterManager);
+
+
+            mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+                @Override
+                public void onCameraChange(CameraPosition cameraPosition) {
+                    iniciarClusteres();
+                }
+            });
+
+            clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyClusterItem>() {
+                @Override
+                public boolean onClusterItemClick(MyClusterItem item) {
+                    BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(item.getId());
+                    fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                    fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());
+
+                    return true;
+                }
+            });
+
+            clusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MyClusterItem>() {
+                @Override
+                public boolean onClusterClick(Cluster<MyClusterItem> cluster) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                            cluster.getPosition(), (float) Math.floor(mMap.getCameraPosition().zoom + 1)), 300, null
+                    );
+                    return true;
+                }
+            });
 
         } catch (Exception e) {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
@@ -277,28 +371,10 @@ public class EventosLimpiezaFragment extends Fragment
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-
-        Toast.makeText(getContext(), marker.getTag().toString(), Toast.LENGTH_SHORT).show();
-
-        BottomSheetDialogFragment fragmentDatosReporte = DatosEventoFragment.newInstance((Integer) marker.getTag());
-        fragmentDatosReporte.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-        fragmentDatosReporte.show(getFragmentManager(), fragmentDatosReporte.getTag());
-
-        return true;
-    }
-
-    @Override
     public void onEventosCargadosExitosamente(List<UbicacionEvento> eventos) {
         Log.e("TOTAL", String.valueOf(eventos.size()));
-        mMap.clear();
+        this.eventos = eventos;
 
-        for (UbicacionEvento evento : eventos) {
-
-            Utilidades.agregarMarcadorMapa(mMap,
-                    new LatLng(evento.getLatitud(), evento.getLongitud()),
-                    evento.getId());
-        }
         helperCargaError.mostrarContenidoPrincipal();
     }
 

@@ -6,6 +6,7 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.models.User;
+import com.example.cuidadodelambiente.data.responses.CercaMedioLejos;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
@@ -186,28 +187,9 @@ public interface APIInterface {
     );
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /* PRUEBA IMAGEN MAPA */
+    @GET("recomendaciones/prueba/{idUsuario}")
+    Call<CercaMedioLejos> doGetCercaMedioLejos(@Path("idUsuario") Integer ambientalista);
 
 
     /*

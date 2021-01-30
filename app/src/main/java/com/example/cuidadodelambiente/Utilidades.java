@@ -2,6 +2,7 @@ package com.example.cuidadodelambiente;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -33,7 +34,7 @@ public class Utilidades {
     // defina ubicación del centro de Guadalajara
     public static final CameraPosition GDL = new CameraPosition.Builder()
             .target(DEFAULT_POSITION_MAP)
-            .zoom(15.5f).bearing(0).tilt(25).build();
+            .zoom(12.5f).bearing(0).tilt(25).build();
 
 
     // agrega un marcador al mapa, se le puede indicar el color del marcador

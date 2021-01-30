@@ -115,6 +115,7 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         textCerrarSesion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 int tipoUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getTipoUsuario();
 
                 limpiarDatosUsuario();
@@ -126,7 +127,7 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
                     mostrarActividadLogIn();
                 }
 
-                 //funcion();
+                //funcion();
             }
         });
 
@@ -217,4 +218,14 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
         Programa p = new Programa();
         p.iniciar();
     }
+
+    /*
+DELETE FROM participa_evento;
+DELETE FROM KNN;
+DELETE FROM evento_limpieza;
+ALTER TABLE participa_evento AUTO_INCREMENT = 1;
+ALTER TABLE KNN AUTO_INCREMENT = 1;
+ALTER TABLE evento_limpieza AUTO_INCREMENT = 1;
+
+*/
 }

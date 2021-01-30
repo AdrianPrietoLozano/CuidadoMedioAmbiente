@@ -30,7 +30,7 @@ public class UsuarioPrueba extends Thread {
             @Override
             public void run() {
                 service.doAgregarEvento(id, idReporte, "evento",
-                        "23/12/2020", "12:12", "des").enqueue(new Callback<CrearEventoResponse>() {
+                        "23/04/2021", "12:12", "des").enqueue(new Callback<CrearEventoResponse>() {
                     @Override
                     public void onResponse(Call<CrearEventoResponse> call, Response<CrearEventoResponse> response) {
                         observador.onResponseEvento(true, response.body().getIdEvento());
