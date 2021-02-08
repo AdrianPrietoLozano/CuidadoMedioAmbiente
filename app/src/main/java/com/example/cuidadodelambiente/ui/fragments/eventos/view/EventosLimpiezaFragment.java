@@ -21,6 +21,10 @@ import android.widget.Toast;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.MyClusterItem;
 import com.example.cuidadodelambiente.MyCustomRenderer;
+import com.example.cuidadodelambiente.data.models.UserLocalStore;
+import com.example.cuidadodelambiente.data.network.APIInterface;
+import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.data.responses.CercaMedioLejos;
 import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.ui.activities.BuscarEventosActivity;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
@@ -38,6 +42,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -52,6 +57,10 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -183,8 +192,8 @@ public class EventosLimpiezaFragment extends Fragment
         if (Utilidades.hayConexionInternet(getContext())) {
             //layoutSinConexion.setVisibility(View.INVISIBLE);
             botonRecargar.show();
-            presenter.cargarEventos();
-            //pruebaFuncion();
+            //presenter.cargarEventos();
+            pruebaFuncion();
 
         } else { // no hay conexión a internet
             //helperCargaError.ocultarCargaMostrarContenido();
@@ -195,8 +204,8 @@ public class EventosLimpiezaFragment extends Fragment
         }
     }
 
-    /*
-    PARA PRUEBAS DE CON ELSA
+
+    //PARA PRUEBAS DE CON ELSA
     private void pruebaFuncion() {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         service.doGetCercaMedioLejos(UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId()).enqueue(new Callback<CercaMedioLejos>() {
@@ -207,6 +216,8 @@ public class EventosLimpiezaFragment extends Fragment
                     helperCargaError.mostrarPantallaError();
                     return;
                 }
+
+                Log.e("TAMANIO", String.valueOf(response.body().getCerca().size() + response.body().getMedio().size() + response.body().getLejos().size()));
 
                 mMap.clear();
 
@@ -233,7 +244,7 @@ public class EventosLimpiezaFragment extends Fragment
             }
         });
     }
-     */
+
 
 
     private void iniciarClusteres() {
@@ -264,6 +275,18 @@ public class EventosLimpiezaFragment extends Fragment
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
             mMap.setMyLocationEnabled(true);
+
+            // prueba
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance((Integer) marker.getTag());
+                    fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                    fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());
+
+                    return true;
+                }
+            });
             /*
             UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
@@ -274,6 +297,7 @@ public class EventosLimpiezaFragment extends Fragment
             uiSettings.setTiltGesturesEnabled(true);
              */
 
+            /*
             clusterManager = new ClusterManager<>(getActivity(), mMap);
             renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
             clusterManager.setRenderer(renderer);
@@ -286,7 +310,7 @@ public class EventosLimpiezaFragment extends Fragment
             mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    iniciarClusteres();
+                    //iniciarClusteres();
                 }
             });
 
@@ -309,7 +333,7 @@ public class EventosLimpiezaFragment extends Fragment
                     );
                     return true;
                 }
-            });
+            });*/
 
         } catch (Exception e) {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();
