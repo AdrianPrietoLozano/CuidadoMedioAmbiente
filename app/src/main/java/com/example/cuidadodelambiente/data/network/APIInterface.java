@@ -191,6 +191,14 @@ public interface APIInterface {
     @GET("recomendaciones/prueba/{idUsuario}")
     Call<CercaMedioLejos> doGetCercaMedioLejos(@Path("idUsuario") Integer ambientalista);
 
+    /* PRUEBA */
+    @FormUrlEncoded
+    @POST("eventos/prueba/hector")
+    Call<List<UbicacionEvento>> doGetEventosCercanos(
+            @Field("latitud") Double latitud,
+            @Field("longitud") Double longitud,
+            @Field("radio") Float radio
+    );
 
     /*
     @Multipart

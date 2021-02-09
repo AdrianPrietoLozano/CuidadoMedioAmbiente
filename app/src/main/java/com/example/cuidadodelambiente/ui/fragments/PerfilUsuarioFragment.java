@@ -29,6 +29,7 @@ import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.prueba.Programa;
 import com.example.cuidadodelambiente.prueba.UsuarioPrueba;
+import com.example.cuidadodelambiente.ui.activities.EventosCercanosActivity;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
@@ -149,6 +150,14 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
             @Override
             public void onClick(View v) {
                 ((MainActivity) getActivity()).cambiarFragment(DeclaracionFragments.participaEventos, "GGG");
+            }
+        });
+
+        v.findViewById(R.id.cardEventosCercanos).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), EventosCercanosActivity.class);
+                startActivity(intent);
             }
         });
 
