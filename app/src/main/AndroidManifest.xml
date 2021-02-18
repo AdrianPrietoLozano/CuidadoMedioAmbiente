@@ -46,7 +46,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.ActividadCrearEvento" />
+        <activity android:name=".ui.activities.crear_evento.ActividadCrearEvento" />
         <activity android:name=".ui.activities.crear_reporte.view.ActividadCrearReporte"
             android:screenOrientation="portrait"/> <!-- android:theme="@style/AppTheme"> -->
         <!--

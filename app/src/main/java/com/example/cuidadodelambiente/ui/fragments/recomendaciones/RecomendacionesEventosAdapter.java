@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.recomendaciones.view;
+package com.example.cuidadodelambiente.ui.fragments.recomendaciones;
 
 import android.content.Context;
 import android.view.LayoutInflater;

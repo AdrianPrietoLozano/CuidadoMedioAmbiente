@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.participaciones.view;
+package com.example.cuidadodelambiente.ui.fragments.participaciones;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/navigation_eventos_recomendados"
-        android:name="com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionEventosFragment"
+        android:name="com.example.cuidadodelambiente.ui.fragments.recomendaciones.RecomendacionEventosFragment"
         android:label="@string/eventos_para_ti"
         tools:layout="@layout/fragment_recomendacion_eventos" />
 
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_cuenta"
-        android:name="com.example.cuidadodelambiente.ui.fragments.participaciones.view.ParticipaEventosFragment"
+        android:name="com.example.cuidadodelambiente.ui.fragments.participaciones.ParticipaEventosFragment"
         android:label="Tu cuenta"
         tools:layout="@layout/fragment_participa_eventos" />
 

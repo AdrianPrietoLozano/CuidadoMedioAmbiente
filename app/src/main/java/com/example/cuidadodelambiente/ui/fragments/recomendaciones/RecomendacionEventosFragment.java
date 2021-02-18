@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.recomendaciones.view;
+package com.example.cuidadodelambiente.ui.fragments.recomendaciones;
 
 
 import android.os.Bundle;
@@ -17,13 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cuidadodelambiente.helpers.HelperCargaError;
-import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.IRecomendacionesEventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.recomendaciones.presenter.RecomendacionesEventosPresenter;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
@@ -34,7 +31,7 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class RecomendacionEventosFragment extends Fragment
-    implements IRecomendacionesEventosView{
+    implements Contract.View {
 
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
@@ -45,12 +42,8 @@ public class RecomendacionEventosFragment extends Fragment
     private List<EventoLimpieza> listaEventos;
     private HelperCargaError helperCargaError;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private IRecomendacionesEventosPresenter presenter;
+    private Contract.Presenter presenter;
 
-
-    public RecomendacionEventosFragment() {
-        presenter = new RecomendacionesEventosPresenter(this);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,21 +58,19 @@ public class RecomendacionEventosFragment extends Fragment
                     @Override
                     public void onRefresh() {
                         listaEventos.clear();
-                        intentarPeticionBD();
+                        presenter.fetchEventos();
                     }
                 }
         );
 
         helperCargaError = new HelperCargaError(swipeRefreshLayout,
                 v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
-        helperCargaError.mostrarPantallaCarga();
+
+        presenter = new RecomendacionesEventosPresenter(this);
 
         recyclerEventos = v.findViewById(R.id.recyclerEventos);
         recyclerEventos.setHasFixedSize(true);
 
-        // layout sin conexion
-        //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
-        //layoutSinConexion.setVisibility(View.INVISIBLE);
 
         // mensaje de error que se muestra cuando ocurre algun error
         mensajeProblema = v.findViewById(R.id.mensajeProblema);
@@ -89,7 +80,7 @@ public class RecomendacionEventosFragment extends Fragment
         botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentarPeticionBD();
+                presenter.fetchEventos();
             }
         });
 
@@ -99,32 +90,23 @@ public class RecomendacionEventosFragment extends Fragment
 
         listaEventos = new ArrayList<>();
 
-        intentarPeticionBD();
+        presenter.fetchEventos();
 
         return v;
     }
 
-    private void intentarPeticionBD()
-    {
+    @Override
+    public void showLoading() {
         helperCargaError.mostrarPantallaCarga();
-
-        // si hay internet
-        if(Utilidades.hayConexionInternet(getContext())) {
-            //layoutSinConexion.setVisibility(View.INVISIBLE);
-            //iniciarPeticionBD();
-            presenter.cargarRecomendacionesEventos();
-        }
-        else { // no hay internet
-            //helperCargaError.ocultarCargaMostrarContenido();
-            helperCargaError.mostrarPantallaError();
-            Toast.makeText(getContext(), getString(R.string.sin_internet), Toast.LENGTH_SHORT).show();
-            //layoutSinConexion.setVisibility(View.VISIBLE);
-        }
     }
 
+    @Override
+    public void hideLoading() {
+
+    }
 
     @Override
-    public void onEventosCargadosExitosamente(final List<EventoLimpieza> eventos) {
+    public void showEventos(List<EventoLimpieza> eventos) {
         recyclerEventos.setAdapter(new RecomendacionesEventosAdapter(getContext(), eventos, new RecomendacionesEventosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -135,20 +117,20 @@ public class RecomendacionEventosFragment extends Fragment
             }
         }));
 
-        //helperCargaError.ocultarCargaMostrarContenido();
         helperCargaError.mostrarContenidoPrincipal();
         swipeRefreshLayout.setRefreshing(false);
     }
 
-
+    @Override
+    public void showError(String error) {
+        mensajeProblema.setText(error);
+        helperCargaError.mostrarPantallaError();
+        swipeRefreshLayout.setRefreshing(false);
+    }
 
     @Override
-    public void onEventosCargadosError(Throwable t) {
-        //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-        mensajeProblema.setText(R.string.estamos_teniendo_problemas);
-        swipeRefreshLayout.setRefreshing(false);
-        //layoutSinConexion.setVisibility(View.VISIBLE);
-        helperCargaError.mostrarPantallaError();
-        //helperCargaError.ocultarCargaMostrarContenido();
+    public void showNoEventos() {
+        // falta por hacer
+        showError("Sin recomendaciones");
     }
 }

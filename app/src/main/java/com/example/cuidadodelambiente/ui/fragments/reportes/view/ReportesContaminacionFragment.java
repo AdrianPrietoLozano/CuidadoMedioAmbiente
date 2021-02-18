@@ -80,7 +80,7 @@ public class ReportesContaminacionFragment extends Fragment
     private JsonObjectRequest jsonObjectRequest;
     private HelperCargaError helperCargaError;
     private IReportesPresenter reportesPresenter;
-    private List<UbicacionReporte> reportes;
+    private List<UbicacionReporte> reportes = new ArrayList<>();
 
 
     public ReportesContaminacionFragment() {
