@@ -286,7 +286,6 @@ public class ReportesContaminacionFragment extends Fragment
         try {
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-            mMap.setMyLocationEnabled(true);
             mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
             clusterManager = new ClusterManager<>(getActivity(), mMap);
             renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
@@ -324,6 +323,8 @@ public class ReportesContaminacionFragment extends Fragment
                     return true;
                 }
             });
+
+            mMap.setMyLocationEnabled(true);
 
 
         } catch(Exception e) {

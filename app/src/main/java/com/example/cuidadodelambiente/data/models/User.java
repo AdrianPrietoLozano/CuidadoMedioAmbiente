@@ -10,6 +10,9 @@ public class User {
     @SerializedName("id")
     private Integer id;
 
+    @SerializedName("token")
+    private String token;
+
     @SerializedName("email")
     private String email;
 
@@ -32,8 +35,9 @@ public class User {
 
     private boolean checked;
 
-    public User(Integer id, String nombre, String email, Integer puntos, int tipo) {
+    public User(Integer id, String token, String nombre, String email, Integer puntos, int tipo) {
         this.id = id;
+        this.token = token;
         this.nombre = nombre;
         this.email = email;
         this.puntos = puntos;
@@ -62,6 +66,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public String getEmail() {

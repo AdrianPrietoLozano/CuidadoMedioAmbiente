@@ -192,8 +192,8 @@ public class EventosLimpiezaFragment extends Fragment
         if (Utilidades.hayConexionInternet(getContext())) {
             //layoutSinConexion.setVisibility(View.INVISIBLE);
             botonRecargar.show();
-            //presenter.cargarEventos();
-            pruebaFuncion();
+            presenter.cargarEventos();
+            //pruebaFuncion();
 
         } else { // no hay conexión a internet
             //helperCargaError.ocultarCargaMostrarContenido();
@@ -274,7 +274,6 @@ public class EventosLimpiezaFragment extends Fragment
         try {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
-            mMap.setMyLocationEnabled(true);
 
             // prueba
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -297,7 +296,7 @@ public class EventosLimpiezaFragment extends Fragment
             uiSettings.setTiltGesturesEnabled(true);
              */
 
-            /*
+
             clusterManager = new ClusterManager<>(getActivity(), mMap);
             renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
             clusterManager.setRenderer(renderer);
@@ -310,7 +309,7 @@ public class EventosLimpiezaFragment extends Fragment
             mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    //iniciarClusteres();
+                    iniciarClusteres();
                 }
             });
 
@@ -333,7 +332,9 @@ public class EventosLimpiezaFragment extends Fragment
                     );
                     return true;
                 }
-            });*/
+            });
+
+            mMap.setMyLocationEnabled(true);
 
         } catch (Exception e) {
             Toast.makeText(getContext(), e.toString(), Toast.LENGTH_LONG).show();

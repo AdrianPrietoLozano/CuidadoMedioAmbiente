@@ -9,6 +9,7 @@ public class UserLocalStore extends Observable {
 
     public static final String SP_NAME = "usuarioLogueado";
     private static final String ID_STRING = "id";
+    private static final String TOKEN_STRING = "token";
     private static final String NOMBRE_STRING = "nombre";
     private static final String EMAIL_STRING = "email";
     private static final String PUNTOS_STRING = "puntos";
@@ -34,6 +35,7 @@ public class UserLocalStore extends Observable {
     synchronized public void guardarUsuario(User usuario) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(ID_STRING, usuario.getId());
+        editor.putString(TOKEN_STRING, usuario.getToken());
         editor.putString(NOMBRE_STRING, usuario.getNombre());
         editor.putString(EMAIL_STRING, usuario.getEmail());
         editor.putInt(PUNTOS_STRING, usuario.getPuntos());
@@ -52,12 +54,13 @@ public class UserLocalStore extends Observable {
 
         if (this.usuarioLogueado == null) {
             int id = sharedPreferences.getInt(ID_STRING, -1);
+            String token = sharedPreferences.getString(TOKEN_STRING, "");
             String nombre = sharedPreferences.getString(NOMBRE_STRING, "");
             String email = sharedPreferences.getString(EMAIL_STRING, "");
             int puntos = sharedPreferences.getInt(PUNTOS_STRING, -1);
             int tipoUsuario = sharedPreferences.getInt(TIPO_USUARIO_STRING, -1);
 
-            this.usuarioLogueado = new User(id, nombre, email, puntos, tipoUsuario);
+            this.usuarioLogueado = new User(id, token, nombre, email, puntos, tipoUsuario);
         }
 
         return this.usuarioLogueado;

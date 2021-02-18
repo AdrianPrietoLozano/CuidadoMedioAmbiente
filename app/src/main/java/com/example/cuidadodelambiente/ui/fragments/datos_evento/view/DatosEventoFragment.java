@@ -218,7 +218,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
 
     private void iniciarPeticionBD()
     {
-        presenter.cargarDatosEvento(this.eventoId, idUsuario);
+        presenter.cargarDatosEvento(this.eventoId);
     }
 
 
@@ -247,7 +247,6 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
                 progreso.show();
 
                 presenter.dejarDeParticiparEnEvento(
-                        idUsuario,
                         eventoLimpieza.getIdEvento()
                 );
             }
@@ -259,8 +258,7 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         progreso.show();
 
         presenter.participarEnEvento(
-                eventoLimpieza.getIdEvento(),
-                idUsuario
+                eventoLimpieza.getIdEvento()
         );
     }
 

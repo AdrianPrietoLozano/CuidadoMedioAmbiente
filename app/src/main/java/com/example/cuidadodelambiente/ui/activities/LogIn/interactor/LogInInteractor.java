@@ -90,11 +90,13 @@ public class LogInInteractor implements ILogInInteractor {
 
     private User obtenerUsuario(JsonObject json, int tipoUsuario) {
         int id = json.get("id").getAsInt();
+        //String token = json.get("token").getAsString();
+        String token = "";
         String nombre = json.get("nombre").getAsString();
         String email = json.get("email").getAsString();
         int puntos = json.get("puntos").getAsInt();
 
-        User user = new User(id, nombre, email, puntos, tipoUsuario);
+        User user = new User(id, token, nombre, email, puntos, tipoUsuario);
 
         return user;
     }

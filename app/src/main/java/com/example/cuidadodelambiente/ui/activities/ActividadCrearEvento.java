@@ -336,7 +336,7 @@ public class ActividadCrearEvento extends AppCompatActivity {
         Log.e(TAG, "Usuario: " + String.valueOf(idUsuario));
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callAgregarEvento = service.doAgregarEvento(idUsuario, this.idReporte, evento.getTitulo(),
+        callAgregarEvento = service.doAgregarEvento(this.idReporte, evento.getTitulo(),
                 evento.getFecha(), evento.getHora(), evento.getDescripcion());
 
         callAgregarEvento.enqueue(new Callback<CrearEventoResponse>() {

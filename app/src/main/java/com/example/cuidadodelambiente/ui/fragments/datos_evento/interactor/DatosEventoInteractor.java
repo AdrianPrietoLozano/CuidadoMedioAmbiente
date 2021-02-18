@@ -28,10 +28,10 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
     }
 
     @Override
-    public void cargarDatosEvento(int idEvento, int idUsuario) {
+    public void cargarDatosEvento(int idEvento) {
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callDatosEvento = service.doGetEventoLimpieza(idEvento, idUsuario);
+        callDatosEvento = service.doGetEventoLimpieza(idEvento);
         callDatosEvento.enqueue(new Callback<EventoLimpiezaResponse>() {
             @Override
             public void onResponse(Call<EventoLimpiezaResponse> call, retrofit2.Response<EventoLimpiezaResponse> response) {
@@ -57,9 +57,9 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
     }
 
     @Override
-    public void participarEnEvento(int idEvento, int idUsuario) {
+    public void participarEnEvento(int idEvento) {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> callUnirseEvento = service.doUnirseEvento(idUsuario, idEvento);
+        Call<JsonObject> callUnirseEvento = service.doUnirseEvento(idEvento);
 
         callUnirseEvento.enqueue(new Callback<JsonObject>() {
             @Override
@@ -96,9 +96,9 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
     }
 
     @Override
-    public void dejarDeParticiparEnEvento(int idUsuario, int idEvento) {
+    public void dejarDeParticiparEnEvento(int idEvento) {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doDejarParticiparEvento(idUsuario, idEvento);
+        Call<JsonObject> call = service.doDejarParticiparEvento(idEvento);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override

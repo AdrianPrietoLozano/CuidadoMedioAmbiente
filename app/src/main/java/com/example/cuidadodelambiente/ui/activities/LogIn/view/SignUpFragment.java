@@ -27,7 +27,6 @@ import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
@@ -154,11 +153,12 @@ public class SignUpFragment extends Fragment {
 
     private void usuarioCreadoCorrectamente(JsonObject json) {
         int id = json.get("id").getAsInt();
+        String token = json.get("token").getAsString();
         String nombre = json.get("nombre").getAsString();
         String email = json.get("email").getAsString();
         int puntos = json.get("puntos").getAsInt();
 
-        User user = new User(id, nombre, email, puntos, User.USUARIO_GOOGLE);
+        User user = new User(id, token, nombre, email, puntos, User.USUARIO_GOOGLE);
         user.setTipoUsuario(User.USUARIO_NORMAL);
 
         // guarda al usuario

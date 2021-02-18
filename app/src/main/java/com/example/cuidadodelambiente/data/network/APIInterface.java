@@ -67,14 +67,12 @@ public interface APIInterface {
 
     @GET("eventos/{idEvento}")
     Call<EventoLimpiezaResponse> doGetEventoLimpieza(
-            @Path("idEvento") Integer evento,
-            @Query("ambientalista_id") Integer ambientalista_id
+            @Path("idEvento") Integer evento
     );
 
     @FormUrlEncoded
     @POST("eventos")
     Call<CrearEventoResponse> doAgregarEvento(
-            @Field("ambientalista_id") Integer id_ambientalista,
             @Field("reporte_id") Integer id_reporte,
             @Field("titulo") String titulo,
             @Field("fecha") String fecha,
@@ -84,7 +82,7 @@ public interface APIInterface {
 
     @GET("eventos/usuario/{idUsuario}")
     Call<List<EventoLimpieza>> doGetEventosUsuario(
-            @Path("idUsuario") Integer ambientalista
+            @Path("idEvento") Integer evento
     );
 
 
@@ -109,7 +107,6 @@ public interface APIInterface {
             @Part("latitud") RequestBody latitud,
             @Part("longitud") RequestBody longitud,
             @Part("residuos[]") List<RequestBody> residuos,
-            @Part("ambientalista_id") RequestBody id_ambientalista,
             @Part("volumen") RequestBody volumen,
             @Part("descripcion") RequestBody descripcion,
             @Part MultipartBody.Part file
@@ -123,19 +120,17 @@ public interface APIInterface {
 
     @GET("participaciones/usuario/{idUsuario}")
     Call<List<EventoLimpieza>> doGetEventosParticipa(
-            @Path("idUsuario") Integer ambientalista
+            @Path("idUsuario") Integer idUsuario
     );
 
     @FormUrlEncoded
     @POST("participaciones/usuario")
     Call<JsonObject> doUnirseEvento(
-            @Field("idUsuario") Integer id_ambientalista,
             @Field("idEvento") Integer id_evento
     );
 
-    @DELETE("participaciones/usuario/{idUsuario}/{idEvento}")
+    @DELETE("participaciones/usuario/{idEvento}")
     Call<JsonObject> doDejarParticiparEvento(
-            @Path("idUsuario") Integer id_ambientalista,
             @Path("idEvento") Integer id_evento
     );
 
@@ -181,7 +176,6 @@ public interface APIInterface {
     @POST("insertar_limpieza.php")
     Call<JsonObject> doAgregarLimpieza(
             @Part("reporte_id") RequestBody id_reporte,
-            @Part("ambientalista_id") RequestBody id_ambientalista,
             @Part("descripcion") RequestBody descripcion,
             @Part MultipartBody.Part imagen
     );

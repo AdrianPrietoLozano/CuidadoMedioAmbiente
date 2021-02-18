@@ -16,18 +16,18 @@ public class DatosEventoPresenter implements IDatosEventoPresenter {
     }
 
     @Override
-    public void cargarDatosEvento(int idEvento, int idUsuario) {
-        interactor.cargarDatosEvento(idEvento, idUsuario);
+    public void cargarDatosEvento(int idEvento) {
+        interactor.cargarDatosEvento(idEvento);
     }
 
     @Override
-    public void participarEnEvento(int idEvento, int idUsuario) {
-        interactor.participarEnEvento(idEvento, idUsuario);
+    public void participarEnEvento(int idEvento) {
+        interactor.participarEnEvento(idEvento);
     }
 
     @Override
-    public void dejarDeParticiparEnEvento(int idUsuario, int idEvento) {
-        interactor.dejarDeParticiparEnEvento(idUsuario, idEvento);
+    public void dejarDeParticiparEnEvento(int idEvento) {
+        interactor.dejarDeParticiparEnEvento(idEvento);
     }
 
     @Override

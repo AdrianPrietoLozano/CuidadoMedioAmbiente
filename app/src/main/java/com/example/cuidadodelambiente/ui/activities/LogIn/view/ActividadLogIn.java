@@ -235,6 +235,8 @@ public class ActividadLogIn extends AppCompatActivity implements ILogInView {
     @Override
     public void cargarDatosUsuarioNormalExito(User user) {
         Log.e(TAG, "exito desde LOGIN");
+        String token = UserLocalStore.getInstance(getApplicationContext()).getUsuarioLogueado().getToken();
+        user.setToken(token);
         UserLocalStore.getInstance(getApplicationContext()).guardarUsuario(user);
     }
 

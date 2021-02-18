@@ -101,11 +101,12 @@ public class LogInFragment extends Fragment {
 
     private void usuarioAutentificado(JsonObject json) {
         int id = json.get("id").getAsInt();
+        String token = json.get("token").getAsString();
         String nombre = json.get("nombre").getAsString();
         String email = json.get("email").getAsString();
         int puntos = json.get("puntos").getAsInt();
 
-        User user = new User(id, nombre, email, puntos, User.USUARIO_GOOGLE);
+        User user = new User(id, token, nombre, email, puntos, User.USUARIO_GOOGLE);
         user.setTipoUsuario(User.USUARIO_NORMAL);
 
         // guarda al usuario

@@ -1,5 +1,6 @@
 package com.example.cuidadodelambiente.data.network;
 
+import com.example.cuidadodelambiente.data.interceptors.AuthInterceptor;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
@@ -24,11 +25,12 @@ public class RetrofitClientInstance {
     public static Retrofit getRetrofitInstance() {
 
 
-
+        AuthInterceptor authInterceptor = new AuthInterceptor();
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .addInterceptor(authInterceptor)
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS).build();
 

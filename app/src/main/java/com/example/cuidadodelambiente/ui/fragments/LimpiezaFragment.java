@@ -186,7 +186,7 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         progresoCrearLimpieza.show();
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doAgregarLimpieza(idReportePart, idUsuarioPart, descripcionPart, imagenPart);
+        Call<JsonObject> call = service.doAgregarLimpieza(idReportePart, descripcionPart, imagenPart);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

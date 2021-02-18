@@ -29,7 +29,7 @@ public class UsuarioPrueba extends Thread {
         (new Runnable() {
             @Override
             public void run() {
-                service.doAgregarEvento(id, idReporte, "evento",
+                service.doAgregarEvento(idReporte, "evento",
                         "23/04/2021", "12:12", "des").enqueue(new Callback<CrearEventoResponse>() {
                     @Override
                     public void onResponse(Call<CrearEventoResponse> call, Response<CrearEventoResponse> response) {
@@ -71,7 +71,7 @@ public class UsuarioPrueba extends Thread {
 
             @Override
             public void run() {
-                service.doUnirseEvento(id, idEvento).enqueue(new Callback<JsonObject>() {
+                service.doUnirseEvento(idEvento).enqueue(new Callback<JsonObject>() {
                     @Override
                     public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
                         observador.onResponseParticipacion(true);

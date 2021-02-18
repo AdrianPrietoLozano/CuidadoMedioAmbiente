@@ -62,7 +62,7 @@ public class CrearReporteInteractor implements ICrearReporteInteractor {
 
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         call = service.doAgregarReporte(
-                latitud, longitud, residuos, idUsuarioPart, volumen, descripcion, fileToUpload);
+                latitud, longitud, residuos, volumen, descripcion, fileToUpload);
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
