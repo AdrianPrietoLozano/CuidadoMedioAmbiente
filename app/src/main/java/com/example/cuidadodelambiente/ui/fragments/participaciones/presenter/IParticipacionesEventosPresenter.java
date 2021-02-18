@@ -5,7 +5,7 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import java.util.List;
 
 public interface IParticipacionesEventosPresenter {
-    void cargarParticipacionesEventos(Integer idUsuario);
+    void cargarParticipacionesEventos();
     void onConexionExitosa(List<EventoLimpieza> eventos);
     void onConexionError(Throwable t);
 }

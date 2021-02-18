@@ -140,7 +140,7 @@ public class ParticipaEventosFragment extends Fragment
         if(Utilidades.hayConexionInternet(getContext())) {
             //layoutSinConexion.setVisibility(View.INVISIBLE);
             int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-            this.presenter.cargarParticipacionesEventos(idUsuario);
+            this.presenter.cargarParticipacionesEventos();
         }
         else { // no hay internet
             //helperCargaError.ocultarCargaMostrarContenido();

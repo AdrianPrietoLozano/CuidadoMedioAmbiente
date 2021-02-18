@@ -156,7 +156,7 @@ public class ReportesContaminacionFragment extends Fragment
         return v;
     }
 
-    private void setOnCluster() {
+    private void iniciarClusteres() {
         Vector<MyClusterItem> nuevosItems = new Vector<>();
 
         if(mMap != null) {
@@ -248,7 +248,7 @@ public class ReportesContaminacionFragment extends Fragment
         this.reportes = reportesServer;
         totalReportes.setText(reportes.size() + " reportes en total");
 
-        //setOnCluster();
+        iniciarClusteres();
         helperCargaError.mostrarContenidoPrincipal();
 
     }
@@ -269,13 +269,14 @@ public class ReportesContaminacionFragment extends Fragment
         if (arg instanceof ReporteContaminacion) {
             ReporteContaminacion nuevoReporte = (ReporteContaminacion) arg;
 
-            LatLng ubicacion = new LatLng(nuevoReporte.getLatitud(), nuevoReporte.getLongitud());
-            Utilidades.agregarMarcadorMapa(mMap, ubicacion, nuevoReporte.getId());
+            this.reportes.add(new UbicacionReporte(nuevoReporte.getId(),
+                    nuevoReporte.getLatitud(),
+                    nuevoReporte.getLongitud()));
 
             // centra el mapa a la ubicación del nuevo reporte
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                     new CameraPosition.Builder()
-                            .target(ubicacion)
+                            .target(new LatLng(nuevoReporte.getLatitud(), nuevoReporte.getLongitud()))
                             .zoom(16.5f).bearing(0).tilt(25).build()));
         }
     }
@@ -290,7 +291,6 @@ public class ReportesContaminacionFragment extends Fragment
             clusterManager = new ClusterManager<>(getActivity(), mMap);
             renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
             clusterManager.setRenderer(renderer);
-            clusterManager.setAnimation(false);
 
             mMap.setOnCameraIdleListener(clusterManager);
             mMap.setOnMarkerClickListener(clusterManager);
@@ -299,7 +299,7 @@ public class ReportesContaminacionFragment extends Fragment
             mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    setOnCluster();
+                    iniciarClusteres();
                 }
             });
 

@@ -21,9 +21,9 @@ public class ParticipacionesEventosInteractor implements Callback<List<EventoLim
     }
 
     @Override
-    public void cargarParticipacionesEventos(Integer idUsuario) {
+    public void cargarParticipacionesEventos() {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<List<EventoLimpieza>> call = service.doGetEventosParticipa(idUsuario);
+        Call<List<EventoLimpieza>> call = service.doGetEventosParticipa();
         call.enqueue(this);
     }
 

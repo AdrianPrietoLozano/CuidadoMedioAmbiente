@@ -18,8 +18,8 @@ public class ParticipacionesEventosPresenter implements IParticipacionesEventosP
     }
 
     @Override
-    public void cargarParticipacionesEventos(Integer idUsuario) {
-        this.interactor.cargarParticipacionesEventos(idUsuario);
+    public void cargarParticipacionesEventos() {
+        this.interactor.cargarParticipacionesEventos();
     }
 
     @Override

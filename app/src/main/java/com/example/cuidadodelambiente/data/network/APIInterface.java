@@ -80,10 +80,8 @@ public interface APIInterface {
             @Field("descripcion") String descripcion
     );
 
-    @GET("eventos/usuario/{idUsuario}")
-    Call<List<EventoLimpieza>> doGetEventosUsuario(
-            @Path("idEvento") Integer evento
-    );
+    @GET("eventos/usuario")
+    Call<List<EventoLimpieza>> doGetEventosUsuario();
 
 
     /*---------------------- REPORTES -----------------------*/
@@ -96,10 +94,8 @@ public interface APIInterface {
             @Path("idReporte") Integer reporte
     );
 
-    @GET("reportes/usuario/{idUsuario}")
-    Call<List<ReporteContaminacion>> doGetReportesUsuario(
-            @Path("idUsuario") Integer ambientalista
-    );
+    @GET("reportes/usuario")
+    Call<List<ReporteContaminacion>> doGetReportesUsuario();
 
     @Multipart
     @POST("reportes")
@@ -118,10 +114,8 @@ public interface APIInterface {
 
     /*------------ PARTICIPACIONES ----------------*/
 
-    @GET("participaciones/usuario/{idUsuario}")
-    Call<List<EventoLimpieza>> doGetEventosParticipa(
-            @Path("idUsuario") Integer idUsuario
-    );
+    @GET("participaciones/usuario")
+    Call<List<EventoLimpieza>> doGetEventosParticipa();
 
     @FormUrlEncoded
     @POST("participaciones/usuario")
@@ -153,8 +147,8 @@ public interface APIInterface {
 
     /* RECOMENDACIONES */
 
-    @GET("recomendaciones/usuario/{idUsuario}")
-    Call<List<EventoLimpieza>> doGetEventosRecomendados(@Path("idUsuario") Integer ambientalista);
+    @GET("recomendaciones/usuario")
+    Call<List<EventoLimpieza>> doGetEventosRecomendados();
 
 
 

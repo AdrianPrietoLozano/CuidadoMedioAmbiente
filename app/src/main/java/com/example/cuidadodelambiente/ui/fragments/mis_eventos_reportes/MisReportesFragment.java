@@ -123,9 +123,8 @@ public class MisReportesFragment extends Fragment implements Observer {
     }
 
     private void iniciarPeticionBD() {
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<List<ReporteContaminacion>> call = service.doGetReportesUsuario(idUsuario);
+        Call<List<ReporteContaminacion>> call = service.doGetReportesUsuario();
         call.enqueue(new Callback<List<ReporteContaminacion>>() {
             @Override
             public void onResponse(Call<List<ReporteContaminacion>> call, Response<List<ReporteContaminacion>> response) {

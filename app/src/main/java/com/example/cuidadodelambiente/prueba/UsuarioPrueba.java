@@ -50,7 +50,7 @@ public class UsuarioPrueba extends Thread {
 
             @Override
             public void run() {
-                service.doGetEventosRecomendados(id).enqueue(new Callback<List<EventoLimpieza>>() {
+                service.doGetEventosRecomendados().enqueue(new Callback<List<EventoLimpieza>>() {
                     @Override
                     public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {
                         observador.onResponseRecomendacion(true);

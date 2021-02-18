@@ -123,9 +123,8 @@ public class MisEventosFragment extends Fragment implements Observer {
     }
 
     private void iniciarPeticionBD() {
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<List<EventoLimpieza>> call = service.doGetEventosUsuario(idUsuario);
+        Call<List<EventoLimpieza>> call = service.doGetEventosUsuario();
         call.enqueue(new Callback<List<EventoLimpieza>>() {
             @Override
             public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {

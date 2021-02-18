@@ -5,5 +5,5 @@ import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import java.util.List;
 
 public interface IParticipacionesEventosInteractor {
-    void cargarParticipacionesEventos(Integer idUsuario);
+    void cargarParticipacionesEventos();
 }

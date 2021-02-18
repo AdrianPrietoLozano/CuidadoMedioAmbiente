@@ -20,9 +20,9 @@ public class RecomendacionesEventosInteractor implements retrofit2.Callback<List
     }
 
     @Override
-    public void cargarRecomendacionesEventos(Integer id_usuario) {
+    public void cargarRecomendacionesEventos() {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        service.doGetEventosRecomendados(id_usuario).enqueue(this);
+        service.doGetEventosRecomendados().enqueue(this);
     }
 
     @Override

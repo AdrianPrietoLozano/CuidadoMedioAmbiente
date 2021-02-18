@@ -275,17 +275,7 @@ public class EventosLimpiezaFragment extends Fragment
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
 
-            // prueba
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance((Integer) marker.getTag());
-                    fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-                    fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());
 
-                    return true;
-                }
-            });
             /*
             UiSettings uiSettings = mMap.getUiSettings();
             uiSettings.setAllGesturesEnabled(true);
@@ -300,7 +290,6 @@ public class EventosLimpiezaFragment extends Fragment
             clusterManager = new ClusterManager<>(getActivity(), mMap);
             renderer = new MyCustomRenderer(getActivity(), mMap, clusterManager);
             clusterManager.setRenderer(renderer);
-            clusterManager.setAnimation(false);
 
             mMap.setOnCameraIdleListener(clusterManager);
             mMap.setOnMarkerClickListener(clusterManager);
@@ -400,6 +389,7 @@ public class EventosLimpiezaFragment extends Fragment
         Log.e("TOTAL", String.valueOf(eventos.size()));
         this.eventos = eventos;
 
+        iniciarClusteres();
         helperCargaError.mostrarContenidoPrincipal();
     }
 
@@ -420,8 +410,9 @@ public class EventosLimpiezaFragment extends Fragment
             Log.e(TAG, "UPDATE");
 
             EventoLimpieza evento = (EventoLimpieza) arg;
-
-            Utilidades.agregarMarcadorMapa(mMap, evento.getUbicacion(), evento.getIdEvento());
+            this.eventos.add(new UbicacionEvento(evento.getIdEvento(),
+                    evento.getUbicacion().latitude,
+                    evento.getUbicacion().longitude));
 
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(
                     new CameraPosition.Builder()

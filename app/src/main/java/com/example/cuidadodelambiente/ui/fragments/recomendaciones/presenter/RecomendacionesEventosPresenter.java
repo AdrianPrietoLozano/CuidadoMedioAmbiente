@@ -18,8 +18,8 @@ public class RecomendacionesEventosPresenter implements IRecomendacionesEventosP
     }
 
     @Override
-    public void cargarRecomendacionesEventos(Integer id_usuario) {
-        interactor.cargarRecomendacionesEventos(id_usuario);
+    public void cargarRecomendacionesEventos() {
+        interactor.cargarRecomendacionesEventos();
     }
 
     @Override
