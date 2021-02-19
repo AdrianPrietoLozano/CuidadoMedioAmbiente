@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.eventos.view;
+package com.example.cuidadodelambiente.ui.fragments.eventos;
 
 
 import android.app.ProgressDialog;
@@ -34,9 +34,8 @@ import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.activities.crear_evento.ActividadCrearEvento;
+import com.example.cuidadodelambiente.ui.base.BaseFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
-import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
-import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -67,8 +66,8 @@ import retrofit2.Response;
  */
 
 
-public class EventosLimpiezaFragment extends Fragment
-        implements IEventosView, Observer, OnMapReadyCallback {
+public class EventosLimpiezaFragment extends BaseFragment
+        implements Contract.View, Observer, OnMapReadyCallback {
 
     private final String TAG = EventosLimpiezaFragment.class.getSimpleName();
 
@@ -83,24 +82,21 @@ public class EventosLimpiezaFragment extends Fragment
     //private LinearLayout layoutSinConexion;
     private FloatingActionButton botonRecargar;
     private Button botonVolverIntentar;
-    private TextView mensajeProblema;
-    private HelperCargaError helperCargaError;
+    //private TextView mensajeProblema;
+    //private HelperCargaError helperCargaError;
     private BottomSheetBehavior sheetBehavior;
     private LinearLayout bottom_sheet;
-    private IEventosPresenter presenter;
+    private View contenidoPrincipal;
+    private Contract.Presenter<Contract.View> presenter = new EventosPresenter<>();
 
-    public EventosLimpiezaFragment() {
-        this.presenter = new EventosPresenter(this);
 
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.content_eventos_limpieza;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.content_eventos_limpieza, container, false);
-        //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        Log.e("EVENTOSLIMPIEZA", "onCreateView");
-
+    public void initView(View v, Bundle savedInstanceState) {
         ActividadCrearEvento.getObservable().addObserver(this);
 
         // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
@@ -110,6 +106,7 @@ public class EventosLimpiezaFragment extends Fragment
             mMapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
         }
 
+        presenter.attachView(this);
 
         ImageView iconoBuscar = v.findViewById(R.id.iconoBuscar);
         iconoBuscar.setOnClickListener(new View.OnClickListener() {
@@ -120,11 +117,13 @@ public class EventosLimpiezaFragment extends Fragment
             }
         });
 
+        contenidoPrincipal = v.findViewById(R.id.contenidoPrincipal);
+
         // para la carga circular
-        helperCargaError = new HelperCargaError(v.findViewById(R.id.contenidoPrincipal),
-                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        //helperCargaError = new HelperCargaError(v.findViewById(R.id.contenidoPrincipal),
+                //v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
         //helperCargaError.ocultarContenidoMostrarCarga();
-        helperCargaError.mostrarPantallaCarga();
+        //helperCargaError.mostrarPantallaCarga();
 
         //layoutSinConexion = v.findViewById(R.id.layoutSinConexion);
         //layoutSinConexion.setVisibility(View.INVISIBLE);
@@ -134,7 +133,7 @@ public class EventosLimpiezaFragment extends Fragment
         mMapView.getMapAsync(this);
 
         // mensaje de error que se muestra cuando ocurre algun error
-        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+        //mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         // evento clic de las recomendaciones para participar en eventos
         v.findViewById(R.id.layoutEventoParati).setOnClickListener(new View.OnClickListener() {
@@ -159,7 +158,7 @@ public class EventosLimpiezaFragment extends Fragment
         botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentarPeticionBD();
+                presenter.fetchEventos();
             }
         });
 
@@ -168,7 +167,7 @@ public class EventosLimpiezaFragment extends Fragment
         botonRecargar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentarPeticionBD();
+                presenter.fetchEventos();
             }
         });
 
@@ -178,12 +177,10 @@ public class EventosLimpiezaFragment extends Fragment
         sheetBehavior = BottomSheetBehavior.from(bottom_sheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-
-        intentarPeticionBD();
-
-        return v;
+        presenter.fetchEventos();
     }
 
+    /*
     private void intentarPeticionBD() {
         helperCargaError.mostrarPantallaCarga();
 
@@ -202,10 +199,11 @@ public class EventosLimpiezaFragment extends Fragment
             //layoutSinConexion.setVisibility(View.VISIBLE);
         }
     }
+    */
 
 
     //PARA PRUEBAS DE CON ELSA
-    private void pruebaFuncion() {
+    /*private void pruebaFuncion() {
         APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         service.doGetCercaMedioLejos(UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId()).enqueue(new Callback<CercaMedioLejos>() {
             @Override
@@ -242,7 +240,7 @@ public class EventosLimpiezaFragment extends Fragment
                 helperCargaError.mostrarPantallaError();
             }
         });
-    }
+    }*/
 
 
 
@@ -373,33 +371,20 @@ public class EventosLimpiezaFragment extends Fragment
     public void onDestroy() {
         mMapView.onDestroy();
         super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
         ActividadCrearEvento.getObservable().deleteObserver(this);
         Toast.makeText(getContext(), "Observer eliminado", Toast.LENGTH_SHORT).show();
+        super.onDestroyView();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
         mMapView.onLowMemory();
-    }
-
-    @Override
-    public void onEventosCargadosExitosamente(List<UbicacionEvento> eventos) {
-        Log.e("TOTAL", String.valueOf(eventos.size()));
-        this.eventos = eventos;
-
-        iniciarClusteres();
-        helperCargaError.mostrarContenidoPrincipal();
-    }
-
-    @Override
-    public void onEventosCargadosError(Throwable t) {
-        //Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-
-        //helperCargaError.ocultarCargaMostrarContenido();
-        botonRecargar.hide();
-        mensajeProblema.setText(R.string.estamos_teniendo_problemas);
-        helperCargaError.mostrarPantallaError();
     }
 
     // se ejecuta cuando se crea un evento de limpieza
@@ -421,4 +406,23 @@ public class EventosLimpiezaFragment extends Fragment
         }
     }
 
+    @Override
+    public void showEventos(List<UbicacionEvento> eventos) {
+        Log.e("TOTAL", String.valueOf(eventos.size()));
+        this.eventos = eventos;
+
+        iniciarClusteres();
+        contenidoPrincipal.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideContenido() {
+        contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String error) {
+        super.showError(error);
+        botonRecargar.hide();
+    }
 }

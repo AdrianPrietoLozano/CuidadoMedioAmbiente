@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.reportes.view;
+package com.example.cuidadodelambiente.ui.fragments.reportes;
 
 
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,33 +26,21 @@ import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
 import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
-import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.ReportesPresenter;
+import com.example.cuidadodelambiente.ui.fragments.reportes.view.IReportesView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.maps.android.clustering.Cluster;
-import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
-import com.google.maps.android.clustering.algo.GridBasedAlgorithm;
-import com.google.maps.android.clustering.algo.NonHierarchicalViewBasedAlgorithm;
-import com.google.maps.android.clustering.algo.PreCachingAlgorithmDecorator;
-import com.google.maps.android.clustering.algo.ScreenBasedAlgorithm;
-import com.google.maps.android.clustering.algo.ScreenBasedAlgorithmAdapter;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Vector;

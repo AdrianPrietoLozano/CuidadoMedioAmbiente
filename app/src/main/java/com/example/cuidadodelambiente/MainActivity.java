@@ -7,15 +7,17 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.example.cuidadodelambiente.ui.base.BaseActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener
+public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener
 {
 
     //public final ParticipaEventosFragment participaEventos = new ParticipaEventosFragment();
@@ -24,10 +26,18 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private BottomNavigationView bottomNavigationView;
 
     @Override
+    public void onProgressDialogCancel(DialogInterface dialog, int which) {
+
+    }
+
+    @Override
+    public int getLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
         // Cambia el color del status bar a verde
 
         Utilidades.cambiarColorStatusBar(getWindow(),

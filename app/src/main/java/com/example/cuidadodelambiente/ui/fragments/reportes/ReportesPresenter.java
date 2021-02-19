@@ -1,8 +1,8 @@
-package com.example.cuidadodelambiente.ui.fragments.reportes.presenter;
+package com.example.cuidadodelambiente.ui.fragments.reportes;
 
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.ui.fragments.reportes.interactor.IReportesInteractor;
-import com.example.cuidadodelambiente.ui.fragments.reportes.interactor.ReportesInteractor;
+import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
 import com.example.cuidadodelambiente.ui.fragments.reportes.view.IReportesView;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public class ReportesPresenter implements IReportesPresenter {
 
     public ReportesPresenter(IReportesView view) {
         this.view = view;
-        this.interactor = new ReportesInteractor(this);
+        this.interactor = new ReportesModel(this);
     }
 
     @Override

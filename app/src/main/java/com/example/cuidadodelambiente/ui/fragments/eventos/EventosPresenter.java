@@ -1,17 +1,16 @@
-package com.example.cuidadodelambiente.ui.fragments.participaciones;
+package com.example.cuidadodelambiente.ui.fragments.eventos;
 
-import com.example.cuidadodelambiente.data.models.EventoLimpieza;
+import com.example.cuidadodelambiente.data.models.UbicacionEvento;
 import com.example.cuidadodelambiente.ui.base.BasePresenter;
 
 import java.util.List;
 
-public class ParticipacionesEventosPresenter<V extends Contract.View> extends BasePresenter<V>
-        implements Contract.Presenter<V> {
+public class EventosPresenter<V extends Contract.View> extends BasePresenter<V> implements Contract.Presenter<V> {
 
     private Contract.Model model;
 
-    public ParticipacionesEventosPresenter() {
-        this.model = new ParticipacionesEventosModel(this);
+    public EventosPresenter() {
+        this.model = new EventosModel(this);
     }
 
     @Override
@@ -24,16 +23,13 @@ public class ParticipacionesEventosPresenter<V extends Contract.View> extends Ba
         } else {
             getView().showError("Sin conexión a internet");
         }
+
     }
 
     @Override
-    public void onEventosFetched(List<EventoLimpieza> eventos) {
+    public void onEventosFetched(List<UbicacionEvento> eventos) {
         getView().hideLoading();
-        if (eventos.isEmpty()) {
-            getView().showNoEventos();
-        } else {
-            getView().showEventos(eventos);
-        }
+        getView().showEventos(eventos);
     }
 
     @Override

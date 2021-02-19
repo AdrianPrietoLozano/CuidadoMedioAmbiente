@@ -3,41 +3,44 @@ package com.example.cuidadodelambiente.ui.fragments.recomendaciones;
 import com.example.cuidadodelambiente.AppContext;
 import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
+import com.example.cuidadodelambiente.ui.base.BasePresenter;
 
 import java.util.List;
 
-public class RecomendacionesEventosPresenter implements Contract.Presenter {
+public class RecomendacionesEventosPresenter<V extends Contract.View> extends BasePresenter<V>
+    implements Contract.Presenter<V>{
 
-    private Contract.View view;
     private Contract.Model model;
 
-    public RecomendacionesEventosPresenter(Contract.View view) {
-        this.view = view;
+    public RecomendacionesEventosPresenter() {
         this.model = new RecomendacionesEventosModel(this);
     }
 
-
     @Override
     public void fetchEventos() {
-        if (Utilidades.hayConexionInternet(AppContext.getContext())) {
-            view.showLoading();
+        getView().hideContenido();
+        getView().hideError();
+        if (getView().isNetworkConnected()) {
+            getView().showLoading();
             model.fetchEventos();
         } else {
-            view.showError("Sin conexión a internet");
+            getView().showError("Sin conexión a internet");
         }
     }
 
     @Override
     public void onEventosFetched(List<EventoLimpieza> eventos) {
+        getView().hideLoading();
         if (eventos.isEmpty()) {
-            view.showNoEventos();
+            getView().showNoEventos();
         } else {
-            view.showEventos(eventos);
+            getView().showEventos(eventos);
         }
     }
 
     @Override
     public void onEventosError(String error) {
-        view.showError(error);
+        getView().hideLoading();
+        getView().showError(error);
     }
 }

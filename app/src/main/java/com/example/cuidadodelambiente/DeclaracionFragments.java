@@ -8,9 +8,9 @@ import com.example.cuidadodelambiente.ui.activities.crear_evento.ActividadCrearE
 import com.example.cuidadodelambiente.ui.activities.crear_reporte.view.ActividadCrearReporte;
 import com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes.MisEventosYReportesFragment;
 import com.example.cuidadodelambiente.ui.fragments.PerfilUsuarioFragment;
-import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
+import com.example.cuidadodelambiente.ui.fragments.eventos.EventosLimpiezaFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.ParticipaEventosFragment;
-import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
+import com.example.cuidadodelambiente.ui.fragments.reportes.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.RecomendacionEventosFragment;
 
 

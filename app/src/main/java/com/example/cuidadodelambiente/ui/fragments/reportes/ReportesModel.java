@@ -1,8 +1,9 @@
-package com.example.cuidadodelambiente.ui.fragments.reportes.interactor;
+package com.example.cuidadodelambiente.ui.fragments.reportes;
 
 import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.example.cuidadodelambiente.ui.fragments.reportes.interactor.IReportesInteractor;
 import com.example.cuidadodelambiente.ui.fragments.reportes.presenter.IReportesPresenter;
 
 import java.util.List;
@@ -11,12 +12,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ReportesInteractor implements Callback<List<UbicacionReporte>>,
+public class ReportesModel implements Callback<List<UbicacionReporte>>,
         IReportesInteractor {
 
     private IReportesPresenter presenter;
 
-    public ReportesInteractor(IReportesPresenter presenter) {
+    public ReportesModel(IReportesPresenter presenter) {
         this.presenter = presenter;
     }
 

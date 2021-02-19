@@ -21,6 +21,7 @@ import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
+import com.example.cuidadodelambiente.ui.base.BaseFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 
@@ -33,27 +34,24 @@ import java.util.Observer;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParticipaEventosFragment extends Fragment
+public class ParticipaEventosFragment extends BaseFragment
     implements Contract.View, Observer {
 
     private RecyclerView recyclerEventos;
     private Button botonVolverIntentar;
-    private TextView mensajeProblema;
+    //private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
-    private HelperCargaError helperCargaError;
+    //private HelperCargaError helperCargaError;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Contract.Presenter presenter;
-    private MaterialToolbar toolbar;
-    private TextView toolbarTitle;
+    private Contract.Presenter<Contract.View> presenter = new ParticipacionesEventosPresenter<>();
+    //private MaterialToolbar toolbar;
+    //private TextView toolbarTitle;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_participa_eventos, container, false);
-
+    public void initView(View v, Bundle savedInstanceState) {
+        /*
         toolbar = v.findViewById(R.id.toolbar);
         toolbar.setBackgroundColor(getContext().getResources().getColor(R.color.colorPrimary));
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
@@ -67,10 +65,14 @@ public class ParticipaEventosFragment extends Fragment
         toolbarTitle = v.findViewById(R.id.toolbar_title);
         toolbarTitle.setText("Eventos donde participas");
         toolbarTitle.setTextColor(Color.WHITE);
+        */
+        presenter.attachView(this);
+
+        initToolbar("Eventos donde participas",
+                getContext().getResources().getColor(R.color.colorPrimary),
+                Color.WHITE);
 
         DatosEventoFragment.getObservable().addObserver(this);
-
-        presenter = new ParticipacionesEventosPresenter(this);
 
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(
@@ -83,14 +85,14 @@ public class ParticipaEventosFragment extends Fragment
                 }
         );
 
-        helperCargaError = new HelperCargaError(swipeRefreshLayout,
-                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
+        //helperCargaError = new HelperCargaError(swipeRefreshLayout,
+                //v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
 
         recyclerEventos = v.findViewById(R.id.recyclerParticipaEventos);
         recyclerEventos.setHasFixedSize(true);
 
         // mensaje de error que se muestra cuando ocurre algun error
-        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+        //mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
         botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
@@ -111,8 +113,11 @@ public class ParticipaEventosFragment extends Fragment
         ((MainActivity) getActivity()).cambiarVisibilidadBottomNavigation(View.GONE);
 
         presenter.fetchEventos();
+    }
 
-        return v;
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.fragment_participa_eventos;
     }
 
     @Override
@@ -139,30 +144,27 @@ public class ParticipaEventosFragment extends Fragment
     }
 
     @Override
-    public void showLoading() {
-        helperCargaError.mostrarPantallaCarga();
-    }
-
-    @Override
-    public void hideLoading() {
-    }
-
-    @Override
     public void showEventos(List<EventoLimpieza> eventos) {
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), eventos));
-        helperCargaError.mostrarContenidoPrincipal();
+        //helperCargaError.mostrarContenidoPrincipal();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showError(String error) {
-        mensajeProblema.setText(error);
-        helperCargaError.mostrarPantallaError();
+        super.showError(error);
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
+    public void hideContenido() {
+        swipeRefreshLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showNoEventos() {
+        hideContenido();
         showError("No participas en ningún evento");
     }
 }

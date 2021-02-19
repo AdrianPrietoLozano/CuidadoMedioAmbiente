@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
+import com.example.cuidadodelambiente.ui.base.BaseActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,7 +44,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ActividadCrearEvento extends AppCompatActivity implements Contract.View {
+public class ActividadCrearEvento extends BaseActivity implements Contract.View {
 
     private final String TAG = ActividadCrearEvento.class.getSimpleName();
 
@@ -57,7 +59,7 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
     private Calendar calendario;
     private DatePickerDialog datePickerDialog;
     private TimePickerDialog timePickerDialog;
-    private ProgressDialog progresoCrearEvento;
+    //private ProgressDialog progresoCrearEvento;
     private int idReporte;
     private LatLng ubicacionReporte;
     private static ParaObservar observable = new ParaObservar();
@@ -65,7 +67,7 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
     private TextView txtLatitudLongitud;
     private MaterialToolbar toolbar;
     private TextView toolbarTitle;
-    private Contract.Presenter presenter;
+    private Contract.Presenter<Contract.View> presenter = new CrearEventoPresenter<>();
 
     public static ParaObservar getObservable() {
         return observable;
@@ -74,27 +76,14 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_actividad_crear_evento);
-
 
         // Cambia el color del status bar a verde
         Utilidades.cambiarColorStatusBar(getWindow(),
                 ContextCompat.getColor(getApplicationContext(), R.color.verde3));
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        initToolbar("Nuevo evento", Color.WHITE, Color.BLACK, R.drawable.ic_arrow_back_black_24dp);
 
-        toolbarTitle = findViewById(R.id.toolbar_title);
-        toolbarTitle.setText("Nuevo evento");
-
-        presenter = new CrearEventoPresenter(this);
+        presenter.attachView(this);
 
         tituloEvento = findViewById(R.id.editTextTitulo);
         txtDireccionEvento = findViewById(R.id.textViewDireccion);
@@ -149,31 +138,8 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
                     .concat(String.valueOf(ubicacionReporte.longitude)));
         }
 
-        inicializarProgressDialog();
+        //inicializarProgressDialog();
         presenter.getDireccionEvento(getApplicationContext(), ubicacionReporte);
-    }
-
-    private void inicializarProgressDialog() {
-        progresoCrearEvento = new ProgressDialog(ActividadCrearEvento.this);
-        progresoCrearEvento.setTitle("Creando evento");
-        progresoCrearEvento.setMessage("Cargando");
-        progresoCrearEvento.setCancelable(false);
-        progresoCrearEvento.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                presenter.cancelarCrearEvento();
-            }
-        });
-    }
-
-    @Override
-    public void showLoading() {
-        progresoCrearEvento.show();
-    }
-
-    @Override
-    public void hideLoading() {
-        progresoCrearEvento.dismiss();
     }
 
     @Override
@@ -184,17 +150,12 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
 
     @Override
     public void onEventoCancelado() {
-        Toast.makeText(getApplicationContext(), "Evento cancelado", Toast.LENGTH_SHORT).show();
+        showMessage("Evento cancelado");
     }
 
     @Override
     public void cerrar() {
-        Toast.makeText(getApplicationContext(), "Evento creado exitosamente", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showError(String error) {
-        Toast.makeText(getApplicationContext(), error, Toast.LENGTH_SHORT).show();
+        showMessage("Evento creado exitosamente");
     }
 
     @Override
@@ -306,5 +267,15 @@ public class ActividadCrearEvento extends AppCompatActivity implements Contract.
         evento.setIdReporte(this.idReporte);
 
         presenter.crearEvento(evento);
+    }
+
+    @Override
+    public void onProgressDialogCancel(DialogInterface dialog, int which) {
+        presenter.cancelarCrearEvento();
+    }
+
+    @Override
+    public int getLayout() {
+        return R.layout.activity_actividad_crear_evento;
     }
 }

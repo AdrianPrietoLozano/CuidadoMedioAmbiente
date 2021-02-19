@@ -20,6 +20,7 @@ import com.example.cuidadodelambiente.helpers.HelperCargaError;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.ui.base.BaseFragment;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -30,28 +31,25 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RecomendacionEventosFragment extends Fragment
+public class RecomendacionEventosFragment extends BaseFragment
     implements Contract.View {
 
     private RecyclerView recyclerEventos;
     private RecyclerView.Adapter adapter;
     //private LinearLayout layoutSinConexion;
     private Button botonVolverIntentar;
-    private TextView mensajeProblema;
+    //private TextView mensajeProblema;
     private RecyclerView.LayoutManager lManager;
     private List<EventoLimpieza> listaEventos;
-    private HelperCargaError helperCargaError;
+    //private HelperCargaError helperCargaError;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private Contract.Presenter presenter;
+
+    private Contract.Presenter<Contract.View> presenter = new RecomendacionesEventosPresenter<>();
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
-        // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_recomendacion_eventos, container, false);
-
+    public void initView(View v, Bundle savedInstanceState) {
+        presenter.attachView(this);
         swipeRefreshLayout = v.findViewById(R.id.contenidoPrincipal);
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {
@@ -63,17 +61,15 @@ public class RecomendacionEventosFragment extends Fragment
                 }
         );
 
-        helperCargaError = new HelperCargaError(swipeRefreshLayout,
-                v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
-
-        presenter = new RecomendacionesEventosPresenter(this);
+        //helperCargaError = new HelperCargaError(swipeRefreshLayout,
+                //v.findViewById(R.id.pantallaCarga), v.findViewById(R.id.layoutSinConexion));
 
         recyclerEventos = v.findViewById(R.id.recyclerEventos);
         recyclerEventos.setHasFixedSize(true);
 
 
         // mensaje de error que se muestra cuando ocurre algun error
-        mensajeProblema = v.findViewById(R.id.mensajeProblema);
+        //mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
         botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
@@ -91,22 +87,21 @@ public class RecomendacionEventosFragment extends Fragment
         listaEventos = new ArrayList<>();
 
         presenter.fetchEventos();
-
-        return v;
     }
 
     @Override
-    public void showLoading() {
-        helperCargaError.mostrarPantallaCarga();
+    public void hideContenido() {
+        swipeRefreshLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void hideLoading() {
-
+    protected int getLayoutResource() {
+        return R.layout.fragment_recomendacion_eventos;
     }
 
     @Override
     public void showEventos(List<EventoLimpieza> eventos) {
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         recyclerEventos.setAdapter(new RecomendacionesEventosAdapter(getContext(), eventos, new RecomendacionesEventosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -117,20 +112,25 @@ public class RecomendacionEventosFragment extends Fragment
             }
         }));
 
-        helperCargaError.mostrarContenidoPrincipal();
+        //helperCargaError.mostrarContenidoPrincipal();
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showError(String error) {
-        mensajeProblema.setText(error);
-        helperCargaError.mostrarPantallaError();
+        super.showError(error);
         swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void showNoEventos() {
-        // falta por hacer
+        hideContenido();
         showError("Sin recomendaciones");
+    }
+
+    @Override
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
     }
 }

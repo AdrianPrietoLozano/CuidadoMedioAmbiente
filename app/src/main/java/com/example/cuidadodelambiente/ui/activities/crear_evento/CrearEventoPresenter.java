@@ -4,24 +4,21 @@ import android.content.Context;
 
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
+import com.example.cuidadodelambiente.ui.base.BasePresenter;
 import com.google.android.gms.maps.model.LatLng;
 
-import org.jetbrains.annotations.NotNull;
+public class CrearEventoPresenter<V extends Contract.View> extends BasePresenter<V> implements Contract.Presenter<V> {
 
-public class CrearEventoPresenter implements Contract.Presenter {
-
-    private Contract.View view;
     private Contract.Model model;
 
-    public CrearEventoPresenter(@NotNull Contract.View view) {
-        this.view = view;
+    public CrearEventoPresenter() {
         this.model = new CrearEventoModel(this);
     }
 
     @Override
     public void crearEvento(EventoLimpieza evento) {
-        view.showLoading();
-        model.crearEvento(evento);
+        getView().showLoading();
+        //model.crearEvento(evento);
 
     }
 
@@ -32,34 +29,35 @@ public class CrearEventoPresenter implements Contract.Presenter {
 
     @Override
     public void onEventoCancelado() {
-        view.onEventoCancelado();
+        getView().hideLoading();
+        getView().onEventoCancelado();
     }
 
     @Override
     public void onEventoCreado(EventoLimpieza evento) {
-        view.hideLoading();
-        view.eventoCreado(evento);
+        getView().hideLoading();
+        getView().eventoCreado(evento);
     }
 
     @Override
     public void onEventoError(String error) {
-        view.hideLoading();
-        view.showError(error);
+        getView().hideLoading();
+        getView().showError(error);
     }
 
     @Override
     public void getDireccionEvento(Context context, LatLng ubicacion) {
-        view.showLoadingDireccion();
+        getView().showLoadingDireccion();
         model.getDireccionEvento(context, ubicacion);
     }
 
     @Override
     public void onDireccionObtenida(String direccion) {
-        view.showDireccion(direccion);
+        getView().showDireccion(direccion);
     }
 
     @Override
     public void onDireccionError() {
-        view.showErrorDireccion();
+        getView().showErrorDireccion();
     }
 }
