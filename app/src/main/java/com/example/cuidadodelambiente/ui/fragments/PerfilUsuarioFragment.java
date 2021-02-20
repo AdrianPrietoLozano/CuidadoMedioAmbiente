@@ -1,15 +1,12 @@
 package com.example.cuidadodelambiente.ui.fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,35 +18,18 @@ import android.widget.Toast;
 import com.example.cuidadodelambiente.DeclaracionFragments;
 import com.example.cuidadodelambiente.MainActivity;
 import com.example.cuidadodelambiente.R;
-import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
-import com.example.cuidadodelambiente.data.network.APIInterface;
-import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.prueba.Programa;
-import com.example.cuidadodelambiente.prueba.UsuarioPrueba;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.IDatosEventoView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Random;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static edu.rice.pcdp.PCDP.async;
-import static edu.rice.pcdp.PCDP.finish;
 
 public class PerfilUsuarioFragment extends Fragment implements Observer {
 

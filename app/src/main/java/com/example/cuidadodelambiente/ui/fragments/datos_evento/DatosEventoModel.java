@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.datos_evento.interactor;
+package com.example.cuidadodelambiente.ui.fragments.datos_evento;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,54 +11,54 @@ import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.StatusResponse;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
 import com.google.gson.JsonObject;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
-public class DatosEventoInteractor implements IDatosEventoInteractor {
+public class DatosEventoModel implements Contract.Model {
 
-    private IDatosEventoPresenter presenter;
-    private Call<EventoLimpiezaResponse> callDatosEvento;
+    private Contract.Presenter presenter;
+    private APIInterface service;
 
-    public DatosEventoInteractor(IDatosEventoPresenter presenter) {
+    public DatosEventoModel(Contract.Presenter presenter) {
         this.presenter = presenter;
+        service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
     }
 
     @Override
-    public void cargarDatosEvento(int idEvento) {
-
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        callDatosEvento = service.doGetEventoLimpieza(idEvento);
-        callDatosEvento.enqueue(new Callback<EventoLimpiezaResponse>() {
+    public void fetchEvento(int idEvento) {
+        Call<EventoLimpiezaResponse> call = service.doGetEventoLimpieza(idEvento);
+        call.enqueue(new Callback<EventoLimpiezaResponse>() {
             @Override
             public void onResponse(Call<EventoLimpiezaResponse> call, retrofit2.Response<EventoLimpiezaResponse> response) {
 
                 if (!response.isSuccessful()) {
-                    presenter.onCargarDatosEventoError("Ocurrió un error");
+                    presenter.onFetchEventoError("Ocurrió un error");
                     return;
                 }
 
                 StatusResponse status = response.body().getStatus();
                 if (status.getResultado() == 1) {
-                    presenter.onCargarDatosEventoExito(response.body().getEvento());
+                    presenter.onEventoFetched(response.body().getEvento());
                 } else {
-                    presenter.onCargarDatosEventoError(status.getMensaje());
+                    presenter.onFetchEventoError(status.getMensaje());
                 }
             }
 
             @Override
             public void onFailure(Call<EventoLimpiezaResponse> call, Throwable throwable) {
-                presenter.onCargarDatosEventoError(throwable.getMessage());
+                presenter.onFetchEventoError(throwable.getMessage());
             }
         });
     }
 
     @Override
     public void participarEnEvento(int idEvento) {
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         Call<JsonObject> callUnirseEvento = service.doUnirseEvento(idEvento);
 
         callUnirseEvento.enqueue(new Callback<JsonObject>() {
@@ -66,7 +66,7 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
             public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
                 if (!response.isSuccessful()) {
-                    presenter.onParticiparEnEventoError(0, "Ocurrió un error");
+                    presenter.onParticiparEnEventoError("Ocurrió un error");
                     return;
                 }
 
@@ -74,7 +74,7 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
                 int resultado = json.get("resultado").getAsInt();
 
                 if (resultado != 1) {
-                    presenter.onParticiparEnEventoError(resultado, json.get("mensaje").getAsString());
+                    presenter.onParticiparEnEventoError(json.get("mensaje").getAsString());
                     return;
                 }
 
@@ -83,21 +83,13 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                presenter.onParticiparEnEventoError(0, t.getMessage());
+                presenter.onParticiparEnEventoError(t.getMessage());
             }
         });
     }
 
     @Override
-    public void cancelarCargarDatosEvento() {
-        if (callDatosEvento != null) {
-            callDatosEvento.cancel();
-        }
-    }
-
-    @Override
     public void dejarDeParticiparEnEvento(int idEvento) {
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
         Call<JsonObject> call = service.doDejarParticiparEvento(idEvento);
 
         call.enqueue(new Callback<JsonObject>() {
@@ -105,7 +97,7 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
             public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
                 if (!response.isSuccessful()) {
-                    presenter.onDejarParticiparEventoError(0, "Ocurrió un error");
+                    presenter.onDejarParticiparEventoError("Ocurrió un error");
                     return;
                 }
 
@@ -113,7 +105,7 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
                 int resultado = json.get("resultado").getAsInt();
 
                 if (resultado != 1) {
-                    presenter.onDejarParticiparEventoError(resultado, json.get("mensaje").getAsString());
+                    presenter.onDejarParticiparEventoError(json.get("mensaje").getAsString());
                     return;
                 }
 
@@ -122,7 +114,28 @@ public class DatosEventoInteractor implements IDatosEventoInteractor {
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                presenter.onDejarParticiparEventoError(0, t.getMessage());
+                presenter.onDejarParticiparEventoError(t.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void fetchRecomendacionesEvento(int idEvento) {
+        Call<List<EventoLimpieza>> call = service.doGetRecomendacionesEvento(idEvento);
+        call.enqueue(new Callback<List<EventoLimpieza>>() {
+            @Override
+            public void onResponse(Call<List<EventoLimpieza>> call, Response<List<EventoLimpieza>> response) {
+                if (!response.isSuccessful()) {
+                    presenter.onRecomendacionesError("Not successful");
+                    return;
+                }
+
+                presenter.onRecomnedacionesFetched(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<EventoLimpieza>> call, Throwable t) {
+                presenter.onRecomendacionesError(t.getMessage());
             }
         });
     }

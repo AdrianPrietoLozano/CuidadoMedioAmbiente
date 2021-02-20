@@ -49,57 +49,66 @@
                     android:scaleType="fitXY"
                     android:textAlignment="center" />
 
-                <View style="@style/divider" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="15dp"
+                    android:paddingTop="0dp"
+                    >
 
-                <TextView
-                    style="@style/tituloEtiqueta"
-                    android:text="Fecha y hora" />
+                    <View style="@style/divider" />
 
-                <TextView
-                    android:id="@+id/fecha_hora_reporte"
-                    style="@style/datosEtiqueta" />
+                    <TextView
+                        style="@style/tituloEtiqueta"
+                        android:text="Fecha y hora" />
 
-                <View style="@style/divider" />
+                    <TextView
+                        android:id="@+id/fecha_hora_reporte"
+                        style="@style/datosEtiqueta" />
 
-                <TextView
-                    style="@style/tituloEtiqueta"
-                    android:text="Tipo de residuo" />
+                    <View style="@style/divider" />
 
-                <TextView
-                    android:id="@+id/tipo_residuo"
-                    style="@style/datosEtiqueta" />
+                    <TextView
+                        style="@style/tituloEtiqueta"
+                        android:text="Tipo de residuo" />
 
-                <View style="@style/divider" />
+                    <TextView
+                        android:id="@+id/tipo_residuo"
+                        style="@style/datosEtiqueta" />
 
-                <TextView
-                    style="@style/tituloEtiqueta"
-                    android:text="Volumen del residuo" />
+                    <View style="@style/divider" />
 
-                <TextView
-                    android:id="@+id/volumen_residuo"
-                    style="@style/datosEtiqueta" />
+                    <TextView
+                        style="@style/tituloEtiqueta"
+                        android:text="Volumen del residuo" />
 
-                <View style="@style/divider" />
+                    <TextView
+                        android:id="@+id/volumen_residuo"
+                        style="@style/datosEtiqueta" />
 
-                <TextView
-                    style="@style/tituloEtiqueta"
-                    android:text="Denunciante" />
+                    <View style="@style/divider" />
 
-                <TextView
-                    android:id="@+id/ambientalista_denunciante"
-                    style="@style/datosEtiqueta" />
+                    <TextView
+                        style="@style/tituloEtiqueta"
+                        android:text="Denunciante" />
 
-                <View style="@style/divider" />
+                    <TextView
+                        android:id="@+id/ambientalista_denunciante"
+                        style="@style/datosEtiqueta" />
 
-                <TextView
-                    style="@style/tituloEtiqueta"
-                    android:text="Descripción" />
+                    <View style="@style/divider" />
 
-                <TextView
-                    android:id="@+id/descripcion_reporte"
-                    style="@style/datosEtiqueta" />
+                    <TextView
+                        style="@style/tituloEtiqueta"
+                        android:text="Descripción" />
 
-                <View style="@style/divider" />
+                    <TextView
+                        android:id="@+id/descripcion_reporte"
+                        style="@style/datosEtiqueta" />
+
+                    <View style="@style/divider" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linearLayoutBotones"

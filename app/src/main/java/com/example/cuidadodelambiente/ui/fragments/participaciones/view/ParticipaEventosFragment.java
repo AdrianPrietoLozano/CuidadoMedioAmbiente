@@ -25,7 +25,7 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.ParticipacionesEventosPresenter;
 import com.google.android.material.appbar.MaterialToolbar;

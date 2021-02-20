@@ -150,7 +150,10 @@ public interface APIInterface {
     @GET("recomendaciones/usuario")
     Call<List<EventoLimpieza>> doGetEventosRecomendados();
 
-
+    @GET("recomendaciones/evento/{idEvento}")
+    Call<List<EventoLimpieza>> doGetRecomendacionesEvento(
+            @Path("idEvento") Integer id_evento
+    );
 
     /* PRUEBAS DEL SERVICIO SOCIAL */
 

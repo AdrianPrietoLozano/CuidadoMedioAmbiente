@@ -1,4 +1,4 @@
-package com.example.cuidadodelambiente.ui.fragments.datos_evento.view;
+package com.example.cuidadodelambiente.ui.fragments.datos_evento;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -18,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.cuidadodelambiente.Constants;
@@ -30,23 +32,18 @@ import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.ui.activities.amin_evento.AdministrarEventoActivity;
 import com.example.cuidadodelambiente.ui.fragments.DatosReporteFragment;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.DatosEventoPresenter;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.presenter.IDatosEventoPresenter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 
 public class DatosEventoFragment extends BottomSheetDialogFragment
-    implements IDatosEventoView{
+    implements Contract.View {
 
     private final String TAG = DatosEventoFragment.class.getSimpleName();
 
@@ -57,23 +54,22 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     private TextView numPersonasUnidas, mensajeProblema, tipoResiduo;
     private LinearLayout layoutDatosReporte;
     private Button botonParticipar;
+    private Button botonDejarParticipar;
     private Button botonAdministrarEvento;
     private ImageView imagenEvento;
     private ProgressDialog progreso;
     private ProgressBar barraCarga;
-    private JsonObjectRequest jsonObjectRequest;
     private EventoLimpieza eventoLimpieza; // evento mostrado actualmente
-    private HelperCargaError helperCargaError;
     private LinearLayout layoutNoConexion;
     private LinearLayout contenidoPrincipal;
     private Button botonVolverIntentar;
+    private LinearLayout layoutRecyler;
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapterEventos;
+    private RecyclerView.LayoutManager lManager;
 
     private static ParaObservar observable = new ParaObservar();
-    private IDatosEventoPresenter presenter;
-
-    public DatosEventoFragment() {
-        this.presenter = new DatosEventoPresenter(this);
-    }
+    private Contract.Presenter presenter;
 
     public static ParaObservar getObservable() {
         return observable;
@@ -113,36 +109,21 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         mBehavior = BottomSheetBehavior.from((View) v.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
 
-        mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View view, int i) {
-                switch (i) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        dismiss();
-                        break;
+        this.presenter = new DatosEventoPresenter(this);
 
-                     case BottomSheetBehavior.STATE_DRAGGING:
-                         Log.e("DRAGGING", "DRAGGIMG");
-                        break;
-
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        Log.e("DRAGGING", "SETTLING");
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View view, float v) {
-
-            }
-        });
+        layoutRecyler = v.findViewById(R.id.layoutRecycler);
+        layoutRecyler.setVisibility(View.GONE);
+        recyclerView = v.findViewById(R.id.recyclerEventos);
+        recyclerView.setHasFixedSize(true);
+        lManager = new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false);
+        recyclerView.setLayoutManager(lManager);
 
         layoutNoConexion = v.findViewById(R.id.layoutNoConexion);
         botonVolverIntentar = v.findViewById(R.id.btnVolverIntentarlo);
         botonVolverIntentar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                intentarPeticionBD();
+                presenter.fetchEvento(eventoId);
             }
         });
 
@@ -155,6 +136,20 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
         numPersonasUnidas = v.findViewById(R.id.num_personas_unidas);
         imagenEvento = v.findViewById(R.id.imagenEvento);
         botonParticipar = v.findViewById(R.id.botonParticipar);
+        botonParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.participarEnEvento(eventoLimpieza.getIdEvento());
+            }
+        });
+        botonDejarParticipar = v.findViewById(R.id.botonDejarParticipar);
+        botonDejarParticipar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("DEJAR", "Dejar view");
+                presenter.dejarDeParticiparEnEvento(eventoLimpieza.getIdEvento());
+            }
+        });
         botonAdministrarEvento = v.findViewById(R.id.btnAdministrarEvento);
         botonAdministrarEvento.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,123 +177,59 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             }
         });
 
-
-        inicializarProgressDialog();
-
-        intentarPeticionBD();
+        presenter.fetchEvento(this.eventoId);
 
         return dialog;
     }
 
-
     @Override
-    public void onDismiss(@NonNull DialogInterface dialog) {
-        super.onDismiss(dialog);
-
-        presenter.cancelarCargarDatosEvento();
+    public void onDestroyView() {
+        presenter.detachView();
+        super.onDestroyView();
     }
 
-    private void inicializarProgressDialog() {
+    @Override
+    public void showLoading() {
+        barraCarga.setVisibility(View.VISIBLE);
+        contenidoPrincipal.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideLoading() {
+        barraCarga.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showLoadingDialog() {
         progreso = new ProgressDialog(getContext());
         progreso.setMessage("Cargando...");
-    }
-
-    private void intentarPeticionBD()
-    {
-        mostrarCarga();
-
-        // si hay conexión a internet
-        if(Utilidades.hayConexionInternet(getContext())) {
-            iniciarPeticionBD();
-        }
-        else { // no hay conexión a internet
-            mostrarLayoutError();
-        }
-    }
-
-    private void iniciarPeticionBD()
-    {
-        presenter.cargarDatosEvento(this.eventoId);
-    }
-
-
-
-    private void configurarBotonQuieroParticipar() {
-        if (botonParticipar.isEnabled())
-            botonParticipar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        botonParticipar.setText("Quiero participar");
-        botonParticipar.setTextColor(Color.WHITE);
-        botonParticipar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clicBotonQuieroParticipar();
-            }
-        });
-    }
-
-    private void configurarBotonDejarParticipar() {
-        if (botonParticipar.isEnabled())
-            botonParticipar.setBackgroundColor(getResources().getColor(R.color.rojoClaro));
-        botonParticipar.setText("Dejar de participar");
-        botonParticipar.setTextColor(Color.BLACK);
-        botonParticipar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progreso.show();
-
-                presenter.dejarDeParticiparEnEvento(
-                        eventoLimpieza.getIdEvento()
-                );
-            }
-        });
-    }
-
-    private void clicBotonQuieroParticipar()
-    {
         progreso.show();
-
-        presenter.participarEnEvento(
-                eventoLimpieza.getIdEvento()
-        );
     }
 
-    private void mostrarCarga() {
-        barraCarga.setVisibility(View.VISIBLE);
-        layoutNoConexion.setVisibility(View.GONE);
-        contenidoPrincipal.setVisibility(View.GONE);
+    @Override
+    public void hideLoadingDialog() {
+        if (progreso != null && progreso.isShowing())
+            progreso.cancel();
     }
 
-    private void mostrarContenidoPrincipal() {
-        contenidoPrincipal.setVisibility(View.VISIBLE);
-        barraCarga.setVisibility(View.GONE);
+    @Override
+    public void hideError() {
         layoutNoConexion.setVisibility(View.GONE);
     }
 
-    private void mostrarLayoutError() {
+    @Override
+    public void showError(String error) {
         layoutNoConexion.setVisibility(View.VISIBLE);
-        barraCarga.setVisibility(View.GONE);
         contenidoPrincipal.setVisibility(View.GONE);
     }
 
     @Override
-    public void onCargarDatosEventoError(String error) {
-        mostrarLayoutError();
+    public void showMessage(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onParticiparEnEventoError(int resultado, String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-        progreso.dismiss();
-    }
-
-    @Override
-    public void onDejarParticiparEventoError(int resultado, String error) {
-        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
-        progreso.dismiss();
-    }
-
-    @Override
-    public void onCargarDatosEventoExito(EventoLimpieza evento) {
+    public void showEvento(EventoLimpieza evento) {
         this.eventoLimpieza = evento;
 
         nombreEvento.setText(eventoLimpieza.getTitulo());
@@ -313,42 +244,8 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
             layoutDatosReporte.setVisibility(View.VISIBLE);
         }
 
-        // verificar si la fecha del evento aún está vigente
-        SimpleDateFormat parser = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Constants.LOCALE_MX);
-        boolean isFechaEventoVigente = true;
-        try {
-            Date dateEvento = parser.parse(eventoLimpieza.getFecha() + " " + eventoLimpieza.getHora());
-            Date now = new Date();
-            if (dateEvento.before(now)) {
-                botonParticipar.setEnabled(false);
-                isFechaEventoVigente = false; // la fecha del evento ya pasó
-            }
-        } catch (Exception e) {
-            Log.e("FECHA", e.toString());
-            botonParticipar.setEnabled(true);
-            isFechaEventoVigente = true;
-        }
-
-
-        // verificar si el usuario ya participa en este evento
-        if (eventoLimpieza.getUsuarioParticipa()) {
-            configurarBotonDejarParticipar();
-        } else {
-            configurarBotonQuieroParticipar();
-        }
-
-
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        // si el usuario es el creador, la fecha del evento ya pasó y el evento aún no ha sido administrado
-        // se activa el boton para admin. el evento
-        if (eventoLimpieza.getCreador().getId() == idUsuario && eventoLimpieza.getAdministrado().equals("0")
-                && !isFechaEventoVigente ) {
-            botonAdministrarEvento.setVisibility(View.VISIBLE);
-        } else {
-            botonAdministrarEvento.setVisibility(View.GONE);
-        }
-
-        mostrarContenidoPrincipal();
+        presenter.fetchRecomendacionesEvento(this.eventoId);
+        contenidoPrincipal.setVisibility(View.VISIBLE);
 
         String urlFoto = RetrofitClientInstance.getRetrofitInstance().baseUrl() +
                 eventoLimpieza.getRutaFotografia();
@@ -356,28 +253,66 @@ public class DatosEventoFragment extends BottomSheetDialogFragment
     }
 
     @Override
-    public void onParticiparEnEventoExito() {
-        Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
-        configurarBotonDejarParticipar();
+    public void onParticiparEventoExito() {
+        enableDejarParticipar();
         eventoLimpieza.setNumPersonasUnidas(eventoLimpieza.getNumPersonasUnidas() + 1);
         numPersonasUnidas.setText(String.format("%s %s",
                 eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
-
-        progreso.dismiss();
 
         getObservable().notificar(eventoLimpieza);
     }
 
     @Override
     public void onDejarParticiparEventoExito() {
-        Toast.makeText(getContext(), "Éxito", Toast.LENGTH_SHORT).show();
-        configurarBotonQuieroParticipar();
+        enableParticipacion();
         eventoLimpieza.setNumPersonasUnidas(eventoLimpieza.getNumPersonasUnidas() - 1);
         numPersonasUnidas.setText(String.format("%s %s",
                 eventoLimpieza.getNumPersonasUnidas(), "personas unidas"));
 
-        progreso.dismiss();
-
         getObservable().notificar(eventoLimpieza);
+    }
+
+    @Override
+    public void showRecomendaciones(List<EventoLimpieza> eventos) {
+        adapterEventos = new DatosEventoAdapter(getContext(), eventos, new DatosEventoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Integer idEvento = eventos.get(position).getIdEvento();
+                BottomSheetDialogFragment fragmentDatosEvento = DatosEventoFragment.newInstance(idEvento);
+                fragmentDatosEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                fragmentDatosEvento.show(getFragmentManager(), fragmentDatosEvento.getTag());
+            }
+        });
+
+        recyclerView.setAdapter(adapterEventos);
+        layoutRecyler.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void enableParticipacion() {
+        botonParticipar.setVisibility(View.VISIBLE);
+        botonDejarParticipar.setVisibility(View.GONE);
+        botonAdministrarEvento.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableDejarParticipar() {
+        botonParticipar.setVisibility(View.GONE);
+        botonDejarParticipar.setVisibility(View.VISIBLE);
+        botonAdministrarEvento.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableAdministrarEvento() {
+        botonParticipar.setVisibility(View.GONE);
+        botonDejarParticipar.setVisibility(View.GONE);
+        botonAdministrarEvento.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideAllButtons() {
+        botonParticipar.setVisibility(View.GONE);
+        botonDejarParticipar.setVisibility(View.GONE);
+        botonAdministrarEvento.setVisibility(View.GONE);
     }
 }

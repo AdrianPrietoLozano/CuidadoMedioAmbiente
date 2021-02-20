@@ -1,7 +1,5 @@
 package com.example.cuidadodelambiente.ui.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
@@ -9,12 +7,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,7 +19,7 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.EventoLimpieza;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
-import com.example.cuidadodelambiente.ui.fragments.datos_evento.view.DatosEventoFragment;
+import com.example.cuidadodelambiente.ui.fragments.datos_evento.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionesEventosAdapter;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;

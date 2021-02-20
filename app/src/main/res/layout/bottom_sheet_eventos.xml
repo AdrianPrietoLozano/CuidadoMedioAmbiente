@@ -51,94 +51,127 @@
                 android:id="@+id/imagenEvento"
                 android:layout_width="match_parent"
                 android:layout_height="250dp"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="10dp"
                 android:adjustViewBounds="false"
                 android:cropToPadding="false"
                 android:scaleType="fitXY"
                 android:textAlignment="center" />
 
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Fecha y hora" />
-
-            <TextView
-                android:id="@+id/fecha_hora_evento"
-                style="@style/datosEtiqueta" />
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Creador" />
-
-            <TextView
-                android:id="@+id/creador_evento"
-                style="@style/datosEtiqueta" />
-
-            <View style="@style/divider" />
-
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Tipo de residuo" />
-
-            <TextView
-                android:id="@+id/tipo_residuo_evento"
-                style="@style/datosEtiqueta" />
-
-            <View style="@style/divider" />
-
-            <TextView
-                style="@style/tituloEtiqueta"
-                android:text="Descripción" />
-
-            <TextView
-                android:id="@+id/descripcion_evento"
-                style="@style/datosEtiqueta" />
-
-            <View style="@style/divider" />
-
-
             <LinearLayout
-                android:id="@+id/layoutDatosReporte"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                android:padding="15dp"
+                android:paddingTop="0dp"
+                android:orientation="vertical">
+
+                <View style="@style/divider" />
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:layout_weight="1"
-                    style="@style/datosEtiqueta"
-                    android:text="@string/ver_reporte"
-                    />
+                    style="@style/tituloEtiqueta"
+                    android:text="Fecha y hora" />
 
-                <ImageView
-                    android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/fecha_hora_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Creador" />
+
+                <TextView
+                    android:id="@+id/creador_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Tipo de residuo" />
+
+                <TextView
+                    android:id="@+id/tipo_residuo_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+                <TextView
+                    style="@style/tituloEtiqueta"
+                    android:text="Descripción" />
+
+                <TextView
+                    android:id="@+id/descripcion_evento"
+                    style="@style/datosEtiqueta" />
+
+                <View style="@style/divider" />
+
+
+                <LinearLayout
+                    android:id="@+id/layoutDatosReporte"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingEnd="20dp"
-                    android:layout_gravity="end|center_vertical"
-                    android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+                    android:visibility="gone"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:layout_weight="1"
+                        style="@style/datosEtiqueta"
+                        android:text="@string/ver_reporte"
+                        />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="20dp"
+                        android:layout_gravity="end|center_vertical"
+                        android:src="@drawable/ic_keyboard_arrow_right_black_24dp" />
+
+                </LinearLayout>
+
+                <View style="@style/divider" />
+
+                <TextView
+                    android:id="@+id/num_personas_unidas"
+                    android:layout_marginBottom="20dp"
+                    style="@style/datosEtiqueta" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
 
             </LinearLayout>
 
-            <View style="@style/divider" />
-
-            <TextView
-                android:id="@+id/num_personas_unidas"
-                android:layout_marginBottom="20dp"
-                style="@style/datosEtiqueta" />
-
-            <View
+            <LinearLayout
+                android:id="@+id/layoutRecycler"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider" />
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Otros eventos que te pueden interesar"
+                    style="@style/tituloEtiqueta"
+                    android:layout_margin="5dp"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerEventos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:scrollbars="horizontal" />
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/botonParticipar"
@@ -148,6 +181,18 @@
                 android:layout_marginStart="10dp"
                 android:text="@string/quiero_participar"
                 style="@style/boton_grande"/>
+
+            <Button
+                android:id="@+id/botonDejarParticipar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Dejar de participar"
+                android:textColor="@android:color/black"
+                android:backgroundTint="@color/rojoClaro"
+                style="@style/boton_grande"
+                />
 
             <Button
                 android:id="@+id/btnAdministrarEvento"
