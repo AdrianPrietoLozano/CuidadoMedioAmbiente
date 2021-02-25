@@ -8,6 +8,7 @@ import com.example.cuidadodelambiente.data.models.UbicacionReporte;
 import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.responses.CercaMedioLejos;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
+import com.example.cuidadodelambiente.data.responses.CrearLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
 import com.google.gson.JsonObject;
@@ -170,8 +171,8 @@ public interface APIInterface {
     /* LIMPIEZAS */
 
     @Multipart
-    @POST("insertar_limpieza.php")
-    Call<JsonObject> doAgregarLimpieza(
+    @POST("limpiezas")
+    Call<CrearLimpiezaResponse> doAgregarLimpieza(
             @Part("reporte_id") RequestBody id_reporte,
             @Part("descripcion") RequestBody descripcion,
             @Part MultipartBody.Part imagen

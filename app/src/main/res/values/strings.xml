@@ -19,7 +19,7 @@
     <string name="limpieza">Limpieza</string>
     <string name="volver_intentar">Volver a intentarlo</string>
 
-    <string name="foto_opcional">Fotografía (opcional)</string>
+    <string name="foto_limpieza">Fotografía</string>
     <string name="descripcion_opcional">Descripcion (opcional)</string>
 
     <string name="nuevo_reporte">Nuevo reporte ecológico</string>

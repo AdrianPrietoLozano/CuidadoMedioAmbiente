@@ -1,11 +1,10 @@
-package com.example.cuidadodelambiente.ui.fragments;
+package com.example.cuidadodelambiente.ui.fragments.limpiezas;
 
 
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,13 +13,10 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.loader.content.CursorLoader;
 
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -50,7 +46,7 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class LimpiezaFragment extends BottomSheetDialogFragment {
+public class LimpiezaFragment extends BottomSheetDialogFragment implements Contract.View {
 
     private final int REQUEST_CODE_ELEGIR_FOTO = 10;
     private BottomSheetBehavior mBehavior;
@@ -60,7 +56,9 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
     private Uri uriImagen;
     private Button btnLimpiar;
     private TextInputEditText textDescripcion;
+    private ProgressDialog progressDialog;
     private static ParaObservar observable = new ParaObservar();
+    private Contract.Presenter presenter;
 
 
     public LimpiezaFragment() {
@@ -86,6 +84,8 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         mBehavior = BottomSheetBehavior.from((View) v.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
 
+        this.presenter = new LimpiezaPresenter(this);
+
         CardView cardFoto = v.findViewById(R.id.cardFoto);
         cardFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,8 +106,14 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         btnLimpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //iniciarLimpieza();
-                Toast.makeText(getContext(), "Falta por hacer", Toast.LENGTH_SHORT).show();
+                if (uriImagen != null) {
+                    String descripcion = textDescripcion.getText().toString();
+                    String urlFoto = Utilidades.getRealPathFromURI(uriImagen, getContext());
+
+                    presenter.crearLimpieza(reporteId, descripcion, urlFoto);
+                } else {
+                    showMessage("Debes elegir una imagen");
+                }
             }
         });
 
@@ -151,71 +157,41 @@ public class LimpiezaFragment extends BottomSheetDialogFragment {
         }
     }
 
-    private void iniciarLimpieza() {
-        RequestBody idUsuarioPart;
-        RequestBody idReportePart;
-        RequestBody descripcionPart;
-        MultipartBody.Part imagenPart;
+    @Override
+    public void showLoading() {
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Creando limpieza");
+        progressDialog.setMessage("Cargando...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
 
-        int idUsuario = UserLocalStore.getInstance(getContext()).getUsuarioLogueado().getId();
-        String descripcion = textDescripcion.getText().toString();
+    @Override
+    public void hideLoading() {
+        if (progressDialog != null && progressDialog.isShowing())
+            progressDialog.cancel();
+    }
 
-        idUsuarioPart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(idUsuario));
-        idReportePart = RequestBody.create(MediaType.parse("text/plain"), String.valueOf(this.reporteId));
+    @Override
+    public void showMessage(String error) {
+        Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+    }
 
-        if (!descripcion.equals("")) {
-            descripcionPart = RequestBody.create(MediaType.parse("text/plain"), descripcion);
-        } else {
-            descripcionPart = null;
-        }
+    @Override
+    public void onLimpiezaCreada() {
+        //Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+        observable.notificar(null);
+    }
 
-        if (uriImagen != null) {
-            File file = new File(Utilidades.getRealPathFromURI(uriImagen, getContext()));
+    @Override
+    public void close() {
+        dismiss();
+    }
 
-            RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
-            imagenPart = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        } else {
-            imagenPart = null;
-        }
-
-
-        final ProgressDialog progresoCrearLimpieza = new ProgressDialog(getContext());
-        progresoCrearLimpieza.setTitle("Creando limpieza");
-        progresoCrearLimpieza.setMessage("Cargando...");
-        progresoCrearLimpieza.setCancelable(false);
-        progresoCrearLimpieza.show();
-
-        APIInterface service = RetrofitClientInstance.getRetrofitInstance().create(APIInterface.class);
-        Call<JsonObject> call = service.doAgregarLimpieza(idReportePart, descripcionPart, imagenPart);
-        call.enqueue(new Callback<JsonObject>() {
-            @Override
-            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-                progresoCrearLimpieza.dismiss();
-                if (response.isSuccessful()) {
-                    JsonObject json = response.body();
-                    String mensaje = json.get("mensaje").getAsString();
-                    int resultado = json.get("resultado").getAsInt();
-
-                    if (resultado == 1) {
-                        // notifica a los observers de que se creó una nueva limpieza.
-                        // debería pasar como parámetro un objecto Limpieza
-                        observable.notificar(null);
-                        Toast.makeText(getContext(), "EXITO", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(getContext(), mensaje, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(getContext(), "No successful", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-                Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
-                progresoCrearLimpieza.dismiss();
-            }
-        });
-
-
+    @Override
+    public void onDestroyView() {
+        Log.e("DESTROY", "DESTROY EN LIMPIEZA");
+        presenter.detachView();
+        super.onDestroyView();
     }
 }

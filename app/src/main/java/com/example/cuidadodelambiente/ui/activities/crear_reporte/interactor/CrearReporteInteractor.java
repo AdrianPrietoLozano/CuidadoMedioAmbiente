@@ -46,7 +46,6 @@ public class CrearReporteInteractor implements ICrearReporteInteractor {
     @Override
     public void crearReporte(final ReporteContaminacion reporte, String rutaImagen) {
         File file = new File(rutaImagen);
-
         RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
         MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
