@@ -27,6 +27,7 @@ import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
 import com.example.cuidadodelambiente.ui.fragments.limpiezas.LimpiezaFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -45,6 +46,7 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     private TextView fechaHora, tipoResiduo, volumenResiduo, denunciante, descripcionReporte, mensajeProblema;
     private ImageView imagenReporte;
     private Integer reporteId;
+    private LatLng ubicacion;
     private Button botonCrearEvento;
     private Button botonLimpiar;
     private ProgressBar barraCarga;
@@ -188,7 +190,8 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
         // de este modo podremos saber cuando se cree una nueva limpieza
         LimpiezaFragment.getObservable().addObserver(this);
 
-        BottomSheetDialogFragment fragmentLimpieza = LimpiezaFragment.newInstance(reporteId);
+        BottomSheetDialogFragment fragmentLimpieza = LimpiezaFragment.newInstance(reporteId,
+                new LatLng(reporteContaminacion.getLatitud(), reporteContaminacion.getLongitud()));
         fragmentLimpieza.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
         fragmentLimpieza.show(getFragmentManager(), fragmentLimpieza.getTag());
     }

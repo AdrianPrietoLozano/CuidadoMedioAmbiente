@@ -15,6 +15,8 @@ public final class Constants {
 
     public static final String EVENTO_ID = "id_evento";
     public static final String REPORTE_ID = "id_reporte";
+    public static final String LATITUD = "latitud";
+    public static final String LONGITUD = "longitud";
 
     public static final Locale LOCALE_MX = new Locale("es", "MX");
 }

@@ -121,7 +121,7 @@ public class ActualizacionesUbicacionHelper implements
     }
 
     // revisa si la ubicación esta activada
-    private boolean isLocationEnabled(){
+    private boolean isLocationEnabled() {
         LocationManager locationManager = (LocationManager) this.activity.getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
                 LocationManager.NETWORK_PROVIDER
@@ -216,6 +216,10 @@ public class ActualizacionesUbicacionHelper implements
         }
     }
 
+    public boolean isConnected() {
+        return mGoogleApiClient != null && mGoogleApiClient.isConnected();
+    }
+
     @Override
     public void onConnected(@Nullable Bundle bundle) {
             /*
@@ -248,7 +252,6 @@ public class ActualizacionesUbicacionHelper implements
 
                 break;
 
-
             case REQUEST_CODE_RECOVER_PLAY_SERVICES:
                 if (resultCode == Activity.RESULT_OK) {
                     if (!mGoogleApiClient.isConnecting() && !mGoogleApiClient.isConnected()) {
@@ -271,6 +274,7 @@ public class ActualizacionesUbicacionHelper implements
 
                 iniciarObtenerUbicacion();
             } else {
+                Log.e("HELPER", "Error");
                 listener.onPermissionError("Permiso de ubicación es necesario");
             }
         }

@@ -28,6 +28,7 @@ import com.example.cuidadodelambiente.Utilidades;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -53,6 +54,7 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
     private ImageView fotoEvidencia;
     private ImageView iconElegirFoto;
     private int reporteId;
+    private LatLng ubicacionReporte;
     private Uri uriImagen;
     private Button btnLimpiar;
     private TextInputEditText textDescripcion;
@@ -71,6 +73,9 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
 
         if (getArguments() != null) {
             reporteId = getArguments().getInt(Constants.REPORTE_ID);
+            double lat = getArguments().getDouble(Constants.LATITUD);
+            double lon = getArguments().getDouble(Constants.LONGITUD);
+            ubicacionReporte = new LatLng(lat, lon);
         }
     }
 
@@ -84,7 +89,7 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
         mBehavior = BottomSheetBehavior.from((View) v.getParent());
         mBehavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
 
-        this.presenter = new LimpiezaPresenter(this);
+        this.presenter = new LimpiezaPresenter(this, getActivity());
 
         CardView cardFoto = v.findViewById(R.id.cardFoto);
         cardFoto.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +115,7 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
                     String descripcion = textDescripcion.getText().toString();
                     String urlFoto = Utilidades.getRealPathFromURI(uriImagen, getContext());
 
-                    presenter.crearLimpieza(reporteId, descripcion, urlFoto);
+                    presenter.crearLimpieza(reporteId, descripcion, urlFoto, ubicacionReporte);
                 } else {
                     showMessage("Debes elegir una imagen");
                 }
@@ -122,10 +127,12 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
         return dialog;
     }
 
-    public static LimpiezaFragment newInstance(int idReporte) {
+    public static LimpiezaFragment newInstance(int idReporte, LatLng ubicacion) {
 
         Bundle args = new Bundle();
         args.putInt(Constants.REPORTE_ID, idReporte);
+        args.putDouble(Constants.LATITUD, ubicacion.latitude);
+        args.putDouble(Constants.LONGITUD, ubicacion.longitude);
 
         LimpiezaFragment fragment = new LimpiezaFragment();
         fragment.setArguments(args);
@@ -140,12 +147,24 @@ public class LimpiezaFragment extends BottomSheetDialogFragment implements Contr
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_ELEGIR_FOTO && resultCode == Activity.RESULT_OK) {
-            uriImagen = data.getData();
-            iconElegirFoto.setVisibility(View.GONE);
-            fotoEvidencia.setImageURI(uriImagen);
-            fotoEvidencia.setVisibility(View.VISIBLE);
+        Log.e("VIEW", "ONaCTIVITYrESULT");
+
+        if (requestCode == REQUEST_CODE_ELEGIR_FOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                uriImagen = data.getData();
+                iconElegirFoto.setVisibility(View.GONE);
+                fotoEvidencia.setImageURI(uriImagen);
+                fotoEvidencia.setVisibility(View.VISIBLE);
+            }
+        } else {
+            presenter.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        presenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private void cambiarColorStatusBar() {
