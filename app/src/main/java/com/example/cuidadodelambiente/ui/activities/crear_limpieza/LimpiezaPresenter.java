@@ -1,7 +1,6 @@
-package com.example.cuidadodelambiente.ui.fragments.limpiezas;
+package com.example.cuidadodelambiente.ui.activities.crear_limpieza;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.util.Log;
@@ -18,7 +17,6 @@ public class LimpiezaPresenter implements Contract.Presenter,
 
     private Contract.View view;
     private Contract.Model model;
-    private Activity activity;
     private ActualizacionesUbicacionHelper actualizacionesUbicacion;
     private static final int MIN_DISTANCIA_LIMPIEZA = 100; // metros
 
@@ -27,18 +25,17 @@ public class LimpiezaPresenter implements Contract.Presenter,
     private String urlFoto;
     private LatLng ubicacion;
 
-    public LimpiezaPresenter(Contract.View view, Activity activity) {
+    public LimpiezaPresenter(Contract.View view) {
         this.view = view;
-        this.activity = activity;
         this.model = new LimpiezaModel(this);
-        actualizacionesUbicacion = new ActualizacionesUbicacionHelper(this.activity, this, 60 * (60 * 1000));
+        actualizacionesUbicacion = new ActualizacionesUbicacionHelper(view.getActividad(), this, 60 * (60 * 1000));
     }
 
     @Override
     public void crearLimpieza(Integer idReporte, String descripcion, String urlFoto, LatLng ubicacion) {
         if (view == null) return;
 
-        //view.showLoading();
+        view.showLoading();
 
         this.idReporte = idReporte;
         this.descripcion = descripcion;

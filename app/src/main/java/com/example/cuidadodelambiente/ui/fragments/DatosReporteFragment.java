@@ -26,7 +26,7 @@ import com.example.cuidadodelambiente.data.models.ReporteContaminacion;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
-import com.example.cuidadodelambiente.ui.fragments.limpiezas.LimpiezaFragment;
+import com.example.cuidadodelambiente.ui.activities.crear_limpieza.ActividadCrearLimpieza;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -182,18 +182,25 @@ public class DatosReporteFragment extends BottomSheetDialogFragment
     public void onDestroy() {
         super.onDestroy();
 
-        LimpiezaFragment.getObservable().deleteObserver(this);
+        ActividadCrearLimpieza.getObservable().deleteObserver(this);
     }
 
     private void iniciarCrearLimpieza() {
         // se suscribe al observable de LimpiezaFragment
         // de este modo podremos saber cuando se cree una nueva limpieza
-        LimpiezaFragment.getObservable().addObserver(this);
+        ActividadCrearLimpieza.getObservable().addObserver(this);
 
+        Intent intent = new Intent(getContext(), ActividadCrearLimpieza.class);
+        intent.putExtra(Constants.REPORTE_ID, reporteContaminacion.getId());
+        intent.putExtra(Constants.LATITUD, reporteContaminacion.getLatitud());
+        intent.putExtra(Constants.LONGITUD, reporteContaminacion.getLongitud());
+        startActivity(intent);
+
+        /*
         BottomSheetDialogFragment fragmentLimpieza = LimpiezaFragment.newInstance(reporteId,
                 new LatLng(reporteContaminacion.getLatitud(), reporteContaminacion.getLongitud()));
         fragmentLimpieza.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
-        fragmentLimpieza.show(getFragmentManager(), fragmentLimpieza.getTag());
+        fragmentLimpieza.show(getFragmentManager(), fragmentLimpieza.getTag());*/
     }
 
 

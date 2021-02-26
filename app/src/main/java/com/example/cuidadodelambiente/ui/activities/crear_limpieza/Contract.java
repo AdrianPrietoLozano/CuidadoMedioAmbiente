@@ -1,5 +1,6 @@
-package com.example.cuidadodelambiente.ui.fragments.limpiezas;
+package com.example.cuidadodelambiente.ui.activities.crear_limpieza;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ public interface Contract {
         void showMessage(String msg);
         void onLimpiezaCreada();
         void close();
+        Activity getActividad();
     }
 
     interface Presenter extends BasePresenter {

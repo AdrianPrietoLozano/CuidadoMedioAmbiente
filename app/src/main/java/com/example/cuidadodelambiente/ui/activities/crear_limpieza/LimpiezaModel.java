@@ -1,7 +1,5 @@
-package com.example.cuidadodelambiente.ui.fragments.limpiezas;
+package com.example.cuidadodelambiente.ui.activities.crear_limpieza;
 
-import com.example.cuidadodelambiente.Utilidades;
-import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.data.network.APIInterface;
 import com.example.cuidadodelambiente.data.network.RetrofitClientInstance;
 import com.example.cuidadodelambiente.data.responses.CrearLimpiezaResponse;
