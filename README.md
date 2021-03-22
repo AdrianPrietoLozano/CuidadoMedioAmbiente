@@ -4,5 +4,5 @@ App para dispositivos móviles Android para el reporte y limpieza de puntos de c
 La App esta siendo desarrollada en Java con Android Studio.
 
 ## Algunas capturas de la App
-![eventos](screenshots/eventos.jpg | width=100) ![recomendaciones](screenshots/recomendaciones.png)
+![eventos](screenshots/eventos.jpg width="100" height="100") ![recomendaciones](screenshots/recomendaciones.png)
 ![reportes](screenshots/reportes.jpg) ![participaciones](screenshots/participaciones.png)
