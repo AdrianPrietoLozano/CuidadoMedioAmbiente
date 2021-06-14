@@ -10,6 +10,7 @@ import com.example.cuidadodelambiente.data.responses.CercaMedioLejos;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.data.responses.CrearLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
+import com.example.cuidadodelambiente.data.responses.RankingResponse;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
 import com.google.gson.JsonObject;
 
@@ -59,6 +60,11 @@ public interface APIInterface {
             @Field("contrasenia") String contrasenia,
             @Field("fcm_token") String fcmToken
     );
+
+
+    /* RANKING */
+    @GET("usuario/ranking")
+    Call<RankingResponse> doGetRanking();
 
 
     /* EVENTOS */

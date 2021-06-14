@@ -37,6 +37,7 @@ import com.example.cuidadodelambiente.ui.activities.ActividadCrearEvento;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.DatosEventoFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.EventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.eventos.presenter.IEventosPresenter;
+import com.example.cuidadodelambiente.ui.activities.ranking.RankingActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -141,6 +142,15 @@ public class EventosLimpiezaFragment extends Fragment
             public void onClick(View v) {
                 ((MainActivity) getActivity())
                         .cambiarFragment(DeclaracionFragments.recomendacionEventosFragment, "REEVENTO");
+            }
+        });
+
+        // ranking
+        v.findViewById(R.id.layoutRanking).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), RankingActivity.class);
+                startActivity(intent);
             }
         });
 
