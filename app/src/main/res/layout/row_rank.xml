@@ -5,20 +5,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
+    android:elevation="2dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="8dp"
+    android:background="@drawable/redondeado_blanco"
     >
 
-    <TextView
-        android:id="@+id/rank"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/layoutRank"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:text="1"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:padding="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/rank"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/black"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/nombre"
@@ -26,12 +40,14 @@
         android:layout_height="match_parent"
         android:layout_marginStart="16dp"
         android:maxLines="1"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
         android:text="Adrián Prieto"
-        android:textColor="@color/colorPrimary"
-        android:textSize="18sp"
+        android:textSize="19sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/rank"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/layoutRank"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.675" />
 
     <TextView
         android:id="@+id/puntos"
@@ -39,8 +55,9 @@
         android:layout_height="match_parent"
         android:text="123"
         android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
+        android:textSize="30sp"
         android:textStyle="bold"
+        android:paddingRight="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

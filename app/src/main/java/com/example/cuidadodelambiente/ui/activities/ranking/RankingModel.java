@@ -32,7 +32,7 @@ public class RankingModel implements Contract.Model {
 
                 StatusResponse status = response.body().getEstatus();
                 if (status.getResultado() == 1) {
-                    presenter.onfetchRankingExito(response.body().getRanking());
+                    presenter.onfetchRankingExito(response.body().getRanking(), response.body().getRankingUsuario());
                 } else {
                     presenter.onfetchRankingError(status.getMensaje());
                 }

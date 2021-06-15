@@ -1,10 +1,12 @@
 package com.example.cuidadodelambiente.ui.activities.ranking;
 
 import android.content.Context;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +43,25 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankView
     @Override
     public void onBindViewHolder(@NonNull RankViewHolder holder, int position) {
         holder.rank.setText(String.valueOf(ranking.get(position).getRank()));
+        switch (ranking.get(position).getRank()) {
+            case 1:
+                holder.layoutRank.setBackgroundColor(context.getResources().getColor(R.color.rojoClaro2));
+                holder.rank.setTextColor(context.getResources().getColor(R.color.blanco));
+                break;
+            case 2:
+                holder.layoutRank.setBackgroundColor(context.getResources().getColor(R.color.naranjaClaro));
+                holder.rank.setTextColor(context.getResources().getColor(R.color.blanco));
+                break;
+            case 3:
+                holder.layoutRank.setBackgroundColor(context.getResources().getColor(R.color.amarilloClaro));
+                holder.rank.setTextColor(context.getResources().getColor(R.color.blanco));
+                break;
+
+            default:
+                holder.layoutRank.setBackgroundColor(context.getResources().getColor(R.color.blanco));
+                holder.rank.setTextColor(context.getResources().getColor(R.color.grisNegro));
+                break;
+        }
         holder.nombre.setText(ranking.get(position).getNombre());
         holder.puntos.setText(String.valueOf(ranking.get(position).getPuntos()));
     }
@@ -51,12 +72,14 @@ public class RankingAdapter extends RecyclerView.Adapter<RankingAdapter.RankView
     }
 
     class RankViewHolder extends RecyclerView.ViewHolder {
+        public LinearLayout layoutRank;
         public TextView rank;
         public TextView nombre;
         public TextView puntos;
 
         public RankViewHolder(View view) {
             super(view);
+            layoutRank = view.findViewById(R.id.layoutRank);
             rank = view.findViewById(R.id.rank);
             nombre = view.findViewById(R.id.nombre);
             puntos = view.findViewById(R.id.puntos);

@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 public class RankingActivity extends AppCompatActivity implements Contract.View {
 
@@ -32,6 +33,8 @@ public class RankingActivity extends AppCompatActivity implements Contract.View 
     private RelativeLayout layoutError;
     private RelativeLayout layoutCarga;
     private Contract.Presenter presenter;
+    private TextView nombreUsuario;
+    private TextView rankUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +80,9 @@ public class RankingActivity extends AppCompatActivity implements Contract.View 
             }
         });
 
+        nombreUsuario = findViewById(R.id.nombreUsuario);
+        rankUsuario = findViewById(R.id.rankUsuario);
+
         recyclerRanking = findViewById(R.id.recyclerRanking);
         recyclerRanking.setHasFixedSize(true);
         lManager = new LinearLayoutManager(getApplicationContext());
@@ -112,7 +118,9 @@ public class RankingActivity extends AppCompatActivity implements Contract.View 
     }
 
     @Override
-    public void showRanking(List<UserRank> ranking) {
+    public void showRanking(List<UserRank> ranking, UserRank userRank) {
+        nombreUsuario.setText(userRank.getNombre());
+        rankUsuario.setText(String.format(Locale.getDefault(), "#%d", userRank.getRank()));
         recyclerRanking.setAdapter(new RankingAdapter(getApplicationContext(), ranking));
         contenidoPrincipal.setVisibility(View.VISIBLE);
     }

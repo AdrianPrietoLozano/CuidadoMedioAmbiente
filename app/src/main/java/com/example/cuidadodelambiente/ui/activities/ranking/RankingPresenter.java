@@ -38,12 +38,12 @@ public class RankingPresenter implements Contract.Presenter {
     }
 
     @Override
-    public void onfetchRankingExito(List<UserRank> ranking) {
+    public void onfetchRankingExito(List<UserRank> ranking, UserRank userRank) {
         if (view == null) return;
 
         view.hideLoading();
         view.hideError();
-        view.showRanking(ranking);
+        view.showRanking(ranking, userRank);
 
     }
 }

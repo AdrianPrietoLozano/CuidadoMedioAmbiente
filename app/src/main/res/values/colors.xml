@@ -17,12 +17,16 @@
     <color name="colorGradientEnd">#FF1493</color>
 
     <color name="amarillo1">#FFDD00</color>
-    <color name="amarillo2">#FBB034</color>
+    <color name="amarillo2">#FFC107</color>
+    <color name="naranjaClaro">#EDE68466</color>
+    <color name="amarilloClaro">#E0E4BD48</color>
+    <color name="rojoClaro2">#E5D55F55</color>
 
     <color name="verde1">#2CD581</color>
     <color name="verde2">#63EB93</color>
     <color name="verde3">#00a651</color>
     <color name="verdeClaro">#D1E6DC</color>
+    <color name="verdeClaro2">#CD77D697</color>
     <color name="blanco">#FFFFFF</color>
 
 </resources>

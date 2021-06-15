@@ -10,7 +10,6 @@ import com.example.cuidadodelambiente.ui.fragments.mis_eventos_reportes.MisEvent
 import com.example.cuidadodelambiente.ui.fragments.PerfilUsuarioFragment;
 import com.example.cuidadodelambiente.ui.fragments.eventos.view.EventosLimpiezaFragment;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.view.ParticipaEventosFragment;
-import com.example.cuidadodelambiente.ui.activities.ranking.RankingFragment;
 import com.example.cuidadodelambiente.ui.fragments.reportes.view.ReportesContaminacionFragment;
 import com.example.cuidadodelambiente.ui.fragments.recomendaciones.view.RecomendacionEventosFragment;
 
@@ -24,7 +23,6 @@ public class DeclaracionFragments {
     public static final Fragment recomendacionEventosFragment = new RecomendacionEventosFragment();
     public static final Fragment recomendacionCrearEventoFragment = new ReportesContaminacionFragment();
     public static final Fragment participaEventos = new ParticipaEventosFragment();
-    public static final Fragment ranking = new RankingFragment();
     public static final Fragment perfilUsuario = new PerfilUsuarioFragment();
     public static final Fragment misEventosYReportes = new MisEventosYReportesFragment();
     public static final Activity crearReporteActivity = new ActividadCrearReporte();

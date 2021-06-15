@@ -11,13 +11,13 @@ public interface Contract {
         void hideLoading();
         void showError(String error);
         void hideError();
-        void showRanking(List<UserRank> ranking);
+        void showRanking(List<UserRank> ranking, UserRank userRank);
     }
 
     interface Presenter extends BasePresenter {
         void fetchRanking();
         void onfetchRankingError(String error);
-        void onfetchRankingExito(List<UserRank> ranking);
+        void onfetchRankingExito(List<UserRank> ranking, UserRank userRank);
     }
 
     interface Model {
