@@ -22,6 +22,7 @@ import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.models.UserLocalStore;
 import com.example.cuidadodelambiente.prueba.Programa;
 import com.example.cuidadodelambiente.ui.activities.LogIn.view.ActividadLogIn;
+import com.example.cuidadodelambiente.ui.activities.dijkstra.DijkstraActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -129,6 +130,14 @@ public class PerfilUsuarioFragment extends Fragment implements Observer {
             @Override
             public void onClick(View v) {
                 ((MainActivity) getActivity()).cambiarFragment(DeclaracionFragments.participaEventos, "GGG");
+            }
+        });
+
+        v.findViewById(R.id.rutaDijkstra).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), DijkstraActivity.class);
+                startActivity(intent);
             }
         });
 

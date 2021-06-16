@@ -20,7 +20,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activities.ranking.RankingActivity"></activity>
+        <activity android:name=".ui.activities.dijkstra.DijkstraActivity"></activity>
+        <activity android:name=".ui.activities.ranking.RankingActivity" />
         <activity android:name=".ui.activities.crear_limpieza.ActividadCrearLimpieza" />
 
         <service android:name=".MyFirebaseMessagingService">
