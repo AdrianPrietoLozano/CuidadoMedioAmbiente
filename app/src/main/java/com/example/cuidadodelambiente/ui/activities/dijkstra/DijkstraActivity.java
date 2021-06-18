@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.cuidadodelambiente.R;
 import com.example.cuidadodelambiente.Utilidades;
+import com.example.cuidadodelambiente.data.models.UbicacionDijkstra;
 import com.example.cuidadodelambiente.data.network.ActualizacionesUbicacionHelper;
 import com.example.cuidadodelambiente.data.responses.DijkstraResponse;
 import com.example.cuidadodelambiente.ui.fragments.datos_evento.DatosEventoFragment;
@@ -28,6 +29,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
@@ -110,7 +113,9 @@ public class DijkstraActivity extends AppCompatActivity
         Integer puntos = Integer.valueOf(puntosTxt.getText().toString());
         if (puntos <= 0) return;
 
-        presenter.fetchDijkstra(null, puntos);
+        presenter.fetchDijkstra(
+                new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), puntos
+        );
     }
 
     @Override
@@ -134,9 +139,28 @@ public class DijkstraActivity extends AppCompatActivity
     }
 
     @Override
-    public void showRuta(DijkstraResponse ruta) {
+    public void showRuta(List<UbicacionDijkstra> ruta) {
+        //Utilidades.agregarMarcadorMapa(mMap, new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 1, BitmapDescriptorFactory.HUE_GREEN);
+        List<LatLng> ubicaciones = new ArrayList<>();
+        for (UbicacionDijkstra u : ruta) {
+            LatLng point = new LatLng(u.getLatitud(), u.getLongitud());
+            ubicaciones.add(point);
+            Utilidades.agregarMarcadorMapa(mMap, point, u.getId());
+        }
 
+        LatLng coordenadasUsuario = new LatLng(userLocation.getLatitude(), userLocation.getLongitude());
+        ubicaciones.add(coordenadasUsuario);
+        Circle circle = mMap.addCircle(new CircleOptions()
+                .center(coordenadasUsuario)
+                .radius(10)
+                .strokeColor(Color.BLUE)
+                .fillColor(Color.CYAN)
+        );
 
+        Polyline polyline = mMap.addPolyline(new PolylineOptions()
+                .clickable(true)
+                .color(getApplicationContext().getResources().getColor(R.color.colorPrimary))
+                .addAll(ubicaciones));
     }
 
     @Override
@@ -146,14 +170,6 @@ public class DijkstraActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        List<LatLng> ubicaciones = new ArrayList<>();
-        ubicaciones.add(new LatLng(20.676702, -103.346283));
-        ubicaciones.add(new LatLng(20.681585, -103.346786));
-        ubicaciones.add(new LatLng(20.685005, -103.343102));
-        ubicaciones.add(new LatLng(20.688068, -103.342316));
-        ubicaciones.add(new LatLng(20.691410, -103.340706));
-        ubicaciones.add(new LatLng(20.695995, -103.342796));
-
         try {
             mMap = googleMap;
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(Utilidades.GDL));
@@ -170,16 +186,6 @@ public class DijkstraActivity extends AppCompatActivity
                     return true;
                 }
             });
-
-            //Utilidades.agregarMarcadorMapa(mMap, new LatLng(userLocation.getLatitude(), userLocation.getLongitude()), 1, BitmapDescriptorFactory.HUE_GREEN);
-            for (LatLng u : ubicaciones) {
-                Utilidades.agregarMarcadorMapa(mMap, u, 1);
-            }
-
-            Polyline polyline = mMap.addPolyline(new PolylineOptions()
-                    .clickable(true)
-                    .color(getApplicationContext().getResources().getColor(R.color.colorPrimary))
-                    .addAll(ubicaciones));
 
         } catch (Exception e) {}
     }

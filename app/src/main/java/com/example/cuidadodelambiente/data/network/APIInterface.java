@@ -9,6 +9,7 @@ import com.example.cuidadodelambiente.data.models.User;
 import com.example.cuidadodelambiente.data.responses.CercaMedioLejos;
 import com.example.cuidadodelambiente.data.responses.CrearEventoResponse;
 import com.example.cuidadodelambiente.data.responses.CrearLimpiezaResponse;
+import com.example.cuidadodelambiente.data.responses.DijkstraResponse;
 import com.example.cuidadodelambiente.data.responses.EventoLimpiezaResponse;
 import com.example.cuidadodelambiente.data.responses.RankingResponse;
 import com.example.cuidadodelambiente.data.responses.ReporteContaminacionResponse;
@@ -65,6 +66,15 @@ public interface APIInterface {
     /* RANKING */
     @GET("usuario/ranking")
     Call<RankingResponse> doGetRanking();
+
+    /* DIJKSTRA */
+    @FormUrlEncoded
+    @POST("eventos/dijkstra")
+    Call<DijkstraResponse> doGetRutaDijkstra(
+            @Field("latitud") Double latitud,
+            @Field("longitud") Double longitud,
+            @Field("puntos") Integer puntos
+    );
 
 
     /* EVENTOS */

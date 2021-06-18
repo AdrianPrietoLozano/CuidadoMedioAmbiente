@@ -1,7 +1,10 @@
 package com.example.cuidadodelambiente.ui.activities.dijkstra;
 
+import com.example.cuidadodelambiente.data.models.UbicacionDijkstra;
 import com.example.cuidadodelambiente.data.responses.DijkstraResponse;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.List;
 
 public class DijkstraPresenter implements Contract.Presenter {
     private Contract.View view;
@@ -27,7 +30,7 @@ public class DijkstraPresenter implements Contract.Presenter {
     }
 
     @Override
-    public void onFetchDijkstraExito(DijkstraResponse ruta) {
+    public void onFetchDijkstraExito(List<UbicacionDijkstra> ruta) {
         if (view == null) return;
 
         view.hideLoading();
