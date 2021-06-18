@@ -147,9 +147,12 @@ public class DijkstraActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap googleMap) {
         List<LatLng> ubicaciones = new ArrayList<>();
-        ubicaciones.add(new LatLng(-35.016, 143.321));
-        ubicaciones.add(new LatLng(-34.747, 145.592));
-        ubicaciones.add(new LatLng(-32.491, 147.309));
+        ubicaciones.add(new LatLng(20.676702, -103.346283));
+        ubicaciones.add(new LatLng(20.681585, -103.346786));
+        ubicaciones.add(new LatLng(20.685005, -103.343102));
+        ubicaciones.add(new LatLng(20.688068, -103.342316));
+        ubicaciones.add(new LatLng(20.691410, -103.340706));
+        ubicaciones.add(new LatLng(20.695995, -103.342796));
 
         try {
             mMap = googleMap;
