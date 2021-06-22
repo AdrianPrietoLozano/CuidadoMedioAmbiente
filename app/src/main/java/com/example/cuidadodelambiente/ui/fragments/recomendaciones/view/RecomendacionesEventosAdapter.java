@@ -85,7 +85,6 @@ public class RecomendacionesEventosAdapter extends RecyclerView.Adapter<Recomend
 
     public static class EventoViewHolder extends RecyclerView.ViewHolder {
         public ImageView imagenEvento;
-        public ImageView imagenUbicacion;
         public TextView tituloEvento;
         public TextView fechaHoraEvento;
 
@@ -95,7 +94,6 @@ public class RecomendacionesEventosAdapter extends RecyclerView.Adapter<Recomend
             imagenEvento = v.findViewById(R.id.imagenEvento);
             tituloEvento = v.findViewById(R.id.tituloEvento);
             fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
-            imagenUbicacion = v.findViewById(R.id.imagenUbicacion);
 
         }
     }

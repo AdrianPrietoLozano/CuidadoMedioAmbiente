@@ -63,11 +63,11 @@ public class DatosEventoPresenter implements Contract.Presenter {
         else
             view.enableParticipacion();
 
+        int idUsuario = UserLocalStore.getInstance(AppContext.getContext()).getUsuarioLogueado().getId();
         boolean isVigente = isFechaVigente(eventoLimpieza.getFecha(), eventoLimpieza.getHora());
-        if (!isVigente)
+        if (!isVigente || idUsuario == eventoLimpieza.getCreador().getId())
             view.hideAllButtons();
 
-        int idUsuario = UserLocalStore.getInstance(AppContext.getContext()).getUsuarioLogueado().getId();
         if (!isVigente && eventoLimpieza.getCreador().getId() == idUsuario && eventoLimpieza.getAdministrado().equals("0"))
             view.enableAdministrarEvento();
 

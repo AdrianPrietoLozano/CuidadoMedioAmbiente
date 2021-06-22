@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,6 +30,7 @@ import com.example.cuidadodelambiente.ui.fragments.datos_evento.DatosEventoFragm
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.IParticipacionesEventosPresenter;
 import com.example.cuidadodelambiente.ui.fragments.participaciones.presenter.ParticipacionesEventosPresenter;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +168,17 @@ public class ParticipaEventosFragment extends Fragment
             helperCargaError.mostrarPantallaError();
 
         } else {
-            recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), eventos));
+            this.listaEventos = eventos;
+            recyclerEventos.setAdapter(new ParticipacionesEventosAdapter(getContext(), eventos, new ParticipacionesEventosAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    Integer idEvento = listaEventos.get(position).getIdEvento();
+                    if (idEvento == null) idEvento = -1;
+                    BottomSheetDialogFragment fragmentEvento = DatosEventoFragment.newInstance(idEvento);
+                    fragmentEvento.setStyle(DialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
+                    fragmentEvento.show(getFragmentManager(), fragmentEvento.getTag());
+                }
+            }));
             //helperCargaError.ocultarCargaMostrarContenido();
             helperCargaError.mostrarContenidoPrincipal();
         }

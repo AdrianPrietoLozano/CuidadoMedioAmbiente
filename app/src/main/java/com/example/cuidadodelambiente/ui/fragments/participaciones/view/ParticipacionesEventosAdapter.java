@@ -21,11 +21,14 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
 {
     private List<EventoLimpieza> listaEventos;
     private Context context;
+    private OnItemClickListener onItemClickListener;
 
-    ParticipacionesEventosAdapter(Context context, List<EventoLimpieza> listaEventos)
+    ParticipacionesEventosAdapter(Context context, List<EventoLimpieza> listaEventos,
+                                  OnItemClickListener onItemClickListener)
     {
         this.context = context;
         this.listaEventos = listaEventos;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -38,6 +41,13 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
     public ParticipaEventoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_participa_evento, parent, false);
         final ParticipaEventoViewHolder participaEventoViewHolder = new ParticipaEventoViewHolder(v);
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(v, participaEventoViewHolder.getPosition());
+            }
+        });
 
         return participaEventoViewHolder;
     }
@@ -77,5 +87,9 @@ class ParticipacionesEventosAdapter extends RecyclerView.Adapter<Participaciones
             descripcion = v.findViewById(R.id.descripcion);
 
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
 }

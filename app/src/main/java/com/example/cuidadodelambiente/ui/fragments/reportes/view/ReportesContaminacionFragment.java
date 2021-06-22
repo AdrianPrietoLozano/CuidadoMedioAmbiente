@@ -72,7 +72,8 @@ public class ReportesContaminacionFragment extends Fragment
     private MyCustomRenderer renderer;
     private GoogleMap mMap;
     //private RelativeLayout layoutSinConexion;
-    private TextView mensajeProblema, totalReportes;
+    private TextView mensajeProblema;
+    private TextView totalReportes;
     private Button botonVolverIntentar;
     private FloatingActionButton botonRecargar;
     private FloatingActionButton botonNuevoReporte;
@@ -110,7 +111,7 @@ public class ReportesContaminacionFragment extends Fragment
         mensajeProblema = v.findViewById(R.id.mensajeProblema);
 
         // esta cadena debe cambiarse con datos de la BD
-        totalReportes = v.findViewById(R.id.totalReportes);
+        //totalReportes = v.findViewById(R.id.totalReportes);
 
         // evento clic para el boton volver a intentarlo cuando no hay conexion a internet
         botonVolverIntentar = v.findViewById(R.id.volverAIntentarlo);
@@ -246,7 +247,7 @@ public class ReportesContaminacionFragment extends Fragment
     @Override
     public void onReportesRecibidosCorrectamente(List<UbicacionReporte> reportesServer) {
         this.reportes = reportesServer;
-        totalReportes.setText(reportes.size() + " reportes en total");
+        //totalReportes.setText(reportes.size() + " reportes en total");
 
         iniciarClusteres();
         helperCargaError.mostrarContenidoPrincipal();

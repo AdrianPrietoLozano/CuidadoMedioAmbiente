@@ -111,7 +111,6 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
 
     public static class MiEventoViewHolder extends RecyclerView.ViewHolder {
         public ImageView imagenEvento;
-        public ImageView imagenUbicacion;
         public TextView tituloEvento;
         public TextView fechaHoraEvento;
         public Chip statusEvento;
@@ -122,7 +121,6 @@ public class MisEventosAdapter extends RecyclerView.Adapter<MisEventosAdapter.Mi
             imagenEvento = v.findViewById(R.id.imagenEvento);
             tituloEvento = v.findViewById(R.id.tituloEvento);
             fechaHoraEvento = v.findViewById(R.id.fechaHoraEvento);
-            imagenUbicacion = v.findViewById(R.id.imagenUbicacion);
             statusEvento = v.findViewById(R.id.statusEvento);
         }
     }
